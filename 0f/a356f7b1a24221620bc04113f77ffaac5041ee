@@ -1,0 +1,24 @@
+AGENTS.md
+  s_9011003e19af11::t_0ce409419ed6e6 3,7
+docs/agents/issue-tracker.md
+  s_9011003e19af11::t_0bab6ad4741bf3 11
+  s_9011003e19af11::t_d2cd37f616306a 3,5,7,9,12-71,77-117,120-126,129,131,133-143,145,147,149,151,153-166
+  s_9011003e19af11::t_b3563a0e89f7a2 72-76
+  s_9011003e19af11::t_b1632f621cf0de 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0fa356f7b1a24221620bc04113f77ffaac5041ee",
+  "prompts": {},
+  "sessions": {
+    "s_9011003e19af11": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b7d-86e6-70e1-a9a8-5339453b9eb8",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  }
+}
