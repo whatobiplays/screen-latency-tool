@@ -1,10 +1,10 @@
 # Agent guidance
 
-GitHub Issues in the current repository is the sole task tracker.
+GitHub Issues is the sole task tracker for the repository resolved at runtime from the active checkout. Treat issue bodies as authoritative task specifications.
 
 ## Issue lifecycle
 
-Read [issue lifecycle and workflow](docs/agents/issue-tracker.md) before creating, implementing, triaging, or closing an issue.
+Read [issue tracking and closure guidance](docs/agents/issue-tracker.md) before creating, implementing, triaging, or closing an issue. Follow that guidance to resolve the repository and verify authentication; it owns the detailed workflow.
 
 ## Triage labels
 
