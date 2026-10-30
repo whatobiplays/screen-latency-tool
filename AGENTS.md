@@ -1,13 +1,15 @@
-## Agent skills
+# Agent guidance
 
-### Issue tracker
+GitHub Issues in the current repository is the sole task tracker.
 
-Issues for this repository are tracked in GitHub Issues. See `docs/agents/issue-tracker.md`.
+## Issue lifecycle
 
-### Triage labels
+Read [issue lifecycle and workflow](docs/agents/issue-tracker.md) before creating, implementing, triaging, or closing an issue.
 
-Use the default triage labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
+## Triage labels
 
-### Domain docs
+Apply [triage labels](docs/agents/triage-labels.md) when classifying issues.
 
-This is a single-context repository. See `docs/agents/domain.md`.
+## Domain documentation
+
+Read [domain documentation](docs/agents/domain.md) before introducing terminology or changing an architectural decision.
