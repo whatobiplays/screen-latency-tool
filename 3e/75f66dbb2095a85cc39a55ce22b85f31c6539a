@@ -1,0 +1,148 @@
+docs/agents/issue-tracker.md
+  s_9011003e19af11::t_fd7ec7ea5d7013 3
+  s_9011003e19af11::t_d1bdd7b52858ef 10-27
+  s_9011003e19af11::t_7d5813631ddb58 4
+  s_9011003e19af11::t_aa4c8080e5b4cd 28-29
+  s_1234ae8549f089::t_489f6ca5c7b171 6,8
+docs/phases/PHASE-001-hardware-android-feasibility.md
+  s_9011003e19af11::t_d1bdd7b52858ef 24
+  s_9011003e19af11::t_31b097fb6cb143 3-9
+  s_12a5aa5356506e::t_747454c3d3c639 1-2,10-23,25-34
+docs/architecture/ARCH-001-system-architecture.md
+  s_9011003e19af11::t_d1bdd7b52858ef 31-32
+  s_9011003e19af11::t_8d25f2fb2ee9fa 1-30,33-79
+docs/specs/SPEC-X-002-android-acquisition.md
+  s_9011003e19af11::t_d1bdd7b52858ef 14-53
+  s_9011003e19af11::t_401b173f0caf4b 1-13,54-60
+docs/phases/PHASE-004-publication-qualification.md
+  s_9011003e19af11::t_d1bdd7b52858ef 22
+  s_9011003e19af11::t_e3f4de07132df3 1-21,23-34
+docs/reference/REF-MET-001-measurement-methodology.md
+  s_9011003e19af11::t_cc8d5af29119b4 48
+  s_9011003e19af11::t_d1bdd7b52858ef 23-47,51
+  s_9011003e19af11::t_f1d6f432bb596d 20-22
+  s_9011003e19af11::t_439ed2586f3a2f 49-50
+  s_9011003e19af11::t_015a0c732879f2 52-54
+  s_231db6c1a42225::t_17b91358df33f9 1-19,55-67
+docs/reference/REF-WIRE-001-usb-and-control-contract.md
+  s_9011003e19af11::t_d1bdd7b52858ef 18-85
+  s_9011003e19af11::t_5bafe20e7a61af 1-17
+docs/reference/REF-DATA-001-session-contract.md
+  s_9011003e19af11::t_d1bdd7b52858ef 14-49,55-86
+  s_9011003e19af11::t_cc8d5af29119b4 53-54
+  s_231db6c1a42225::t_52c810a8bef079 1,3-10,12,51,88,90,92,94,96
+docs/README.md
+  s_9011003e19af11::t_923e5a15df7772 20
+  s_9011003e19af11::t_5d8fb4b1d1a0dd 18
+  s_12a5aa5356506e::t_520d0647690300 1-17,19,21-31
+docs/architecture/ARCH-002-documentation-governance.md
+  s_9011003e19af11::t_cf4f2408fb7cc0 38-40
+  s_9011003e19af11::t_d1bdd7b52858ef 17,30,51
+  s_9011003e19af11::t_a8e4b51337fd55 18-29,32
+  s_9011003e19af11::t_55565cf81dadb5 34,41-42
+  s_12a5aa5356506e::t_bb6789fce9ee7c 1-16,31,33,35-37,43-50,52-70
+docs/specs/SPEC-X-003-reference-analysis.md
+  s_9011003e19af11::t_d1bdd7b52858ef 16-26,33-58
+  s_9011003e19af11::t_4461734f5b6c48 28,64
+  s_9011003e19af11::t_46e5ea1e4a1bd3 13-15
+  s_9011003e19af11::t_22ffb501628c3d 27
+  s_9011003e19af11::t_5afc49d835cf2f 29-32
+  s_9011003e19af11::t_a25b6cbc7c8e9b 59-63
+  s_63a3e670a583cb::t_d133a3ecf4e1a6 1-12
+AGENTS.md
+  s_9011003e19af11::t_d1bdd7b52858ef 9
+  s_9011003e19af11::t_2695fc3d70ea07 1,3,5,7,11,13
+docs/specs/SPEC-X-004-qualification.md
+  s_9011003e19af11::t_3f577902663818 40
+  s_9011003e19af11::t_7841d74af98a5c 50-51
+  s_9011003e19af11::t_d1bdd7b52858ef 24
+  s_572fff539c3fed::t_2c69aa9530fc55 1-23,25-39,41-49,52-68
+docs/specs/SPEC-X-001-fixture-and-mechanics.md
+  s_9011003e19af11::t_d1bdd7b52858ef 16-32,44
+  s_9011003e19af11::t_a8e4b51337fd55 42
+  s_12a5aa5356506e::t_e4fa9905204d6f 1-15,33-41,43,45-56
+docs/phases/PHASE-000-feasibility-preparation.md
+  s_9011003e19af11::t_d1bdd7b52858ef 18
+  s_9011003e19af11::t_7a4b93f82cc05a 1-17,19-29
+GLOSSARY.md
+  s_9011003e19af11::t_3f577902663818 3
+  s_9011003e19af11::t_55565cf81dadb5 4-5
+  s_572fff539c3fed::t_b1c54dcf8d0e2a 1-2,6-42
+docs/adr/0002-prove-hardware-timing-before-contract-freeze.md
+  s_494d337aef2948::t_a60f4229291cea 1-13
+docs/adr/0003-uncertainty-aware-rotation-inference.md
+  s_572fff539c3fed::t_ce493442328475 1-11
+docs/phases/PHASE-002-production-instrument.md
+  s_572fff539c3fed::t_ebd00dededcd8e 1-33
+docs/phases/PHASE-003-acquisition-analysis.md
+  s_572fff539c3fed::t_a3326dcee97766 1-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3e75f66dbb2095a85cc39a55ce22b85f31c6539a",
+  "prompts": {},
+  "humans": {
+    "h_2e7f3207901880": {
+      "author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_1234ae8549f089": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18bb7-11a3-7883-abc0-912d59198e1e",
+        "model": "unknown"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    },
+    "s_12a5aa5356506e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a17420-826e-7d51-9bd9-d61b4fe696a4",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    },
+    "s_231db6c1a42225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18bb4-fe87-7372-bead-34765fce0d2a",
+        "model": "unknown"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    },
+    "s_494d337aef2948": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18599-8f8a-7100-9df4-2f3f887fd048",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    },
+    "s_572fff539c3fed": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a188a8-3280-7891-9d5c-5b2049a8842a",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    },
+    "s_63a3e670a583cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18bf1-6e84-7df1-8f35-c21ee2613da3",
+        "model": "unknown"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    },
+    "s_9011003e19af11": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b7d-86e6-70e1-a9a8-5339453b9eb8",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  }
+}
