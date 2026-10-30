@@ -1,10 +1,10 @@
 # Agent guidance
 
-GitHub Issues is the sole task tracker for the repository resolved at runtime from the active checkout. Treat issue bodies as authoritative task specifications.
+GitHub Issues owns actionable work, task specifications, dependencies, readiness and status, and completion evidence. Repository documentation owns durable architecture, reference material, subsystem specifications, glossary and terminology, and ADRs. Treat issue bodies as authoritative task specifications. Pull requests are implementation review surfaces, not task intake.
 
 ## Issue lifecycle
 
-Read [issue tracking and closure guidance](docs/agents/issue-tracker.md) before creating, implementing, triaging, or closing an issue. Follow that guidance to resolve the repository and verify authentication; it owns the detailed workflow.
+Read [issue tracking and closure guidance](docs/agents/issue-tracker.md) before creating, implementing, triaging, or closing an issue. Follow that guidance to resolve the repository, verify authentication and access, and apply closure authorization; it owns the detailed workflow.
 
 ## Triage labels
 
