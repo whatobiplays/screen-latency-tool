@@ -220,33 +220,148 @@ case "$VIEWER_PERMISSION" in
     exit 1
     ;;
 esac
+
+DISCOVERY_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
+  printf 'Cannot determine the discovery checkout root.\n' >&2
+  exit 1
+}
+
+# Verify the active checkout and all origin URLs before every issue operation.
+# A subshell keeps remote-parser scratch variables out of the calling shell.
+verify_active_checkout() (
+  active_root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+    printf 'The current directory is not inside a Git checkout.\n' >&2
+    exit 1
+  }
+  if [ "$active_root" != "$DISCOVERY_ROOT" ]; then
+    printf 'Checkout changed since discovery; rerun repository discovery.\n' >&2
+    exit 1
+  fi
+
+  verify_origin_url() {
+    description=$1
+    shift
+    origin_urls=$("$@" 2>/dev/null) || {
+      printf 'Cannot read current %s origin URL.\n' "$description" >&2
+      exit 1
+    }
+    origin_count=$(printf '%s\n' "$origin_urls" | awk 'END { print NR }')
+    if [ -z "$origin_urls" ] || [ "$origin_count" -ne 1 ]; then
+      printf 'Expected exactly one nonempty %s origin URL.\n' "$description" >&2
+      exit 1
+    fi
+    parse_github_remote "$origin_urls"
+    current_repo_key=$(printf '%s' "$REMOTE_REPOSITORY" |
+      tr '[:upper:]' '[:lower:]')
+    discovery_repo_key=$(printf '%s' "$RESOLVED_REPOSITORY" |
+      tr '[:upper:]' '[:lower:]')
+    if [ "$REMOTE_HOST" != "$GH_HOST" ] ||
+      [ "$current_repo_key" != "$discovery_repo_key" ]; then
+      printf 'Origin repository changed since discovery (%s); rerun discovery.\n' \
+        "$description" >&2
+      exit 1
+    fi
+  }
+
+  verify_origin_url 'configured fetch' git config --get-all remote.origin.url
+  verify_origin_url 'effective fetch' git remote get-url --all origin
+  verify_origin_url 'effective push' git remote get-url --push --all origin
+)
+
+require_issue_access() {
+  required_access=${1:?Specify read or write access.}
+  : "${GH_HOST:?Run the discovery sequence first.}"
+  : "${RESOLVED_REPOSITORY:?Run the discovery sequence first.}"
+
+  verify_active_checkout || exit 1
+
+  if [ "$GH_HOST" != github.com ]; then
+    printf 'Unexpected GitHub host: %s\n' "$GH_HOST" >&2
+    exit 1
+  fi
+  case "$RESOLVED_REPOSITORY" in
+    */*/*|/*|*/|"")
+      printf 'Invalid resolved repository: %s\n' "$RESOLVED_REPOSITORY" >&2
+      exit 1
+      ;;
+  esac
+
+  if ! gh auth status --hostname "$GH_HOST" >/dev/null 2>&1; then
+    printf 'GitHub CLI authentication is unavailable for the active checkout.\n' >&2
+    exit 1
+  fi
+  if ! current_repository=$(gh repo view "$RESOLVED_REPOSITORY" \
+    --json nameWithOwner --jq .nameWithOwner); then
+    printf 'Cannot verify the currently authenticated repository.\n' >&2
+    exit 1
+  fi
+  if [ "$current_repository" != "$RESOLVED_REPOSITORY" ]; then
+    printf 'Authenticated repository does not match the active checkout.\n' >&2
+    exit 1
+  fi
+  if ! current_url=$(gh repo view "$RESOLVED_REPOSITORY" --json url --jq .url); then
+    printf 'Cannot verify the authenticated repository host.\n' >&2
+    exit 1
+  fi
+  if [ "$current_url" != "https://$GH_HOST/$RESOLVED_REPOSITORY" ]; then
+    printf 'Authenticated repository URL does not match the active checkout.\n' >&2
+    exit 1
+  fi
+
+  if ! current_permission=$(gh repo view "$RESOLVED_REPOSITORY" \
+    --json viewerPermission --jq .viewerPermission); then
+    printf 'Could not verify current repository permission.\n' >&2
+    exit 1
+  fi
+
+  case "$required_access" in
+    read)
+      case "$current_permission" in
+        READ|TRIAGE|WRITE|MAINTAIN|ADMIN) ;;
+        *)
+          printf 'Repository permission is insufficient for issue reads: %s\n' \
+            "$current_permission" >&2
+          exit 1
+          ;;
+      esac
+      ;;
+    write)
+      case "$current_permission" in
+        TRIAGE|WRITE|MAINTAIN|ADMIN) ;;
+        *)
+          printf 'Repository permission is insufficient for issue writes: %s\n' \
+            "$current_permission" >&2
+          exit 1
+          ;;
+      esac
+      ;;
+    *)
+      printf 'Unsupported issue access mode: %s\n' "$required_access" >&2
+      exit 1
+      ;;
+  esac
+
+  VIEWER_PERMISSION=$current_permission
+  export VIEWER_PERMISSION
+}
+
+
+require_issue_access read
 ```
 
-When using a connected integration, perform the equivalent checks through that integration: the authenticated connection must resolve the same host and owner/repository as `origin`, confirm read access before issue reads, and confirm at least `TRIAGE` access before issue writes. Stop on any mismatch or unexpected permission rather than falling back to an unverified account or repository.
+When using a connected integration, perform equivalent checks before each issue operation: revalidate the active checkout and its current `origin`, resolve the same host and owner/repository, and verify current authentication and permissions (at least `TRIAGE` for writes). Stop on a changed checkout, changed origin, mismatch, or unexpected permission rather than falling back to an unverified account or repository.
 
-Run the following snippets in the same shell as the discovery sequence, or source them from one script. Discovery exports `GH_HOST`, `RESOLVED_REPOSITORY`, and `VIEWER_PERMISSION`; set `ISSUE_NUMBER` before running an operation snippet. Each block fails fast when a prerequisite is absent.
+Run the following snippets in the same shell as the discovery sequence, or source them from one script. Discovery defines and invokes `require_issue_access` and exports `GH_HOST`, `RESOLVED_REPOSITORY`, and `VIEWER_PERMISSION`. Each operation rechecks the current checkout, origin, authentication, and permission before acting; set `ISSUE_NUMBER` for operations on existing issues.
 
 ## Issue operations
 
-After repository and authentication checks pass, these `gh` commands use the verified values. GitHub's `READ` role is sufficient for viewing issues; `TRIAGE`, `WRITE`, `MAINTAIN`, or `ADMIN` is required for issue management and writes. Use the connected integration's equivalent operations when it satisfies the checks above.
+After repository and authentication checks pass, these `gh` commands use the verified values. Each operation invokes `require_issue_access` from the discovery sequence. GitHub's `READ` role is sufficient for viewing issues; `TRIAGE`, `WRITE`, `MAINTAIN`, or `ADMIN` is required for issue management and writes. Use the connected integration's equivalent operations when it satisfies the checks above.
 
 ### Read issues
 
 ```sh
-GH_HOST=${GH_HOST:?Run the discovery sequence first.}
-RESOLVED_REPOSITORY=${RESOLVED_REPOSITORY:?Run the discovery sequence first.}
-VIEWER_PERMISSION=${VIEWER_PERMISSION:?Run the discovery sequence first.}
+require_issue_access read
 issue_number=${ISSUE_NUMBER:?Set ISSUE_NUMBER to the target issue number.}
-export GH_HOST RESOLVED_REPOSITORY VIEWER_PERMISSION
-
-case "$VIEWER_PERMISSION" in
-  READ|TRIAGE|WRITE|MAINTAIN|ADMIN) ;;
-  *)
-    printf 'Repository permission is insufficient for issue reads: %s\n' \
-      "$VIEWER_PERMISSION" >&2
-    exit 1
-    ;;
-esac
 
 gh issue view "$issue_number" --repo "$RESOLVED_REPOSITORY" \
   --json number,title,body,labels,comments
@@ -256,19 +371,7 @@ gh issue list --repo "$RESOLVED_REPOSITORY" --state open
 ### Create issues
 
 ```sh
-GH_HOST=${GH_HOST:?Run the discovery sequence first.}
-RESOLVED_REPOSITORY=${RESOLVED_REPOSITORY:?Run the discovery sequence first.}
-VIEWER_PERMISSION=${VIEWER_PERMISSION:?Run the discovery sequence first.}
-export GH_HOST RESOLVED_REPOSITORY VIEWER_PERMISSION
-
-case "$VIEWER_PERMISSION" in
-  TRIAGE|WRITE|MAINTAIN|ADMIN) ;;
-  *)
-    printf 'Repository permission is insufficient for issue writes: %s\n' \
-      "$VIEWER_PERMISSION" >&2
-    exit 1
-    ;;
-esac
+require_issue_access write
 
 gh issue create --repo "$RESOLVED_REPOSITORY" --title "..." --body "..."
 ```
@@ -276,20 +379,8 @@ gh issue create --repo "$RESOLVED_REPOSITORY" --title "..." --body "..."
 ### Update or comment on an issue
 
 ```sh
-GH_HOST=${GH_HOST:?Run the discovery sequence first.}
-RESOLVED_REPOSITORY=${RESOLVED_REPOSITORY:?Run the discovery sequence first.}
-VIEWER_PERMISSION=${VIEWER_PERMISSION:?Run the discovery sequence first.}
+require_issue_access write
 issue_number=${ISSUE_NUMBER:?Set ISSUE_NUMBER to the target issue number.}
-export GH_HOST RESOLVED_REPOSITORY VIEWER_PERMISSION
-
-case "$VIEWER_PERMISSION" in
-  TRIAGE|WRITE|MAINTAIN|ADMIN) ;;
-  *)
-    printf 'Repository permission is insufficient for issue writes: %s\n' \
-      "$VIEWER_PERMISSION" >&2
-    exit 1
-    ;;
-esac
 
 gh issue edit "$issue_number" --repo "$RESOLVED_REPOSITORY" --add-label "..."
 gh issue edit "$issue_number" --repo "$RESOLVED_REPOSITORY" --remove-label "..."
@@ -316,20 +407,8 @@ Unless the owner explicitly authorizes closure, do not use GitHub auto-closing k
 After explicit authorization, close the issue through the verified repository:
 
 ```sh
-GH_HOST=${GH_HOST:?Run the discovery sequence first.}
-RESOLVED_REPOSITORY=${RESOLVED_REPOSITORY:?Run the discovery sequence first.}
-VIEWER_PERMISSION=${VIEWER_PERMISSION:?Run the discovery sequence first.}
+require_issue_access write
 issue_number=${ISSUE_NUMBER:?Set ISSUE_NUMBER to the target issue number.}
-export GH_HOST RESOLVED_REPOSITORY VIEWER_PERMISSION
-
-case "$VIEWER_PERMISSION" in
-  TRIAGE|WRITE|MAINTAIN|ADMIN) ;;
-  *)
-    printf 'Repository permission is insufficient for issue writes: %s\n' \
-      "$VIEWER_PERMISSION" >&2
-    exit 1
-    ;;
-esac
 
 gh issue close "$issue_number" --repo "$RESOLVED_REPOSITORY" --reason completed
 ```
