@@ -1,0 +1,36 @@
+docs/README.md
+  s_9011003e19af11::t_4dea2aa799f781 3,25,31
+  s_9011003e19af11::t_ff410adb45bc27 21
+docs/agents/issue-tracker.md
+  s_9011003e19af11::t_7e9e4eb151fe8a 26-30,42-46
+  s_9011003e19af11::t_4dea2aa799f781 3-4,6,10-11,13,17-18,21,24-25,33-41,47-51,54-59
+  s_9011003e19af11::t_44eb82877b11c4 23,31-32
+  s_9011003e19af11::t_b6669f8554faf6 22
+docs/architecture/ARCH-002-documentation-governance.md
+  s_9011003e19af11::t_4dea2aa799f781 13,32,48-50,52,56-57
+  s_9011003e19af11::t_68c854a4b1dd76 3-8
+AGENTS.md
+  s_9011003e19af11::t_4dea2aa799f781 9-10
+  s_9011003e19af11::t_ff410adb45bc27 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4da7663e78caf991cd2e09417fe8aaff5197400c",
+  "prompts": {},
+  "humans": {
+    "h_2e7f3207901880": {
+      "author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_9011003e19af11": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b7d-86e6-70e1-a9a8-5339453b9eb8",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  }
+}
