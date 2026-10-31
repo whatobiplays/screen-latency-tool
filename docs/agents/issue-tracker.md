@@ -94,71 +94,42 @@ parse_github_remote() {
   REMOTE_REPOSITORY=$owner/$repository
 }
 
-if ! git config --get-all remote.origin.url >/dev/null 2>&1; then
-  printf 'Git remote origin is absent.\n' >&2
-  exit 1
-fi
+read_origin_url() {
+  description=$1
+  shift
 
-configured_fetch_count=$(git config --get-all remote.origin.url |
-  awk 'END { print NR }')
-if [ "$configured_fetch_count" -ne 1 ]; then
-  printf 'Expected exactly one configured origin fetch URL, found %s.\n' \
-    "$configured_fetch_count" >&2
-  exit 1
-fi
+  if ! origin_urls=$("$@" 2>/dev/null); then
+    printf 'Git remote origin has no %s URL.\n' "$description" >&2
+    exit 1
+  fi
+  origin_count=$(printf '%s\n' "$origin_urls" | awk 'END { print NR }')
+  if [ "$origin_count" -ne 1 ]; then
+    printf 'Expected exactly one %s URL, found %s.\n' \
+      "$description" "$origin_count" >&2
+    exit 1
+  fi
 
-if ! configured_fetch_url=$(git config --get remote.origin.url 2>/dev/null); then
-  printf 'Git remote origin has no configured fetch URL.\n' >&2
-  exit 1
-fi
-if [ -z "$configured_fetch_url" ]; then
-  printf 'Git remote origin has an empty configured fetch URL.\n' >&2
-  exit 1
-fi
+  ONE_ORIGIN_URL=$(printf '%s\n' "$origin_urls" | sed -n '1p')
+  if [ -z "$ONE_ORIGIN_URL" ]; then
+    printf 'Git remote origin has an empty %s URL.\n' "$description" >&2
+    exit 1
+  fi
+}
+
+read_origin_url 'configured fetch' git config --get-all remote.origin.url
+configured_fetch_url=$ONE_ORIGIN_URL
 parse_github_remote "$configured_fetch_url"
 configured_fetch_host=$REMOTE_HOST
 configured_fetch_repository=$REMOTE_REPOSITORY
 
-if ! git remote get-url --all origin >/dev/null 2>&1; then
-  printf 'Git remote origin has no effective fetch URL.\n' >&2
-  exit 1
-fi
-fetch_count=$(git remote get-url --all origin | awk 'END { print NR }')
-if [ "$fetch_count" -ne 1 ]; then
-  printf 'Expected exactly one effective origin fetch URL, found %s.\n' \
-    "$fetch_count" >&2
-  exit 1
-fi
-if ! fetch_url=$(git remote get-url origin 2>/dev/null); then
-  printf 'Git remote origin has no effective fetch URL.\n' >&2
-  exit 1
-fi
-if [ -z "$fetch_url" ]; then
-  printf 'Git remote origin has an empty effective fetch URL.\n' >&2
-  exit 1
-fi
+read_origin_url 'effective fetch' git remote get-url --all origin
+fetch_url=$ONE_ORIGIN_URL
 parse_github_remote "$fetch_url"
 fetch_host=$REMOTE_HOST
 fetch_repository=$REMOTE_REPOSITORY
 
-if ! git remote get-url --push --all origin >/dev/null 2>&1; then
-  printf 'Git remote origin has no effective push URL.\n' >&2
-  exit 1
-fi
-push_count=$(git remote get-url --push --all origin | awk 'END { print NR }')
-if [ "$push_count" -ne 1 ]; then
-  printf 'Expected exactly one effective origin push URL, found %s.\n' \
-    "$push_count" >&2
-  exit 1
-fi
-if ! push_url=$(git remote get-url --push origin 2>/dev/null); then
-  printf 'Git remote origin has no effective push URL.\n' >&2
-  exit 1
-fi
-if [ -z "$push_url" ]; then
-  printf 'Git remote origin has an empty effective push URL.\n' >&2
-  exit 1
-fi
+read_origin_url 'effective push' git remote get-url --push --all origin
+push_url=$ONE_ORIGIN_URL
 parse_github_remote "$push_url"
 push_host=$REMOTE_HOST
 push_repository=$REMOTE_REPOSITORY
@@ -209,14 +180,6 @@ case "$resolved_url" in
     ;;
   *)
     printf 'Host or repository mismatch: %s\n' "$resolved_url" >&2
-    exit 1
-    ;;
-esac
-
-case "$VIEWER_PERMISSION" in
-  READ|TRIAGE|WRITE|MAINTAIN|ADMIN) ;;
-  *)
-    printf 'Repository is not readable: %s\n' "$VIEWER_PERMISSION" >&2
     exit 1
     ;;
 esac
@@ -345,13 +308,60 @@ require_issue_access() {
   export VIEWER_PERMISSION
 }
 
-
 require_issue_access read
 ```
 
 When using a connected integration, perform equivalent checks before each issue operation: revalidate the active checkout and its current `origin`, resolve the same host and owner/repository, and verify current authentication and permissions (at least `TRIAGE` for writes). Stop on a changed checkout, changed origin, mismatch, or unexpected permission rather than falling back to an unverified account or repository.
 
-Run the following snippets in the same shell as the discovery sequence, or source them from one script. Discovery defines and invokes `require_issue_access` and exports `GH_HOST`, `RESOLVED_REPOSITORY`, and `VIEWER_PERMISSION`. Each operation rechecks the current checkout, origin, authentication, and permission before acting; set `ISSUE_NUMBER` for operations on existing issues.
+Run the following snippets in the same shell as the discovery sequence, or source them from one script. Discovery defines and invokes `require_issue_access`, and exports `GH_HOST`, `RESOLVED_REPOSITORY`, and `VIEWER_PERMISSION`. Each operation invokes that one access check again before acting; set `ISSUE_NUMBER` before running an operation that targets an existing issue. Each block fails fast when a prerequisite is absent.
+
+## Issue specifications and lifecycle
+
+The Git repository contains canonical technical documents (see [docs/README.md](../README.md)). GitHub Issues owns actionable work, dependencies, readiness, status, implementation history, and completion evidence. Never create parallel Markdown task lists, issue mirrors, roadmap status tables, or issue-specific files.
+
+Write one narrow, independently verifiable implementation slice per issue. Include:
+
+1. **What to build**, without copying the subsystem specification.
+2. Observable acceptance criteria.
+3. **Blocked by** references to real issues in the runtime-resolved repository.
+4. Explicit exclusions and non-goals.
+5. Required automated evidence and, where applicable, physical qualification.
+
+The owner decides product and design choices. Preserve approved decisions and rationale by updating the relevant canonical specification or decision record when a decision changes; do not leave durable architecture only in issue comments.
+
+## Dependencies, readiness, and evidence
+
+Publish prerequisite issues first. Prefer native GitHub blocking relationships where available. Otherwise, use explicit issue references in a **Blocked by** section and never duplicate dependency state into canonical documents.
+
+Dependencies represent actual blockers, not thematic ordering, and must remain acyclic. An issue's presence does not imply that it is ready: do not start downstream work until every declared blocker is complete.
+
+Use the [triage labels](triage-labels.md) to classify readiness. Use `ready-for-agent` for independently actionable software or documentation work, `ready-for-human` for work that requires physical assembly or bench measurements, and `needs-info` or `needs-triage` while the issue is not sufficiently defined. An issue is ready only when its prerequisite specification and tool or equipment conditions are met.
+
+On completion, link the pull request or commit and the observable automated or physical qualification evidence to the issue. Preserve links to source specifications and qualification output. A failed qualification attempt must remain distinguishable from later successful evidence.
+
+## Issue #1 navigation
+
+Issue #1 is the initial documentation-publication slice for this repository, but it is not a portable task identifier for forks or checkouts with different issue history. Run this block in the same shell in which the discovery sequence above completed successfully. The block stops if Issue #1 is not the expected documentation-publication task. Do not reuse Issue #1 navigation after a mismatch; identify and confirm the active repository's current task issue before running issue operations.
+
+```sh
+require_issue_access read
+ISSUE_NUMBER=1
+
+command -v jq >/dev/null 2>&1 ||
+  { printf 'jq is required to validate the Issue #1 title.\n' >&2; exit 1; }
+
+issue_json=$(gh issue view "$ISSUE_NUMBER" --repo "$RESOLVED_REPOSITORY" \
+  --json number,title,body,labels,comments,state)
+if ! printf '%s\n' "$issue_json" |
+  jq -e '.title == "[P0] Review and publish canonical specifications; delete superseded plans"' \
+    >/dev/null; then
+  printf 'Issue #1 is not the expected documentation-publication task; stop and identify the active repository task issue.\n' >&2
+  exit 1
+fi
+printf '%s\n' "$issue_json"
+```
+
+The issue body governs the current task specification and acceptance evidence; this document defines only the shared workflow.
 
 ## Issue operations
 
