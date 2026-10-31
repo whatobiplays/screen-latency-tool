@@ -1,0 +1,59 @@
+AGENTS.md
+  s_9011003e19af11::t_a210c334a4e2e6 5-10
+GLOSSARY.md
+  s_9011003e19af11::t_8004eb9d6ea64c 1-42
+docs/README.md
+  s_9011003e19af11::t_3e3b498830c760 1-31
+docs/adr/0001-panel-fixed-measurement-coordinates.md
+  s_9011003e19af11::t_fee881b4d06b30 1-7
+docs/adr/0002-prove-hardware-timing-before-contract-freeze.md
+  s_9011003e19af11::t_495c8304a1f8e6 1-13
+docs/adr/0003-uncertainty-aware-rotation-inference.md
+  s_9011003e19af11::t_eee8265dd62841 1-11
+docs/agents/issue-tracker.md
+  s_9011003e19af11::t_99ed2249a64af9 97-99,101-110,112-120,125-126,131-132,316-364
+docs/architecture/ARCH-001-system-architecture.md
+  s_9011003e19af11::t_2434b7c7e08142 1-79
+docs/architecture/ARCH-002-documentation-governance.md
+  s_9011003e19af11::t_52a78e4b4909d6 1-74
+docs/phases/PHASE-000-feasibility-preparation.md
+  s_9011003e19af11::t_75bf6acf84365b 1-29
+docs/phases/PHASE-001-hardware-android-feasibility.md
+  s_9011003e19af11::t_9bb20ad55a4612 1-34
+docs/phases/PHASE-002-production-instrument.md
+  s_9011003e19af11::t_51ed82c35e1926 1-33
+docs/phases/PHASE-003-acquisition-analysis.md
+  s_9011003e19af11::t_2a46070f40ee9c 1-34
+docs/phases/PHASE-004-publication-qualification.md
+  s_9011003e19af11::t_454f1bf481ec1c 1-34
+docs/reference/REF-DATA-001-session-contract.md
+  s_9011003e19af11::t_dfcb8e349c1a6b 1,3-10,12,14,16,18,20,23-28,32,39-40,43-44,47,49,51,53,64-69,72,74,76,78-84,86,88,90,92,94,96
+docs/reference/REF-MET-001-measurement-methodology.md
+  s_9011003e19af11::t_d32b5f33e8531e 1-67
+docs/reference/REF-WIRE-001-usb-and-control-contract.md
+  s_9011003e19af11::t_ce6bb6bc3a7b32 1-85
+docs/specs/SPEC-X-001-fixture-and-mechanics.md
+  s_9011003e19af11::t_6dc57c64f7e550 1-56
+docs/specs/SPEC-X-002-android-acquisition.md
+  s_9011003e19af11::t_e13a55ddd8e835 1-60
+docs/specs/SPEC-X-003-reference-analysis.md
+  s_9011003e19af11::t_0b5425ec0f3343 1-64
+docs/specs/SPEC-X-004-qualification.md
+  s_9011003e19af11::t_793d3fb630fcb9 1-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "274927a0cf3a76e088f0a06fde61b392fa162a10",
+  "prompts": {},
+  "sessions": {
+    "s_9011003e19af11": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b7d-86e6-70e1-a9a8-5339453b9eb8",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  }
+}
