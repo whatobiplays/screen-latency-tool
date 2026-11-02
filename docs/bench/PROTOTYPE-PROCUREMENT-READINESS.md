@@ -2,11 +2,11 @@
 
 Document ID: BENCH-003
 
-Status: CONDITIONALLY_READY_WITH_OPEN_EVIDENCE
+Status: Draft
 
 Owner: Repository maintainers
 
-Last Updated: 2026-11-01 (America/Los_Angeles)
+Last Updated: 2026-11-02 (America/Los_Angeles)
 
 Depends On: ARCH-001, SPEC-X-001, PHASE-001, ADR-0002, BENCH-001, BENCH-002
 
@@ -14,7 +14,6 @@ Supersedes: None
 
 Superseded By: None
 
-Procurement status: CONDITIONALLY_READY_WITH_OPEN_EVIDENCE
 
 This note consolidates purchasing evidence for one low-cost, one-sensor Teensy 4.1 prototype bench. It records dated observations and open gates. It does not authorize a purchase or report assembly, energization, USB synchronization, or qualification. The five-channel production fixture remains outside this basket.
 
@@ -37,7 +36,7 @@ The original 23-MPN lifecycle audit remains in section 2. It did not establish e
 | Power and USB interface | Offboard assembly | The manifest identifies these parts as offboard/non-PCB. They mount through the breadboard and wiring. |
 | Five-channel production boards | 0 | Deferred production fixture work. |
 
-The $17.05 board amount excludes shipping and fabrication options. It is a planning amount, not a fabrication quote. BENCH-001 uses one set in its low and base scenarios and two sets in its high example. This readiness note uses one populated assembly unless the owner changes that plan.
+The $17.05 board amount excludes shipping and fabrication options. It is a planning amount, not a fabrication quote. The current planning basis is one populated optical board and two bare spare boards from one OSH Park set. BENCH-001 labels its two-set, six-board example as hypothetical; it does not change this one-board plan.
 
 ## 2. Original lifecycle audit and added verified lines
 
@@ -191,11 +190,13 @@ The owner has not confirmed flux, tweezers, cutters, a heat gun, magnification, 
 | --- | ---: | ---: | ---: | ---: |
 | Low parts basket, not first-power ready | $79.80 + $17.05 + $8.87 + $2.42 | $108.14 | $991.86 | $1,191.86 |
 | Owner-incremental first-power base | $79.80 components + $17.05 PCB set + $8.87 harness example + $2.42 heatshrink + $134.24 Korad PE+ + $82.84 unconfirmed tool allowance | $325.22 | $774.78 | $974.78 |
-| Owner-incremental high, DHO814 deferred | $79.80 + $34.10 + $8.87 + $2.42 + $134.24 + $82.84 + $15.99 + $14.10 | $372.36 | $727.64 | $927.64 |
+| Owner-incremental six-board hypothetical, DHO814 deferred | $79.80 + $34.10 + $8.87 + $2.42 + $134.24 + $82.84 + $15.99 + $14.10 | $372.36 | $727.64 | $927.64 |
 | Owner-incremental first-power base with deferred DHO814 what-if | $325.22 + $549.00 | $874.22 | $225.78 | $425.78 |
-| Owner-incremental high with deferred DHO814 what-if | $372.36 + $549.00 | $921.36 | $178.64 | $378.64 |
+| Owner-incremental six-board hypothetical with deferred DHO814 what-if | $372.36 + $549.00 | $921.36 | $178.64 | $378.64 |
 | Full-purchase base, hypothetical | $108.14 + $148.82 + $151.74 | $408.70 | $691.30 | $891.30 |
-| Full-purchase high with deferred DHO814 what-if, hypothetical | $79.80 + $34.10 + $8.87 + $2.42 + $148.82 + $151.74 + $15.99 + $14.10 + $549.00 | $1,004.84 | $95.16 | $295.16 |
+| Full-purchase six-board hypothetical with deferred DHO814 what-if | $79.80 + $34.10 + $8.87 + $2.42 + $148.82 + $151.74 + $15.99 + $14.10 + $549.00 | $1,004.84 | $95.16 | $295.16 |
+
+The low parts and first-power base rows use the current planning basis: one OSH Park set with one populated optical board and two bare spare boards. The rows labeled six-board use two OSH Park sets and remain planning comparisons.
 
 ### Sensitivity to the unallocated $0.26
 
@@ -205,9 +206,9 @@ Each value below adds the unallocated $0.26 once to the corresponding row-suppor
 | --- | ---: | ---: | ---: |
 | Low parts basket, not first-power ready | $108.40 | $991.60 | $1,191.60 |
 | Owner-incremental first-power base | $325.48 | $774.52 | $974.52 |
-| Owner-incremental high, DHO814 deferred | $372.62 | $727.38 | $927.38 |
+| Owner-incremental six-board hypothetical, DHO814 deferred | $372.62 | $727.38 | $927.38 |
 | Owner-incremental first-power base with deferred DHO814 what-if | $874.48 | $225.52 | $425.52 |
-| Owner-incremental high with deferred DHO814 what-if | $921.62 | $178.38 | $378.38 |
+| Owner-incremental six-board hypothetical with deferred DHO814 what-if | $921.62 | $178.38 | $378.38 |
 | Full-purchase base, hypothetical | $408.96 | $691.04 | $891.04 |
 | Full-purchase high with deferred DHO814 what-if, hypothetical | $1,005.10 | $94.90 | $294.90 |
 
@@ -245,13 +246,11 @@ The component evidence in sections 3 to 5 is the complete mandatory basket. BENC
 
 5. Before any supply purchase or current-limit setting, review the initial load budget and document a defensible current-limit method. Before energizing, verify the supply revision, manual and nameplate, mains selector, protective earth, cord and fuse, output isolation, lead insulation and polarity, certification, included leads, measurement reference, and staged-start checks in BENCH-002. Measure startup and load behavior only during controlled Stage-B commissioning. These reviews, verifications, and measurements remain uncompleted.
 
-6. Decide whether one optical board will be populated and the other two remain bare spares. This choice affects component quantities, assembly charges, and physical-fit work.
+6. Select PCBA or owner assembly for the single populated optical assembly after obtaining a design-specific quote and confirming the available soldering capability. The other two boards remain bare spares. No PCBA cost is included.
 
-7. Select PCBA or owner assembly after obtaining a design-specific quote and confirming the available soldering capability. No PCBA cost is included.
+7. Finish the mechanical retention, opaque boot, physical-fit, and harness design. The current board and subassemblies do not establish a safe display-contact fixture.
 
-8. Finish the mechanical retention, opaque boot, physical-fit, and harness design. The current board and subassemblies do not establish a safe display-contact fixture.
-
-9. The owner has selected the AYANEO Pocket AIR Mini and supplied exact ADB build evidence plus a declared USB-host feature. Review the documented 5030-to-592-to-Teensy main-device-port topology under the caveats in section 13 and resolve any concrete design-stage fit, role, or data-path issue. Actual host behavior, VBUS, connector retention, interoperability, power safety, and empirical enumeration are Stage-B checks; empirical enumeration alone cannot block Stage A. Define the synchronized USB capture method before purchasing the deferred oscilloscope.
+8. The owner selected the AYANEO Pocket AIR Mini and supplied exact ADB build evidence plus a declared USB-host feature. Review the documented 5030-to-592-to-Teensy main-device-port topology under the caveats in section 13 and resolve any concrete design-stage fit, role, or data-path issue. Actual host behavior, VBUS, connector retention, interoperability, power safety, and empirical enumeration are Stage-B checks; empirical enumeration alone cannot block Stage A. Define the synchronized USB capture method before purchasing the deferred oscilloscope.
 
 These gates prevent a complete purchase recommendation. The mandatory component basket and both supplier strategies are documented, but lifecycle, stock, first-power, mechanical, USB, assembly, and delivered-cost evidence remain open.
 
@@ -310,13 +309,12 @@ A distributor Active label, an In stock display, an indexed quantity, or a produ
 
 The [board-set planning amount](https://docs.oshpark.com/services/two-layer/) and dimensions are recorded in BENCH-001. The [RIGOL DHO814](https://www.rigolna.com/products/digital-oscilloscopes/dho800/dho812/) remains a deferred equipment reference. The current bench BOM remains [BENCH-001](PROTOTYPE-BENCH-BOM.md), and the staged procedures remain [BENCH-002](PROTOTYPE-BENCH-GUIDE.md).
 
-This amendment applies the policy in SPEC-X-001 and is summarized in BENCH-001 and BENCH-002. It preserves the historical supplier observations, original Issue #3 acceptance criteria, DNP R4, generator lifecycle metadata, and prior Delegation v3 runs and attestations. The four authorized documentation paths are the only source paths changed; the other 18 dirty baseline paths remain protected.
+The earlier policy amendment described in this note changed four authorized documents and left 18 dirty baseline paths untouched. The current publication candidate includes the complete Issue #3 bench documentation and CAD set while preserving the historical supplier observations, original acceptance criteria, DNP R4, generator lifecycle metadata, and prior Delegation v3 records.
 
-Focused validation checks Markdown tables and whitespace, local and external links, exact manifest counts and quantities, the $79.80 arithmetic, scenario remainders, the separate $0.26 sensitivity, agreement across the four documents and manifest, the 27-MPN eligibility assessment, and preservation of the 18 non-target baseline paths. ERC, DRC, SPICE, and hardware tests are not rerun for this documentation-only amendment.
+The earlier amendment's focused validation covered Markdown tables and whitespace, local and external links, exact manifest counts and quantities, the $79.80 arithmetic, scenario remainders, the separate $0.26 sensitivity, agreement across its four documents and the manifest, the 27-MPN eligibility assessment, and preservation of its 18 non-target baseline paths. The current publication candidate requires a broader settled-tree check before review.
 
 No purchase, cart, fabrication, assembly, energization, seller contact, manufacturer inquiry, substitution approval, or qualification result is recorded here.
 
-Procurement status: CONDITIONALLY_READY_WITH_OPEN_EVIDENCE.
 
 ## 13. Risk-based lifecycle and one-sensor eligibility assessment
 
@@ -369,7 +367,7 @@ The supplier observations below retain the dates and availability confidence rec
 | --- | --- | --- | --- | --- | --- | --- |
 | OPA320AIDBVR / U1 optical | Critical: TIA gain, stability, and analog signal quality | TI exact code ACTIVE / In Production | DigiKey snapshot 2026-11-02 UTC: $2.88; 705 shown. Dated, not live confirmed. | REVIEW — eligible for owner purchase review only. Exact TI lifecycle evidence is present; the owner still reviews this exact line. | Verify DBV-5 identity and orientation, bypass placement, and assembly. | Measure TIA stability, noise, saturation, and pulse response; verify the actual Rf and Cf values. |
 | TLV3501AIDBVR / U2 optical | Critical: comparator threshold and capture edge timing | TI exact code ACTIVE | DigiKey snapshot 2026-11-02 UTC: $4.92; 24,779 shown. Dated, not live confirmed. | REVIEW — eligible for owner purchase review only. Exact TI lifecycle evidence is present; review the documented 3.3 V use. | Verify DBV-6 pinout, grounded SHDN, and 3.3 V output. Keep the output disconnected from Teensy GPIO until these checks pass. | Measure thresholds, output loading, and jitter. |
-| SFH 203 / D1 optical | Critical: optical input and measured transition | ams OSRAM Full Production for order code Q62702P0955 | DigiKey snapshot 2026-11-02 UTC: $0.84; 2,056 shown. Dated, not live confirmed. | REVIEW — eligible for owner purchase review only for exact order code Q62702P0955. SFH 203 P remains prohibited. | Verify code, package orientation, polarity, and fit. | Measure photocurrent and dark/bright response; verify the 40-degree boot. |
+| SFH 203 / D1 optical | Critical: optical input and measured transition | ams OSRAM Full Production for order code Q62702P0955 | DigiKey snapshot 2026-11-02 UTC: $0.84; 2,056 shown. Dated, not live confirmed. | REVIEW — eligible for owner purchase review only for exact order code Q62702P0955. SFH 203 P (`Q62702P0942`) is not approved: the dated manufacturer discontinuation notice identifies it as discontinued, although its product page still says ordering and shipping are possible. | Verify code, package orientation, polarity, and fit. The 2.0 mm lands and 1.0 mm drills are project-designed; the datasheet gives no land-pattern recommendation. | Measure photocurrent and dark/bright response; verify the 40-degree total acceptance cone with the boot. |
 | RC0603FR-0718KL / R1 optical | Critical: upper leg of the optical VREF divider | Exact-MPN lifecycle unverified | DigiKey snapshot 2026-11-01: 321,535 shown; 24-week lead. Dated supplier evidence. | REVIEW — eligible only under the owner-approved one-sensor commodity-passive exception; exact-MPN lifecycle remains unverified. | Verify exact value, package, and every listed placement. | Check divider performance, threshold behavior, and usable range. |
 | ERJ-3EKF1002V / R2 optical | Critical: lower leg of the optical VREF divider | Exact-MPN lifecycle unverified | DigiKey snapshot 2026-11-01: 744,247 shown; 15-week lead. Dated supplier evidence. | REVIEW — eligible only under the owner-approved one-sensor commodity-passive exception; exact-MPN lifecycle remains unverified. | Verify exact value, package, and every listed placement. | Check divider performance, threshold behavior, and usable range. |
 | RC0603FR-0747KL / R3 optical and R3 power | Critical: TIA feedback and USB VBUS pull-down | Exact-MPN lifecycle unverified | DigiKey snapshot 2026-11-01: 519,895 shown; 24-week lead. Dated supplier evidence. | REVIEW — eligible only under the owner-approved one-sensor commodity-passive exception; exact-MPN lifecycle remains unverified. | Verify exact value, package, and both optical and power-board placements. | Check TIA performance and the VBUS pull-down behavior within the one-sensor design. |
@@ -397,4 +395,4 @@ The supplier observations below retain the dates and availability confidence rec
 
 The table covers all 27 purchased MPNs. Five have exact manufacturer lifecycle evidence: OPA320AIDBVR, TLV3501AIDBVR, SFH 203 order code Q62702P0955, SN74LVC1G17DBVRG4, and Pololu 5383. The other 22 remain lifecycle-unverified. Samsung Mass Production records apply only to the normalized base codes, not the exact CL10 suffixes. DEV-20360 remains unverified at the exact-SKU level. A supplier listing or verified lifecycle status does not automatically clear any line.
 
-The current status is Stage-A review eligibility only. All Stage-B receipt, assembly, and first-power checks and all Stage-C measurements remain unperformed. The one-sensor exception does not qualify the five-channel production fixture. SFH 203 P remains prohibited. R4, RC0603FR-072M2L, remains DNP with zero planned purchase quantity and unverified lifecycle; it is not one of the 27 purchased MPNs. No replacement MPN is selected or approved. The overall readiness status remains CONDITIONALLY_READY_WITH_OPEN_EVIDENCE. No purchase or first-power action is authorized.
+The current evidence supports Stage-A review eligibility only. All Stage-B receipt, assembly, and first-power checks and all Stage-C measurements remain unperformed. The one-sensor exception does not qualify the five-channel production fixture. `SFH 203 P` (`Q62702P0942`) is not approved for use: the dated manufacturer discontinuation notice identifies it as discontinued, while its product page still says ordering and shipping are possible. R4, `RC0603FR-072M2L`, remains DNP with zero planned purchase quantity and unverified lifecycle; it is not one of the 27 purchased MPNs. No replacement MPN is selected or approved, and no purchase or first-power action is authorized.

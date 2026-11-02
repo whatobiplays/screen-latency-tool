@@ -1,19 +1,35 @@
 # SPEC-X-001 — Fixture Electronics, Firmware and Mechanics
 
-**Document ID:** SPEC-X-001  
+**Document ID:** SPEC-X-001
 **Status:** Ready for Implementation
-**Readiness note:** Feasibility and prototype implementation are approved; final analog values, PCB design and USB/capture routing require physical characterization before production freeze  
+**Readiness note:** Feasibility and prototype implementation are approved; final analog values, PCB design and USB/capture routing require physical characterization before production freeze
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-10-29  
-**Depends On:** ARCH-001, REF-MET-001, REF-WIRE-001, REF-DATA-001  
-**Supersedes:** The fixture hardware/firmware/mechanics requirements in the legacy spec and checkbox plan  
+**Last Updated:** 2026-11-02 (America/Los_Angeles)\
+**Depends On:** ARCH-001, REF-MET-001, REF-WIRE-001, REF-DATA-001\
+**Supersedes:** The fixture hardware/firmware/mechanics requirements in the legacy spec and checkbox plan\
 **Superseded By:** None
 
 ## Product boundary
 
 A replaceable, socketed Teensy 4.1 on a self-powered carrier drives a normal USB HID gamepad to Android and a vendor-specific control/results channel. It timestamps each **successfully completed** measured input transfer and five simultaneous display optical edges on one monotonic hardware timebase. It is the measurement authority. Android USB commands must not affect acquisition timing.
 
-Nominal modules: five movable identical sensor PCBs with SFH 203 P reverse-biased photodiode (~2–3 V provisional), OPA320 TIA, TLV3501 comparator with small hysteresis, programmable threshold reference, analog monitor, digital capture output, power/local decoupling, opaque contact boot. Parts and TIA `Rf/Cf`, diode bias, hysteresis and optical material are **provisional** until measured. Sensor front-end stays at the detector; only digital edges traverse adjustable cabling to the carrier. A multichannel DAC (e.g. DAC7578 or demonstrated equivalent) programs five references independently; slow ADC reads five analog monitors for calibration/drift.
+Nominal modules: five movable identical sensor PCBs with **SFH 203** (`Q62702P0955`), an active-production reverse-biased photodiode (~2–3 V provisional; its 20° half angle produces a 40° total acceptance cone and requires boot calibration), OPA320 TIA, TLV3501 comparator with small hysteresis, programmable threshold reference, analog monitor, digital capture output, power/local decoupling, opaque contact boot. Parts and TIA `Rf/Cf`, diode bias, hysteresis and optical material are **provisional** until measured. Known discontinued, obsolete, end-of-life, not-recommended-for-new-design, and last-time-buy parts are ineligible for prototyping or production even if stock remains. For the owner-approved one-sensor feasibility prototype only, an exact-MPN commodity part with unknown manufacturer lifecycle may be considered under the documented risk exception in BENCH-003 after identity, technical fit, source, lifecycle screening, risk, and uncertainty are recorded. The owner approval is recorded in [Issue #3](https://github.com/whatobiplays/screen-latency-tool/issues/3#issuecomment-6567929455). The exception does not cover material gaps in critical optical, analog, timing, USB, or power functions and does not qualify the five-sensor production fixture. Supplier listings do not establish manufacturer lifecycle. Requalify any approved substitution electrically and optically. Sensor front-end stays at the detector; only digital edges traverse adjustable cabling to the carrier. A multichannel DAC (e.g. DAC7578 or demonstrated equivalent) programs five references independently; slow ADC reads five analog monitors for calibration/drift.
+
+## Prototype procurement eligibility
+
+Evaluate each exact purchasable MPN in this order:
+
+1. A known obsolete, discontinued, EOL, NRND, or last-time-buy status excludes the part regardless of remaining stock.
+2. Exact manufacturer lifecycle evidence satisfies only the lifecycle screen. Supplier catalog labels, stock counts, and family-level statements do not establish the lifecycle of an exact orderable code.
+3. Missing material identity, lifecycle, supplier, or technical-fit evidence blocks parts used in critical optical, analog, timing, USB, or power functions.
+4. Unknown lifecycle may be accepted only for a low-risk commodity part within this one-sensor feasibility scope, after its exact identity, technical fit, dated source, lifecycle search, risk, and uncertainty are documented. It does not create a production exception.
+5. Eligibility is separate from purchase approval. An eligible item may proceed to owner purchase review; it is not authorization to order or substitute a part.
+
+The current bench-supply selection and its first-power status are recorded in BENCH-001, BENCH-002, and BENCH-003. Equipment selection does not satisfy the electrical power gates below.
+
+**SFH 203 selection:** The [ams OSRAM product page](https://ams-osram.com/products/photodetectors/photodiodes/osram-radial-t1-34-sfh-203) identifies `Q62702P0955` as full production. The manufacturer's [2026-03-18 discontinuation notice](https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/8902/OS-PDN-2026-027_ext-revised.pdf) identifies `SFH 203 P` (`Q62702P0942`) as discontinued and names `Q62702P0955` as its replacement. The `Q62702P0942` product page still says ordering and shipping are possible, so this specification records that unresolved conflict without claiming that no orders can currently be placed. The older `SFH 203 P` remains ineligible under this specification's lifecycle rule because the dated manufacturer notice identifies it as discontinued.
+
+**Candidate footprint limit:** The [SFH 203 datasheet](https://look.ams-osram.com/m/67e1a90044b03ee9/original/SFH-203.pdf) identifies the package flat as the cathode. Page 9 gives a 2.54 mm lead pitch, 0.5 mm lead thickness, 0.7 mm anode lead dimension near the package, and 5.90 mm maximum body diameter. The project footprint's pitch, envelope, and **pad 1 anode to `SUM` / pad 2 cathode to `3V3`** mapping match that drawing. The datasheet provides no land-pattern or drill recommendation, so the 2.0 mm pads and 1.0 mm drills are project-designed. This comparison does not prove installed fit or replace the physical cathode-mark inspection.
 
 ## Electrical/timing architecture
 

@@ -1,0 +1,10 @@
+# KiCad editor lock, user state and generated backup files
+~*.lck
+*.kicad_prl
+*-backups/
+fp-info-cache
+
+# KiCad ERC/DRC outputs are transient; GitHub Issues retain the result summaries.
+*.rpt
+# Do not archive run-specific ERC evidence bundles in source control.
+evidence/erc/
