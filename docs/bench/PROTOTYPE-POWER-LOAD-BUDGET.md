@@ -112,12 +112,48 @@ A **3.3 V short behind the Teensy regulator is a distinct fault path**: TI's **3
 | Connection / actual role | Current and return | Evidence gate |
 | --- | --- | --- |
 | Power `J1` Adafruit 368 → F1/M1 interconnect | Entire external 5 V/return current | Exact adapter polarity; mating barrel; continuous/fault current, wire gauge, insulation/retention and thermal/contact limits |
-| Power `J2` TSW-102-07-G-S | Entire Teensy **VIN** current through `5V_SAFE` and GND | Specific 2-pin mate, conductor, contact/temp rating, inrush/fault duration; even a low LED current cannot clear J2 |
+| Power `J2` TSW-102-07-G-S | Entire Teensy **VIN** current through `5V_SAFE` and GND | Candidate SMSS-02-24-F-09.00-S is nominally dimensionally compatible; physical fit/polarity, free-end preparation, mated retention/strain relief, exact-pair insulation/current/temperature/fault limits and VIN startup/fault bounds remain unverified |
 | Optical `J1` TSW-104-07-G-S | Optical 3V3 and return, `EDGE` comparator drive, `MON` amplifier output | Specific 4-pin mate, 3V3 branch current, return, load and noise/ESD/EMC checks |
 | Power `J4` TSW-103-07-G-S | Buffer 3V3/GND and `VBUS_PRESENT` drive/return | Specific 3-pin mate, input/output states, leakage and ground offset |
 | Power `J5` TSW-102-07-G-S | LED GPIO/GND, distinct lower-load use | Specific 2-pin mate and current/insulation; shared exact MPN remains HOLD because of J2 |
 
-Do not conflate the current carried by a power header, the GPIO drive on a signal header, and the idle quiescent load of the components connected behind it. No contact-thermal or wire-ampacity calculation is possible without the exact mating contact, number of loaded contacts, conductor gauge, assembly and ambient.
+**J2 harness evidence (2026-11-03).** Samtec's [TSW-102-07-G-S
+page](https://www.samtec.com/products/tsw-102-07-g-s) specifies a 0.025-in square post and 0.230-in
+post length. The [SMSS candidate page](https://www.samtec.com/products/smss-02-24-f-09-00-s) says it
+mates with 0.025-in square unshrouded strips. Its [series
+drawing](https://suddendocs.samtec.com/prints/smsx-xx-xxx-x-xx.xx-x-x-xxx-mkt.pdf) gives 0.290-in
+maximum post depth and 0.145-in contact location; the [F-226
+catalog](https://suddendocs.samtec.com/catalog_english/smsd.pdf) gives a 0.210–0.270-in
+insertion-depth range. The 0.230-in post falls within published geometry, but no exact pair has been
+physically mated. The drawing's 0.5-lbf pushout requirement retains the SMSS contact in its housing,
+not the mated pair. Samtec's [TSW
+print](https://suddendocs.samtec.com/prints/tsw-xxx-xx-xxx-x-xx-xxx-mkt.pdf) excludes locking clips
+below four positions and locking leads for one- or two-position single-row parts; no mated-retention
+rating is established.
+
+The candidate code specifies 24-AWG, 9.00-in, single-ended leads. Samtec's drawing requires at least
+6 in for applications involving severe bending, and its [Mini Mate
+specification](https://suddendocs.samtec.com/productspecs/100_mini_mate.pdf) recommends cable
+management to prevent non-axial loads. The manufacturer evidence does not establish conductor
+stranding/material, free-end stripping or termination, or an included strain-relief feature. DigiKey
+describes black individual leads and a crimped socket; that does not identify the free-end
+preparation or polarity.
+
+The SMSS drawing numbers cavities 01 and N (02 for this two-position assembly); the TSW print
+identifies header pins 1 and 2. The two-position SMSS cannot use the optional K polarization
+(available only for 5–40 positions), and the TSW header is unshrouded. A 180-degree reverse
+insertion can swap 5V_SAFE and GND. The candidate's physical lead polarity is therefore
+NOT_DEMONSTRATED. Before connection, require unambiguous pin/cavity/lead identification,
+de-energized continuity and polarity verification, strain relief, and an owner-approved physical
+control that prevents reverse mating; labels and continuity checks alone do not prevent reversal.
+
+Samtec's [Mini Mate specification](https://suddendocs.samtec.com/productspecs/100_mini_mate.pdf),
+Rev. H dated 2024-11-07, says testing used a dual-row female MMSD assembly mated to IPL1 unless
+otherwise noted. Its 4.8-A rating is conditional on one powered pin per row; do not transfer it to
+this single-row SMSS/TSW pair. Exact-pair 5-V working-insulation, current, thermal-rise, contact/wire
+fault and mated-retention margins remain NOT_DEMONSTRATED.
+
+Do not conflate the current carried by a power header, the GPIO drive on a signal header, and the idle quiescent load of the components connected behind it. The candidate's 24-AWG code alone establishes no ampacity or thermal margin; these require a confirmed mating assembly, loaded contact count, bounded load and fault-time envelope, and ambient.
 
 ## 6. Fault, power sequencing and USB domains
 
