@@ -1,0 +1,21 @@
+docs/bench/PROTOTYPE-POWER-LOAD-BUDGET.md
+  s_2f35db7e250796::t_5bb0dcbff0660f 9,121-122,124,126,130,150,233,253-258
+docs/bench/PROTOTYPE-PROCUREMENT-READINESS.md
+  s_2f35db7e250796::t_1790d82da8a706 9,411-424
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b5aff6ea2bb7de2d5c445fd5d125c58a6c2c6ffb",
+  "prompts": {},
+  "sessions": {
+    "s_2f35db7e250796": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a19dfe-1351-7d10-875b-bad868f93d9f",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  }
+}
