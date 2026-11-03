@@ -3,7 +3,7 @@
 **Document ID:** BENCH-001\
 **Status:** Draft\
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-01 (America/Los_Angeles)\
+**Last Updated:** 2026-11-02 (America/Los_Angeles)\
 **Depends On:** ARCH-001, REF-MET-001, REF-WIRE-001, SPEC-X-001, PHASE-001, ADR-0002\
 **Supersedes:** None\
 **Superseded By:** None
@@ -52,7 +52,7 @@ The 30 manifest rows marked UNVERIFIED_BEFORE_ORDER contain 23 unique MPNs. Each
 | CC0603CRNPO9BN2R2 | C2, optical board | 2.2 pF C0G TIA feedback capacitor from SUM to TIA_OUT | 0.10 / 0.10 | DigiKey Active; 69,116 shown; 16-week lead | [Yageo](https://yageogroup.com/products/Capacitors/part/CC0603CRNPO9BN2R2) and [DigiKey](https://www.digikey.com/en/products/detail/yageo/CC0603CRNPO9BN2R2/5195641), 2026-11-01 |
 | KGM15BR71H104KT | C3 and C5, optical board; C1, power board | 100 nF 3V3-to-GND decoupling for U1/U2 and the USB buffer | 0.10 / 0.30 | DigiKey Active; displayed 0; 15-week lead. Procurement gap; no substitute selected. | [DigiKey](https://www.digikey.com/en/products/detail/kyocera-avx/KGM15BR71H104KT/1600046), 2026-11-01 |
 | CL10A225KP8NNNC | C6, optical board | 2.2 uF comparator 3V3-to-GND decoupling | 0.10 / 0.10 | DigiKey Active; 147,544 shown; 61-week lead | [DigiKey](https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A225KP8NNNC/3886743), 2026-11-01 |
-| 3296W-1-103LF | RV1, optical board | Ten-turn threshold trimmer from 3V3 to GND, wiper on THRESH | 2.39 / 2.39 | DigiKey Active; 30,067 shown; 7-week lead | [DigiKey](https://www.digikey.com/en/products/detail/bourns-inc/3296W-1-103LF/1088045), 2026-11-01 |
+| 3296W-1-103LF | RV1, optical board | 25-turn threshold trimmer from 3V3 to GND, wiper on THRESH | 2.39 / 2.39 | DigiKey Active; 30,067 shown; 7-week lead | [Bourns 3296 datasheet](https://www.bourns.com/docs/Product-Datasheets/3296.pdf) and [DigiKey](https://www.digikey.com/en/products/detail/bourns-inc/3296W-1-103LF/1088045), accessed 2026-11-02; supplier snapshot 2026-11-01 |
 | TSW-104-07-G-S | J1, optical board | 3V3, GND, EDGE, and MON power/signal header | 0.38 / 0.38 | DigiKey Active; 3,224 shown; 2-week lead | [Samtec](https://www.samtec.com/products/tsw-104-07-g-s) and [DigiKey](https://www.digikey.com/en/products/detail/samtec-inc/TSW-104-07-G-S/1101323), 2026-11-01 |
 | Adafruit 368 | J1, power board | 5.5 x 2.1 mm barrel-to-screw-terminal adapter for 5V_IN/GND | 2.00 / 2.00 | Supplier Active; displayed in stock | [Adafruit](https://www.adafruit.com/product/368), 2026-11-01 |
 | MF-R050 | F1, power board | Resettable PTC from 5V_IN to 5V_LIMITED, 500 mA hold | 0.47 / 0.47 | DigiKey Active; 10,109 shown; 4-week lead | [DigiKey](https://www.digikey.com/en/products/detail/bourns-inc/MF-R050/259965), 2026-11-01 |
@@ -224,7 +224,7 @@ The scenarios separate this hypothetical set into a $65.98 replacement allowance
 | Deferred DHO814 | $549.00 | [RIGOL DHO814 listing](https://www.rigolna.com/products/digital-oscilloscopes/dho800/dho812/) |
 | Baseline switch-mode supply, optional probe, and DHO814 | $716.73 | $151.74 + $15.99 + $549.00 |
 
-Owner selection dated 2026-11-02 UTC: Korad KA3005PE+ is `OWNER_SELECTED_MODEL / NOT_PURCHASED / NOT_FIRST_POWER_QUALIFIED`. DigiKey's $134.24 price is a dated planning observation, not live stock, a delivered quote, or purchase authorization. Before any supply purchase or current-limit setting, review the initial load budget and document a defensible current-limit method from the expected load and component limits. Then confirm the exact revision, mains setup, protective earth, output isolation, certification, leads, and measured behavior before first-power qualification. Startup and load behavior remain Stage-B measurements. The KA3005D and Siglent SPD3303X-E remain historical alternatives in [BENCH-003](PROTOTYPE-PROCUREMENT-READINESS.md); no alternative is selected. The DHO814 remains deferred.
+Owner selection dated 2026-11-02 UTC: Korad KA3005PE+ is `OWNER_SELECTED_MODEL / NOT_PURCHASED / NOT_FIRST_POWER_QUALIFIED`. DigiKey's $134.24 price is a dated planning observation, not live stock, a delivered quote, or purchase authorization. Acquiring the selected supply is independent of the load study. Before first power, review the expected connected load and component limits and document a defensible initial current-limit method. Measure actual startup and load behavior during Stage B; do not treat that measurement as a Stage-A prerequisite or as prior qualification. Before use, confirm the exact revision, mains setup, protective earth, output isolation, certification, and leads. The KA3005D and Siglent SPD3303X-E remain historical alternatives in [BENCH-003](PROTOTYPE-PROCUREMENT-READINESS.md); no alternative is selected. The DHO814 remains deferred.
 
 The owner's confirmed DMM removes the hypothetical $17.50 meter from owner-incremental totals. The adjustable current-limited supply remains a prerequisite for first power and is retained in owner-incremental totals; buying it does not qualify its setpoints, protection, wiring, or the protected load. The DHO814 has four analog channels and includes four probes. The extra probe remains optional and the oscilloscope remains deferred. No listing resolves synchronized USB capture.
 
@@ -271,7 +271,7 @@ These remainders use the $1,100 target and approximately $1,300 ceiling. They ar
 | Synchronized USB capture | NOT_ESTIMABLE | No source documents a shared timing interface with the fixture. A protocol analyzer without that interface is not justified. |
 | Shipping, file extras, tax, and duties | Unknown | Public list prices do not provide a delivered total. |
 | Current-limited bench supply | Required before first power; not confirmed owned | The $134.24 candidate is present in owner-incremental totals. Purchase or ownership does not establish a safe limit or validate the power path. |
-| Owner inventory | Partly confirmed | Basic DMM and basic soldering equipment are owned. Exact models and capabilities, loose solder and flux, additional hand tools, heat gun, magnification, ESD supplies, suitable leads, and synchronized capture remain unconfirmed; unpriced items cannot be counted as free. The Android DUT is recorded below. |
+| Owner inventory | Partly confirmed | Basic DMM and basic soldering equipment are owned. Exact models and capabilities, loose solder and flux, additional hand tools, heat gun, magnification, ESD supplies, suitable leads, and synchronized capture remain unconfirmed; unpriced items cannot be counted as free. The AYANEO Pocket AIR Mini is owner-selected; its read-only ADB observations are recorded below. GT78-VN is not a unique model identifier, and physical USB-host behavior remains unverified. |
 | Final electrical and optical acceptance | Not a purchase quote | Assembly does not establish the optical-current, noise, comparator, cable, or T0 gates. |
 
 The total external spend remains not calculable. The $1,004.32 full-purchase high example is the largest enumerated known subtotal, not a ceiling. It leaves $95.68 to the $1,100 target on known items alone, and omitted charges can consume or exceed that amount.
