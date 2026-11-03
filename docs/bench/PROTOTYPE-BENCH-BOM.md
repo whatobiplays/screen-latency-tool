@@ -8,7 +8,7 @@
 **Supersedes:** None\
 **Superseded By:** None
 
-Procurement evidence is consolidated in [BENCH-003: Prototype procurement readiness](PROTOTYPE-PROCUREMENT-READINESS.md).
+Procurement evidence is consolidated in [BENCH-003: Prototype procurement readiness](PROTOTYPE-PROCUREMENT-READINESS.md). The source-backed, paper-only first-power load and fault analysis is in [BENCH-004](PROTOTYPE-POWER-LOAD-BUDGET.md); it does not establish a usable current-limit setpoint or authorize energization.
 
 Readiness note: procurement approval remains blocked. This file records dated component listings for one prototype; it is not a complete checkout quote or purchase authorization. No purchase, fabrication, assembly, electrical test, optical test, USB test, or timing qualification is reported here.
 
@@ -224,7 +224,7 @@ The scenarios separate this hypothetical set into a $65.98 replacement allowance
 | Deferred DHO814 | $549.00 | [RIGOL DHO814 listing](https://www.rigolna.com/products/digital-oscilloscopes/dho800/dho812/) |
 | Baseline switch-mode supply, optional probe, and DHO814 | $716.73 | $151.74 + $15.99 + $549.00 |
 
-Owner selection dated 2026-11-02 UTC: Korad KA3005PE+ is `OWNER_SELECTED_MODEL / NOT_PURCHASED / NOT_FIRST_POWER_QUALIFIED`. DigiKey's $134.24 price is a dated planning observation, not live stock, a delivered quote, or purchase authorization. Acquiring the selected supply is independent of the load study. Before first power, review the expected connected load and component limits and document a defensible initial current-limit method. Measure actual startup and load behavior during Stage B; do not treat that measurement as a Stage-A prerequisite or as prior qualification. Before use, confirm the exact revision, mains setup, protective earth, output isolation, certification, and leads. The KA3005D and Siglent SPD3303X-E remain historical alternatives in [BENCH-003](PROTOTYPE-PROCUREMENT-READINESS.md); no alternative is selected. The DHO814 remains deferred.
+Owner selection dated 2026-11-02 UTC: Korad KA3005PE+ is `OWNER_SELECTED_MODEL / NOT_PURCHASED / NOT_FIRST_POWER_QUALIFIED`. **Updated owner planning assumption (2026-11-02): treat this supply as something the owner will have or acquire for Stage B**, not as a pending design decision or equipment-selection blocker. Receipt or purchase is not yet confirmed. The $134.24 DigiKey observation remains included as **planned incremental spend** unless the owner later confirms it was already purchased; it is not live stock, a delivered quote, or authorization to order. Acquiring the selected supply is independent of the load study. Before first power, review the expected connected load and component limits and document a defensible initial current-limit method. Measure actual startup and load behavior during Stage B; do not treat that measurement as a Stage-A prerequisite or as prior qualification. Before use, confirm the exact revision, mains setup, protective earth, output isolation, certification, and leads. The KA3005D and Siglent SPD3303X-E remain historical alternatives in [BENCH-003](PROTOTYPE-PROCUREMENT-READINESS.md); no alternative is selected. The DHO814 remains deferred.
 
 The owner's confirmed DMM removes the hypothetical $17.50 meter from owner-incremental totals. The adjustable current-limited supply remains a prerequisite for first power and is retained in owner-incremental totals; buying it does not qualify its setpoints, protection, wiring, or the protected load. The DHO814 has four analog channels and includes four probes. The extra probe remains optional and the oscilloscope remains deferred. No listing resolves synchronized USB capture.
 
@@ -244,7 +244,7 @@ The owner's confirmed DMM removes the hypothetical $17.50 meter from owner-incre
 
 The owner/full comparison also reconciles directly: $408.18 - $65.98 - $17.50 = $324.70 for the owner-incremental first-power base, and $1,004.32 - $65.98 - $17.50 = $920.84 for the owner-incremental six-board hypothetical with the deferred DHO814 what-if.
 
-The $107.62 basket is not ready for first power because it omits the current-limited bench supply. The owner-incremental rows exclude only the confirmed basic DMM and basic soldering-hardware category. The $324.70 and $371.84 rows still include priced items whose ownership is not confirmed; magnification, ESD supplies, suitable test leads, and any other unlisted accessory remain outside the totals. The full-purchase rows are hypothetical comparisons and are not recommended purchases.
+The $107.62 low basket remains a comparison only, not the selected first-power plan, because it excludes the adjustable supply. **Use the $324.70 owner-incremental first-power base as the current known-cost planning scenario**, including the selected KA3005PE+ allowance; it is not a delivered quote or equipment qualification. The owner-incremental rows exclude only the confirmed basic DMM and basic soldering-hardware category. The $324.70 and $371.84 rows still include priced items whose ownership is not confirmed; magnification, ESD supplies, suitable test leads, and any other unlisted accessory remain outside the totals. The full-purchase rows are hypothetical comparisons and are not recommended purchases.
 
 ### Target and ceiling comparisons
 
@@ -270,7 +270,7 @@ These remainders use the $1,100 target and approximately $1,300 ceiling. They ar
 | Custom optical bracket or boot | NOT_ESTIMABLE | No STEP-based quote exists. The provisional sleeve does not establish a finished mechanical design. |
 | Synchronized USB capture | NOT_ESTIMABLE | No source documents a shared timing interface with the fixture. A protocol analyzer without that interface is not justified. |
 | Shipping, file extras, tax, and duties | Unknown | Public list prices do not provide a delivered total. |
-| Current-limited bench supply | Required before first power; not confirmed owned | The $134.24 candidate is present in owner-incremental totals. Purchase or ownership does not establish a safe limit or validate the power path. |
+| Current-limited bench supply | **Assumed available by Stage B for planning; receipt not confirmed** | KA3005PE+ is the selected first-power planning instrument and its $134.24 allowance remains in owner-incremental totals. Do not hold engineering analysis for acquisition; actual availability, exact-model inspection, CC behavior and wiring must be confirmed before energization. |
 | Owner inventory | Partly confirmed | Basic DMM and basic soldering equipment are owned. Exact models and capabilities, loose solder and flux, additional hand tools, heat gun, magnification, ESD supplies, suitable leads, and synchronized capture remain unconfirmed; unpriced items cannot be counted as free. The AYANEO Pocket AIR Mini is owner-selected; its read-only ADB observations are recorded below. GT78-VN is not a unique model identifier, and physical USB-host behavior remains unverified. |
 | Final electrical and optical acceptance | Not a purchase quote | Assembly does not establish the optical-current, noise, comparator, cable, or T0 gates. |
 
@@ -315,7 +315,7 @@ The oscilloscope/analyzer is measurement equipment, not evidence that T0 passed.
 
 ## Owner inventory and remaining blockers
 
-The Calibrite Display Pro HL and Bambu P1S are recorded as owner-owned. On 2026-11-01, the owner also confirmed a basic DMM and basic soldering equipment; their exact models and capabilities remain unspecified. A current-limited supply, SMT rework capability, flux, soldering consumables and accessories, magnification, ESD supplies, and suitable leads have not been confirmed. Unknown inventory is not treated as available. The owner selected the AYANEO Pocket AIR Mini as the target DUT; physical USB compatibility remains unverified.
+The Calibrite Display Pro HL and Bambu P1S are recorded as owner-owned. On 2026-11-01, the owner also confirmed a basic DMM and basic soldering equipment; their exact models and capabilities remain unspecified. **For future bench planning only**, the owner subsequently directed us to assume the selected KA3005PE+ will be available by Stage B; actual purchase/receipt is still unconfirmed. SMT rework capability, flux, soldering consumables and accessories, magnification, ESD supplies, and suitable leads have not been confirmed. No other unknown inventory is treated as available. The owner selected the AYANEO Pocket AIR Mini as the target DUT; physical USB compatibility remains unverified.
 
 The dated parts list and scenario estimates are not order-ready procurement or quotes. PCB option selection, PCBA variable charges, the custom optical boot, harness construction, itemized owner tools and accessories, Android compatibility, external USB synchronization, delivered costs, and manufacturer lifecycle confirmation remain unresolved. No physical work or qualification is reported here.
 
