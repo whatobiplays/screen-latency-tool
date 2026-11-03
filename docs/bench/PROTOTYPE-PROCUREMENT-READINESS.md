@@ -6,7 +6,7 @@ Status: Draft
 
 Owner: Repository maintainers
 
-Last Updated: 2026-11-02 (America/Los_Angeles)
+Last Updated: 2026-11-03 (America/Los_Angeles)
 
 Depends On: ARCH-001, SPEC-X-001, PHASE-001, ADR-0002, BENCH-001, BENCH-002
 
@@ -406,32 +406,19 @@ Additional manufacturer evidence in BENCH-004 identifies the Teensy 4.1 **U4 reg
 The current evidence supports Stage-A review eligibility only. All Stage-B receipt, assembly, and first-power checks and all Stage-C measurements remain unperformed. The one-sensor exception does not qualify the five-channel production fixture. `SFH 203 P` (`Q62702P0942`) is not approved for use: the dated manufacturer discontinuation notice identifies it as discontinued, while its product page still says ordering and shipping are possible. R4, `RC0603FR-072M2L`, remains DNP with zero planned purchase quantity and unverified lifecycle; it is not one of the 27 purchased MPNs. No replacement MPN is selected or approved, and no purchase or first-power action is authorized.
 
 ### J2 protected-power schematic and harness evidence
-SMSS-02-24-F-09.00-S is the candidate two-position, single-row, single-ended socket cable assembly
-(24 AWG, 9.00 in), not a board-tail-only SSW example. The assembly includes its socket housing and
-contacts. Samtec's [series drawing](https://suddendocs.samtec.com/prints/smsx-xx-xxx-x-xx.xx-x-x-xxx-mkt.pdf)
-specifies contact crimp and strip dimensions, but available sources do not establish an individual
-assembly's crimp quality or free-end stripping and termination.
 
 The read-only [power/USB schematic](../../hardware/prototype/power-usb/power-usb.kicad_sch), checked
-2026-11-03, assigns J2 pin 1 to `5V_SAFE` and pin 2 to `GND`. Samtec's [TSW
-drawing](https://suddendocs.samtec.com/prints/tsw-xxx-xx-xxx-x-xx-xxx-mkt.pdf) labels pin 1 at one
-end of the two-post row and pin 2 at the adjacent post. The [SMSS
-drawing](https://suddendocs.samtec.com/prints/smsx-xx-xxx-x-xx.xx-x-x-xxx-mkt.pdf) shows single-end
-cavities 01 and N (02 for this order code) and their lead order. The [DigiKey
-listing](https://www.digikey.com/en/products/detail/samtec-inc/SMSS-02-24-F-09-00-S/19050879)
-describes two black individual leads, but gives no distinct visual identifier for either free lead.
-The schematic and connector numbering establish logical and cavity order, not physical harness
-polarity.
+2026-11-03, assigns J2 pin 1 to `5V_SAFE` and pin 2 to `GND`.
+`SMSS-02-24-F-09.00-S` is a two-position, single-row, 24-AWG, 9.00-in **candidate** socket
+cable assembly, not a qualified or approved mating assembly. [BENCH-004 §5](PROTOTYPE-POWER-LOAD-BUDGET.md#5-contact-and-harness-budget-no-inherited-samtec-rating)
+owns the detailed geometry, cavity/lead mapping, mated retention, reversal risk and electrical/fault
+evidence. The schematic's logical pin mapping does not establish the received harness's lead polarity.
 
-Samtec's exact-SKU page reports “Existing Customers Only” but no named manufacturer lifecycle state.
-DigiKey's 2026-11-03 listing reports Active and a four-week manufacturer lead; it is available to
-order but not kept in DigiKey stock. This is supplier evidence, not on-hand stock or a Samtec
-lifecycle declaration. The exact-SKU manufacturer lifecycle remains unresolved.
-
-The Samtec [Mini Mate specification](https://suddendocs.samtec.com/productspecs/100_mini_mate.pdf),
-Rev. H dated 2024-11-07, says testing used a dual-row female MMSD assembly mated to IPL1 unless
-otherwise noted. Its 4.8 A rating is conditional on one powered pin per row and does not qualify
-this two-position, single-row SMSS/TSW pair. Current, thermal and fault margins remain
-`NOT_DEMONSTRATED`; the shared header remains Stage-A `HOLD`. The 27-MPN totals remain 18 REVIEW and
-9 HOLD. Any J2/J5 readiness promotion requires owner approval and resolution of the mating, wiring
-and fault evidence gates in BENCH-004.
+For procurement, Samtec's [exact-SKU page](https://www.samtec.com/products/smss-02-24-f-09-00-s),
+observed 2026-11-03, says “Existing Customers Only” without declaring manufacturer lifecycle.
+[DigiKey's listing](https://www.digikey.com/en/products/detail/samtec-inc/SMSS-02-24-F-09-00-S/19050879),
+observed 2026-11-03, reports supplier Active, four-week manufacturer lead and Available to Order,
+not confirmed on-hand stock or manufacturer lifecycle. Exact-SKU lifecycle and sourcing remain open.
+The shared J2/J5 `TSW-102-07-G-S` remains **HOLD — NEEDS EVIDENCE** until mating assembly,
+anti-reversal control, contact/wire safety and fault gates are satisfied and the owner separately
+approves any promotion. Totals remain **18 REVIEW / 9 HOLD**; S2 is not released.
