@@ -1,0 +1,29 @@
+docs/bench/PROTOTYPE-PROCUREMENT-READINESS.md
+  s_a0bc15a2982c09::t_a9d043546b62c2 389,433-434
+  s_a0bc15a2982c09::t_5839922b5f55ab 410,415-424,426-429,431-432,435
+  s_a0bc15a2982c09::t_2d7893b9abd913 407-408,414,425,430
+  s_a0bc15a2982c09::t_e85cf717571c16 409,411-413
+  s_a0bc15a2982c09::t_42f5fd1eb154e8 436-437
+  s_a0bc15a2982c09::t_81482310b4158d 398
+docs/bench/PROTOTYPE-POWER-LOAD-BUDGET.md
+  s_a0bc15a2982c09::t_87e4010a3bdcc8 152-153
+  s_a0bc15a2982c09::t_a744e2fc6d772f 115,155
+  s_a0bc15a2982c09::t_d1697dca8a9a43 133,141,149,156
+  s_a0bc15a2982c09::t_5839922b5f55ab 120-132,134-140,142-148,150-151,154
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fe2ff6a385590459def2ce1721173a3749c31c86",
+  "prompts": {},
+  "sessions": {
+    "s_a0bc15a2982c09": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1a0b0-be0e-7951-8edd-0b481be9a509",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  }
+}
