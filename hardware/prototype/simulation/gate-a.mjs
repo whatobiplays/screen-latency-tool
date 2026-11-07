@@ -415,13 +415,13 @@ const summary = {
     opa320: {
       file: basename(paths.opa), sha256: hash(paths.opa),
       sourcePage: "https://www.ti.com/product/OPA320-Q1#design-tools-simulation",
-      version: "Final 1.7 (model file dated 17JUN2022); OPAx320_PSpice_RevG.zip",
-      limitation: "TI OPAx320-Q1 6-pin-family macro model; not evidence for the 5-pin OPA320 package",
+      version: "Final 1.6 (model file dated 16AUG2021; Generic, suitable for all analysis types); OPAx320-Q1.LIB from SBOMBW3.ZIP",
+      limitation: "The five-node subcircuit matches Gate A’s call, but this Q1 macro-model’s suitability for the board’s exact non-Q1 OPA320 orderable/electrical behavior is not proven",
     },
     tlv3501: {
       file: basename(paths.tlv), sha256: hash(paths.tlv),
       sourcePage: "https://www.ti.com/product/TLV3501#design-tools-simulation",
-      version: "model revision 2.0, file dated 2021-07-26, generated for PSpice 17.4; TLV3501_PSpice.zip",
+      version: "model revision 2.0, file dated 2021-07-26, generated for PSpice 17.4; SBOMBU5.ZIP",
       limitation: "TI PSpice transient model executed with ngbehavior=ps",
     },
     simulator: {
