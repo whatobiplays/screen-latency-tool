@@ -4,9 +4,14 @@
 // model hashes, writes every generated deck and raw result to --out-dir, and prints a
 // concise JSON summary suitable for review.
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import {
+  identifyModel,
+  missingSimulatorProvenanceFields,
+  modelQualificationStatus,
+} from "./model-provenance.mjs";
 
 function fail(message) {
   console.error(message);
@@ -25,6 +30,14 @@ function argumentsFrom(argv) {
 }
 
 const args = argumentsFrom(process.argv.slice(2));
+const outDir = args["out-dir"] ? resolve(args["out-dir"]) : undefined;
+const summaryPath = outDir ? resolve(outDir, "gate-a-summary.json") : undefined;
+if (outDir) {
+  mkdirSync(outDir, { recursive: true });
+  // Clear an old summary before a missing option or input file can stop the run.
+  rmSync(summaryPath, { force: true });
+}
+
 for (const required of ["opa-model", "tlv-model", "out-dir", "simulator-provenance"]) {
   if (!args[required]) fail(`Missing --${required}.`);
 }
@@ -40,24 +53,29 @@ const paths = {
   ngspice: resolve(args.ngspice ?? pathNgspice()),
   opa: resolve(args["opa-model"]),
   tlv: resolve(args["tlv-model"]),
-  out: resolve(args["out-dir"]),
+  out: outDir,
   provenance: resolve(args["simulator-provenance"]),
 };
 for (const path of [paths.ngspice, paths.opa, paths.tlv, paths.provenance]) {
   if (!existsSync(path)) fail(`Required file does not exist: ${path}`);
 }
-mkdirSync(paths.out, { recursive: true });
 writeFileSync(resolve(paths.out, ".spiceinit"), "set ngbehavior=ps\nset noaskquit\n");
 
 const hash = (path) => createHash("sha256").update(readFileSync(path)).digest("hex");
+const opaModelSha256 = hash(paths.opa);
+const tlvModelSha256 = hash(paths.tlv);
+const simulatorSha256 = hash(paths.ngspice);
+const opaModelIdentity = identifyModel("opa320", opaModelSha256);
+const tlvModelIdentity = identifyModel("tlv3501", tlvModelSha256);
 const simulatorProvenance = JSON.parse(readFileSync(paths.provenance, "utf8"));
-if (!Array.isArray(simulatorProvenance.buildEvidence) || simulatorProvenance.buildEvidence.length === 0) {
-  fail("Simulator provenance must list at least one buildEvidence file.");
+const missingProvenanceFields = missingSimulatorProvenanceFields(simulatorProvenance, simulatorSha256);
+if (missingProvenanceFields.length > 0) {
+  fail(`Simulator provenance is incomplete or invalid: ${missingProvenanceFields.join(", ")}`);
 }
 const simulatorBuildEvidence = simulatorProvenance.buildEvidence.map((entry) => {
   const evidencePath = resolve(entry.file);
   if (!existsSync(evidencePath)) fail(`Build evidence does not exist: ${evidencePath}`);
-  return { file: evidencePath, sha256: hash(evidencePath), observations: entry.observations ?? [] };
+  return { file: evidencePath, sha256: hash(evidencePath), observations: entry.observations };
 });
 const versionResult = spawnSync(paths.ngspice, ["--version"], { encoding: "utf8" });
 if (versionResult.status !== 0) fail(`Unable to query simulator version: ${paths.ngspice}`);
@@ -413,30 +431,34 @@ const summary = {
   status: "passed",
   modelProvenance: {
     opa320: {
-      file: basename(paths.opa), sha256: hash(paths.opa),
+      file: basename(paths.opa), sha256: opaModelSha256,
       sourcePage: "https://www.ti.com/product/OPA320-Q1#design-tools-simulation",
-      version: "Final 1.7 (model file dated 17JUN2022); OPAx320_PSpice_RevG.zip",
-      limitation: "TI OPAx320-Q1 6-pin-family macro model; not evidence for the 5-pin OPA320 package",
+      identityStatus: opaModelIdentity.identityStatus,
+      approvedSha256: opaModelIdentity.approvedSha256,
+      version: opaModelIdentity.version,
+      limitation: "The five-node subcircuit matches Gate A’s call, but this Q1 macro-model’s suitability for the board’s exact non-Q1 OPA320 orderable/electrical behavior is not proven",
     },
     tlv3501: {
-      file: basename(paths.tlv), sha256: hash(paths.tlv),
+      file: basename(paths.tlv), sha256: tlvModelSha256,
       sourcePage: "https://www.ti.com/product/TLV3501#design-tools-simulation",
-      version: "model revision 2.0, file dated 2021-07-26, generated for PSpice 17.4; TLV3501_PSpice.zip",
+      identityStatus: tlvModelIdentity.identityStatus,
+      approvedSha256: tlvModelIdentity.approvedSha256,
+      version: tlvModelIdentity.version,
       limitation: "TI PSpice transient model executed with ngbehavior=ps",
     },
     simulator: {
-      file: basename(paths.ngspice), path: paths.ngspice, sha256: hash(paths.ngspice),
+      file: basename(paths.ngspice), path: paths.ngspice, sha256: simulatorSha256,
       versionOutput: simulatorVersion,
       buildProvenance: {
         file: paths.provenance,
         sha256: hash(paths.provenance),
         sourceVersion: simulatorProvenance.sourceVersion,
         sourceIdentity: simulatorProvenance.sourceIdentity,
-        configureArguments: simulatorProvenance.configureArguments ?? [],
-        compilerFlags: simulatorProvenance.compilerFlags ?? null,
-        featureEvidence: simulatorProvenance.featureEvidence ?? [],
+        configureArguments: simulatorProvenance.configureArguments,
+        compilerFlags: simulatorProvenance.compilerFlags,
+        featureEvidence: simulatorProvenance.featureEvidence,
         evidenceFiles: simulatorBuildEvidence,
-        limitations: simulatorProvenance.limitations ?? [],
+        limitations: simulatorProvenance.limitations,
       },
       invocationTemplate: "<ngspice> -b <generated-deck>",
       invocations: simulatorInvocations,
@@ -506,7 +528,10 @@ const gates = [
 const failures = gates.filter(([passed]) => !passed).map(([, name]) => name);
 summary.assertions = { passed: gates.length - failures.length, failed: failures };
 if (failures.length) summary.status = "failed";
+else if (modelQualificationStatus(opaModelIdentity, tlvModelIdentity) === "unqualified") {
+  summary.status = "unqualified";
+}
 
-writeFileSync(resolve(paths.out, "gate-a-summary.json"), `${JSON.stringify(summary, null, 2)}\n`);
+writeFileSync(summaryPath, `${JSON.stringify(summary, null, 2)}\n`);
 console.log(JSON.stringify(summary, null, 2));
-if (failures.length) process.exitCode = 1;
+if (summary.status !== "passed") process.exitCode = 1;
