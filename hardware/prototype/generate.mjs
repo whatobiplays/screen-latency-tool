@@ -1,6 +1,6 @@
 // Reproducible source for the prototype schematic, symbol, footprint and BOM drafts.
 // The routed PCB is authoritative native KiCad source and is never written by this generator.
-// Run: node hardware/prototype/generate.mjs; use --write-power-usb-only to write only the derived power/USB schematic and BOM.
+// Run: node hardware/prototype/generate.mjs; use --write-power-usb-only to write the power/USB schematic, shared symbol library, and BOM.
 import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -94,7 +94,7 @@ ${powerFlagDef.replace('(symbol "Proto:PWR_FLAG"', '(symbol "PWR_FLAG"')}
     "Q62702P0955":"https://look.ams-osram.com/m/67e1a90044b03ee9/original/SFH-203.pdf",
     "SN74LVC1G17DBVRG4":"https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
     "XT30U-F.G.Y":xt30SpecificationUrl,"XT30U-M.G.Y":xt30SpecificationUrl,
-    "B4B-PH-K-S(LF)(SN)":"https://www.pololu.com/file/0J373/JST_ePH.pdf",
+    "B4B-PH-K-S(LF)(SN)":"https://www.jst-mfg.com/product/pdf/eng/ePH.pdf",
     "CABLE-PH04":"https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/745/TMC_Cables_Manual_V1.00.pdf",
     "L721A":"https://www.switchcraft.com/assets/1/24/L721A_CD.PDF"
   };
@@ -192,7 +192,16 @@ ${powerFlagDef.replace('(symbol "Proto:PWR_FLAG"', '(symbol "PWR_FLAG"')}
   ];
   const cols=["group","ref","value","mpn","qty","footprint","unit_usd_snapshot","extended_usd_snapshot","source_url","dnp","notes","lifecycle_status"];
   const csvQuote=x=>q(x??"").replace(/\\n/g," ");
-  const bom=[cols.map(csvQuote).join(","),...rowObj.map(p=>{const o={group:p.group,ref:p.ref,value:p.value,mpn:p.mpn,qty:1,footprint:p.fp??"offboard/non-PCB",unit_usd_snapshot:p.price==null?"":p.price.toFixed(2),extended_usd_snapshot:p.price==null?"":(p.dnp?0:p.price).toFixed(2),source_url:p.url??"",dnp:p.dnp?"YES":"NO",notes:p.notes??(p.kind==="tp"?"bare pad; no purchased part":p.price==null?"price not verified":p.dnp?"not populated by default":"2026-10-31 product listing; recheck before purchase"),lifecycle_status:p.group==="offboard kit"?"UNVERIFIED_BEFORE_ORDER":lifecycle(p)};return cols.map(k=>csvQuote(o[k])).join(",");})].join("\n")+"\n";
+  const datedPriceNotes=new Map([
+    ["optical sensor:U1","DigiKey unit price USD 2.88, captured 2026-11-06 UTC; recheck before purchase."],
+    ["optical sensor:U2","DigiKey unit price USD 4.92, captured 2026-11-06 UTC; recheck before purchase."],
+    ["optical sensor:RV1","DigiKey unit price USD 2.53, captured 2026-11-06 UTC; recheck before purchase."],
+    ["optical sensor:R1","DigiKey unit price USD 0.11, captured 2026-11-06 UTC; recheck before purchase."],
+    ["optical sensor:R6","DigiKey unit price USD 0.11, captured 2026-11-06 UTC; recheck before purchase."],
+    ["external power + USB:R1","DigiKey unit price USD 0.11, captured 2026-11-06 UTC; recheck before purchase."],
+    ["external power + USB:R2","DigiKey unit price USD 0.11, captured 2026-11-06 UTC; recheck before purchase."],
+  ]);
+  const bom=[cols.map(csvQuote).join(","),...rowObj.map(p=>{const o={group:p.group,ref:p.ref,value:p.value,mpn:p.mpn,qty:1,footprint:p.fp??"offboard/non-PCB",unit_usd_snapshot:p.price==null?"":p.price.toFixed(2),extended_usd_snapshot:p.price==null?"":(p.dnp?0:p.price).toFixed(2),source_url:p.url??"",dnp:p.dnp?"YES":"NO",notes:p.notes??datedPriceNotes.get(`${p.group}:${p.ref}`)??(p.kind==="tp"?"bare pad; no purchased part":p.price==null?"price not verified":p.dnp?"not populated by default":"2026-10-31 product listing; recheck before purchase"),lifecycle_status:p.group==="offboard kit"?"UNVERIFIED_BEFORE_ORDER":lifecycle(p)};return cols.map(k=>csvQuote(o[k])).join(",");})].join("\n")+"\n";
   function balanced(t){let n=0,inQ=false,esc=false;for(const c of t){if(inQ){if(esc)esc=false;else if(c==="\\")esc=true;else if(c==='"')inQ=false;}else if(c==='"')inQ=true;else if(c==="(")n++;else if(c===")")n--;if(n<0)throw Error("bad s-exp close");}if(n||inQ)throw Error("bad s-exp balance");}
   const files={
     "hardware/prototype/optical/one-sensor.kicad_sch":os.txt,
@@ -216,7 +225,7 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),"../..");
 const result=generatePrototype();
 const checkOnly=process.argv.includes("--check");
 const powerUsbOnly=process.argv.includes("--write-power-usb-only");
-// Include the shared library because the power/USB schematic references Proto:JACK3.
+// The BOM covers both designs, so scoped power/USB writes keep the full manifest.
 const powerUsbPaths=new Set(["hardware/prototype/power-usb/power-usb.kicad_sch","hardware/prototype/Proto.kicad_sym","hardware/prototype/BOM.csv"]);
 let stale=0;
 for(const [path,contents] of Object.entries(result.files)) {

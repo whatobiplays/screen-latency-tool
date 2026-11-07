@@ -3,7 +3,7 @@
 **Document ID:** BENCH-001\
 **Status:** Draft\
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-06 (America/Los_Angeles)
+**Last Updated:** 2026-11-06 (America/Los_Angeles)\
 **Date basis:** Document edits are dated 2026-11-06 (America/Los_Angeles). The CABLE-PH04 seller snapshot was captured at 2026-11-05T07:17:28Z (2026-11-04 23:17:28 PST); that timestamp dates the seller observation, not this document. The earlier $2.46 / 3,546 capture remains historical.\
 **Depends On:** ARCH-001, REF-MET-001, REF-WIRE-001, SPEC-X-001, PHASE-001, ADR-0002\
 **Supersedes:** None\
@@ -168,7 +168,7 @@ The [owner bench inventory update](https://github.com/whatobiplays/screen-latenc
 
 Full-purchase comparisons remain below as hypothetical replacements. The owner-incremental scenarios treat the confirmed basic DMM and basic soldering-hardware category as zero new spend. They keep the separately listed solder, flux, hand tools, heat gun, bench supply, and all other items unless ownership is specifically established. The $65.98 soldering-hardware allowance in the hypothetical set is a comparison value for an iron and its power supply, not a valuation of the owner's unlisted equipment.
 
-Historical mandatory snapshots were $79.24 on 2026-10-31 and $79.28 on 2026-11-01. Before connector changes, the BOM was $80.30 and Strategy A was $80.35. The four removed connector lines totaled $2.84, and the five selected connector lines total $12.56. The current PAC-2 inline USB breakout and Fluke TL75 candidate still add $49.27. Replacing the former 5030/592 stack ($3.90) with Adafruit 3878 ($3.50) removes another $0.40. Current estimates are `$80.30 - $2.84 + $12.56 + $49.27 - $0.40 = $138.89` for the generated BOM and `$80.35 - $2.84 + $12.56 + $49.27 - $0.40 = $138.94` for Strategy A. These totals exclude shipping, tax, duties, fabrication, remaining harness materials, owner tools and unpriced accessories; they are not checkout quotes.
+The original PR-base connector snapshot dated 2026-10-31 had five older lines totaling $3.10: optical TSW-104 ($0.38), Adafruit 368 ($2.00), J2 TSW-102 ($0.21), J4 TSW-103 ($0.30), and J5 TSW-102 ($0.21). After J2 changed to the XT30U pair, the 2026-11-04 intermediate snapshot contained four remaining lines totaling $2.84: TSW-104 ($0.38), Adafruit 368 ($2.00), TSW-103 ($0.27), and TSW-102 ($0.19). The $80.30 generated BOM and $80.35 Strategy A starting totals already include that intermediate four-line connector set and the XT30U J2 pair. The five selected connector lines total $12.56. PAC-2's inline USB breakout and Fluke TL75 candidate add $49.27; replacing the former 5030/592 stack ($3.90) with Adafruit 3878 ($3.50) removes $0.40. Therefore `$80.30 - $2.84 + $12.56 + $49.27 - $0.40 = $138.89` for the generated BOM and `$80.35 - $2.84 + $12.56 + $49.27 - $0.40 = $138.94` for Strategy A. Historical mandatory snapshots were $79.24 on 2026-10-31 and $79.28 on 2026-11-01. Totals exclude shipping, tax, duties, fabrication, remaining harness materials, owner tools, and unpriced accessories; they are not checkout quotes.
 
 ### Component and equipment inputs
 

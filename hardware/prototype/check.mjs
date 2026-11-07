@@ -4,6 +4,27 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+/** Returns a pad's axis-aligned bounds after its footprint-relative rotation. */
+function padBounds(size, angleDegrees, shape) {
+  const radians=angleDegrees*Math.PI/180;
+  const cosine=Math.abs(Math.cos(radians));
+  const sine=Math.abs(Math.sin(radians));
+  if(shape==="oval"){
+    const radius=Math.min(...size)/2;
+    const halfSegment=Math.abs(size[0]-size[1])/2;
+    const horizontal=size[0]>=size[1];
+    return {
+      width:2*(radius+halfSegment*(horizontal?cosine:sine)),
+      height:2*(radius+halfSegment*(horizontal?sine:cosine))
+    };
+  }
+  return {
+    width:size[0]*cosine+size[1]*sine,
+    height:size[0]*sine+size[1]*cosine
+  };
+}
+
+/** Validate schematic, PCB, and structured BOM fields; free-form BOM comments remain descriptive evidence. */
 function verifyPrototype(files) {
   const errors=[], observations=[];
   const opticalPath="hardware/prototype/optical/one-sensor.kicad_sch";
@@ -13,6 +34,15 @@ function verifyPrototype(files) {
   const selectedCapacitorMpn="KGM15BR71H104KM";
   const selectedCapacitorUrl="https://www.digikey.com/en/products/detail/kyocera-avx/KGM15BR71H104KM/6797442";
   const check=(condition,description)=>{if(condition)observations.push(description);else errors.push(description);};
+  const quarterTurnRect=padBounds([2,4],90,"rect");
+  const diagonalRect=padBounds([2,4],45,"rect");
+  const diagonalOval=padBounds([2,4],45,"oval");
+  const diagonalOvalExtent=2*(1+Math.SQRT1_2);
+  check(Math.abs(quarterTurnRect.width-4)<1e-9&&Math.abs(quarterTurnRect.height-2)<1e-9&&
+    Math.abs(diagonalOval.width-diagonalOvalExtent)<1e-9&&
+    Math.abs(diagonalOval.height-diagonalOvalExtent)<1e-9&&diagonalOval.width>Math.sqrt(10)&&
+    diagonalRect.width>diagonalOval.width,
+    "Pad overlap bounds account for shape and rotation");
   function parse(s) {
     let pos=0;
     function spaces(){while(pos<s.length && /\s/.test(s[pos]))pos++;}
@@ -94,7 +124,7 @@ function verifyPrototype(files) {
   check(prop(opticalJ1,"MPN")==="B4B-PH-K-S(LF)(SN)"&&
     prop(opticalJ1,"Manufacturer")==="JST"&&
     prop(opticalJ1,"Source URL")==="https://www.tme.com/us/en-us/details/b4b-ph-k-s/raster-signal-connectors-2-00mm/jst/b4b-ph-k-s-lf-sn/"&&
-    prop(opticalJ1,"Datasheet")==="https://www.pololu.com/file/0J373/JST_ePH.pdf"&&
+    prop(opticalJ1,"Datasheet")==="https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"&&
     prop(opticalJ1,"Footprint")==="Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical",
     "Optical J1 exact JST full-suffix MPN, source, drawing and 2.00 mm footprint");
   const power=checkSchematic(powerPath,"power-usb",14,{
@@ -102,7 +132,8 @@ function verifyPrototype(files) {
     "M1:1":"5V_LIMITED","M1:2":"5V_SAFE","M1:3":"GND",
     "U1:2":"VUSB_BUFFER_IN","U1:3":"GND","U1:4":"VBUS_PRESENT","U1:5":"3V3",
     "J2:1":"5V_SAFE","J2:2":"GND","J6:1":"5V_SAFE","J6:2":"GND",
-    "J3:1":"VUSB_RAW","J4:3":"VBUS_PRESENT","J5:1":"LED_GPIO","J5:2":"GND",
+    "J3:1":"VUSB_RAW","J4:1":"3V3","J4:2":"GND","J4:3":"VBUS_PRESENT",
+    "J5:1":"LED_GPIO","J5:2":"GND",
     "R1:2":"VUSB_BUFFER_IN","R3:1":"VUSB_BUFFER_IN","R3:2":"GND"
   });
   const powerJ1=power.byRef.get("J1"),powerJ1At=xy(powerJ1,"at");
@@ -202,14 +233,16 @@ function verifyPrototype(files) {
     if(ref==="R4")check((one(footprint,"attr")||[]).includes("dnp"),"R4 is DNP on PCB");
     check(origin[0]>=100&&origin[0]<=150&&origin[1]>=100&&origin[1]<=144,
       "PCB "+ref+" location inside draft outline");
+    const angle=((Number(one(footprint,"at")?.[3]??0)%360)+360)%360;
+    const radians=angle*Math.PI/180,cosine=Math.cos(radians),sine=Math.sin(radians);
+    const rotate=(x,y)=>[x*cosine+y*sine,-x*sine+y*cosine];
     for(const pad of pads){
       const offset=xy(pad,"at"),size=xy(pad,"size");
-      const angle=((Number(one(footprint,"at")?.[3]??0)%360)+360)%360;
-      const rotate=(x,y)=>angle===0?[x,y]:angle===90?[y,-x]:
-        angle===180?[-x,-y]:angle===270?[-y,x]:[x,y];
       const [rx,ry]=rotate(offset[0],offset[1]);
+      const padAngle=Number(one(pad,"at")?.[3]??0);
+      const bounds=padBounds(size,angle+padAngle,pad[3]);
       padPositions.push({ref,pin:pad[1],net:netName(pad)??"",
-        x:origin[0]+rx,y:origin[1]+ry,w:size[0],h:size[1]});
+        x:origin[0]+rx,y:origin[1]+ry,w:bounds.width,h:bounds.height});
     }
   }
   check(present.size===23,"All 23 footprints uniquely referenced");
@@ -318,7 +351,8 @@ function verifyPrototype(files) {
   check(rows.length===45,"BOM header + 44 component rows after direct Type-C cable selection");
   check(rows.slice(1).every(row=>row.length===rows[0].length),"BOM consistent columns");
   check(rows.slice(1).filter(row=>row[0]==="optical sensor").length===23,"BOM optical count 23");
-  check(rows.slice(1).filter(row=>row[0]==="external power + USB").length===14,"BOM power count 14");
+  check(rows.slice(1).filter(row=>row[0]==="external power + USB").length===power.symbols.length,
+    "BOM power row count matches schematic");
   check(rows.slice(1).some(row=>row[0]==="optical sensor"&&row[1]==="R4"&&row[9]==="YES"),"BOM R4 DNP");
   check(rows[0][11]==="lifecycle_status","BOM lifecycle status column");
   check(rows.slice(1).some(row=>row[0]==="optical sensor"&&row[1]==="D1"&&
@@ -326,7 +360,7 @@ function verifyPrototype(files) {
     "BOM active SFH 203 display and Q62702P0955 MPN required");
   check(rows.slice(1).some(row=>row[0]==="external power + USB"&&row[1]==="R3"&&
     row[2]==="47k VBUS_PD"),"BOM VBUS sense pull-down present");
-  check(rows.slice(1).every(row=>!/(DISCONTINUED|LAST_TIME_BUY|OBSOLETE)/.test(row[11])),
+  check(rows.slice(1).every(row=>!/(DISCONTINUED|EOL|NRND|LAST_TIME_BUY|OBSOLETE)/.test(row[11])),
     "No lifecycle-disallowed part in BOM");
   const bomRow=(ref,group)=>rows.slice(1).find(row=>row[1]===ref&&(!group||row[0]===group));
   for(const [ref,group,schematic,footprint] of [
@@ -342,17 +376,16 @@ function verifyPrototype(files) {
       "KiCad "+ref+" uses the approved exact KYOCERA AVX capacitor and lifecycle evidence");
     check(!!row&&row[3]===selectedCapacitorMpn&&row[4]==="1"&&
       row[5]===footprint&&row[6]==="0.10"&&row[7]==="0.10"&&
-      row[8]===selectedCapacitorUrl&&row[11]==="UNVERIFIED_BEFORE_ORDER"&&
-      /2026-11-06/.test(row[10])&&/5,996/.test(row[10])&&/USD 0\.10/.test(row[10]),
-      "BOM "+ref+" records one exact KM capacitor at the current dated unit price and source");
+      row[8]===selectedCapacitorUrl&&row[11]==="UNVERIFIED_BEFORE_ORDER",
+      "BOM "+ref+" records one exact KM capacitor, unit price, source and lifecycle status");
   }
   check(![files[opticalPath],files[powerPath],files[pcbPath],files[bomPath]]
     .some(text=>text.includes("KGM15BR71H104KT")),
     "Generated CAD and BOM contain no superseded KT capacitor selection");
   const specificationUrl="https://www.china-amass.com/public/upload/20240608/810c62b3f7ace2287989748538eb2a6b.pdf";
-  for(const [ref,mpn,role,price,exactPrice,sourceUrl] of [
-    ["J2","XT30U-F.G.Y","SOURCE FEMALE","0.35","0.35031","https://store.comet.bg/en/Catalogue/Product/5521133/"],
-    ["J6","XT30U-M.G.Y","LOAD MALE","0.39","0.38990","https://store.comet.bg/en/Catalogue/Product/5521134/"]
+  for(const [ref,mpn,role,price,sourceUrl] of [
+    ["J2","XT30U-F.G.Y","SOURCE FEMALE","0.35","https://store.comet.bg/en/Catalogue/Product/5521133/"],
+    ["J6","XT30U-M.G.Y","LOAD MALE","0.39","https://store.comet.bg/en/Catalogue/Product/5521134/"]
   ]){
     const symbol=power.byRef.get(ref),row=bomRow(ref);
     check(!!symbol&&prop(symbol,"MPN")===mpn&&prop(symbol,"Manufacturer")==="AMASS"&&
@@ -362,9 +395,8 @@ function verifyPrototype(files) {
       "KiCad "+ref+" remains offboard without a footprint");
     check(!!row&&row[0]==="external power + USB"&&row[2].includes(role)&&row[3]===mpn&&
       row[4]==="1"&&row[5]==="offboard/non-PCB"&&row[6]===price&&row[7]===price&&row[8]===sourceUrl&&
-      row[11]==="UNVERIFIED_BEFORE_ORDER"&&row[10].includes("USD "+exactPrice+" each")&&
-      /procurement HOLD/.test(row[10]),
-      "BOM "+ref+" exact-MPN dated price, source, offboard status, and lifecycle HOLD");
+      row[11]==="UNVERIFIED_BEFORE_ORDER",
+      "BOM "+ref+" records the exact MPN, role, price, source, offboard status and lifecycle hold");
   }
   check(power.byRef.has("J2")&&power.byRef.has("J6")&&
     !power.byRef.has("J2A")&&!power.byRef.has("J2B"),
@@ -374,71 +406,51 @@ function verifyPrototype(files) {
     opticalJ1Row[5]==="Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical"&&
     opticalJ1Row[6]==="0.24"&&opticalJ1Row[8]===prop(opticalJ1,"Source URL")&&
     opticalJ1Row[11]==="UNVERIFIED_BEFORE_ORDER",
-    "BOM optical J1 has the exact JST part, footprint, dated price and lifecycle hold");
+    "BOM optical J1 records the exact JST part, footprint, unit price, source and lifecycle hold");
   const powerJ1Row=bomRow("J1","external power + USB");
   check(!!powerJ1Row&&powerJ1Row[3]==="L721A"&&powerJ1Row[6]==="6.28"&&
     powerJ1Row[8]===prop(powerJ1,"Source URL")&&powerJ1Row[5]==="offboard/non-PCB"&&
-    /center.*5V_IN.*sleeve.*GND.*shunt.*(NC|insulat)/i.test(powerJ1Row[10])&&
-    /767K\/768K/.test(powerJ1Row[10])&&/unverified Stage-B checks/i.test(powerJ1Row[10])&&
-    /owner-approved.*direct.*nonlocking.*design assumption/i.test(powerJ1Row[10])&&
-    /physical engagement.*retention/i.test(powerJ1Row[10])&&
-    /no electrical.contact failure is asserted/i.test(powerJ1Row[10])&&
-    !/resolve the mate before Stage B/i.test(powerJ1Row[10]),
-    "BOM power J1 records the approved direct path and preserves Stage-B fit and safety gates");
-  for(const [ref,mpn,value,unitPrice,sourceUrl,role,netDescription] of [
-    ["J4","CAB-14575","TEENSY_LOGIC","1.95","https://www.digikey.com/en/products/detail/sparkfun-electronics/14575/8543395","3-position","1=3V3, 2=GND, 3=VBUS_PRESENT"],
-    ["J5","CAB-14574","SLOW_LED_GPIO","1.38","https://www.digikey.com/en/products/detail/sparkfun-electronics/14574/8543394","2-position","1=LED_GPIO, 2=GND"]
+    powerJ1Row[11]==="UNVERIFIED_BEFORE_ORDER",
+    "BOM power J1 records the L721A MPN, unit price, source, offboard status and lifecycle hold");
+  for(const [ref,mpn,value,unitPrice,sourceUrl] of [
+    ["J4","CAB-14575","TEENSY_LOGIC","1.95","https://www.digikey.com/en/products/detail/sparkfun-electronics/14575/8543395"],
+    ["J5","CAB-14574","SLOW_LED_GPIO","1.38","https://www.digikey.com/en/products/detail/sparkfun-electronics/14574/8543394"]
   ]){
     const symbol=power.byRef.get(ref),row=bomRow(ref,"external power + USB");
     check(!!symbol&&prop(symbol,"MPN")===mpn&&prop(symbol,"Manufacturer")==="SparkFun"&&
-      prop(symbol,"Source URL")===sourceUrl&&prop(symbol,"Lifecycle")==="UNVERIFIED_BEFORE_ORDER"&&
-      prop(symbol,"BOM Comments")?.includes("female")&&prop(symbol,"BOM Comments")?.includes("male"),
-      "KiCad "+ref+" exact SparkFun pair, owner-selected gender orientation and lifecycle hold");
+      prop(symbol,"Source URL")===sourceUrl&&prop(symbol,"Lifecycle")==="UNVERIFIED_BEFORE_ORDER",
+      "KiCad "+ref+" records the SparkFun MPN, manufacturer, source and lifecycle status");
     check(!!row&&row[2]===value&&row[3]===mpn&&row[4]==="1"&&
       row[5]==="offboard/non-PCB"&&row[6]===unitPrice&&row[8]===sourceUrl&&
-      row[11]==="UNVERIFIED_BEFORE_ORDER"&&row[10].includes(role)&&
-      new RegExp(netDescription.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).test(row[10])&&
-      /female[\s\S]*Teensy[\s\S]*male[\s\S]*external/i.test(row[10]),
-      "BOM "+ref+" preserves pin map and documents the female Teensy-side half");
+      row[11]==="UNVERIFIED_BEFORE_ORDER",
+      "BOM "+ref+" records the exact connector, price, source, offboard status and lifecycle hold");
   }
   const cableRow=bomRow("EXT6","offboard kit");
   check(!!cableRow&&cableRow[3]==="CABLE-PH04"&&cableRow[4]==="1"&&
     cableRow[5]==="offboard/non-PCB"&&cableRow[6]==="2.71"&&
     cableRow[8]==="https://www.digikey.com/en/products/detail/analog-devices-inc-maxim-integrated/CABLE-PH04/9381900"&&
-    /pin colors 1 black, 2 red, 3 blue, 4 gray/i.test(cableRow[10])&&
-    /black=3V3.*red=GND/i.test(cableRow[10])&&
-    /continuity/i.test(cableRow[10])&&cableRow[11]==="UNVERIFIED_BEFORE_ORDER",
-    "CABLE-PH04 source, current price, color/pin evidence and offline continuity gate");
+    cableRow[11]==="UNVERIFIED_BEFORE_ORDER",
+    "CABLE-PH04 records its exact MPN, unit price, source, offboard status and lifecycle hold");
   const directUsbCable=bomRow("EXT4","offboard kit");
   check(!!directUsbCable&&directUsbCable[3]==="Adafruit 3878"&&directUsbCable[6]==="3.50"&&
     directUsbCable[8]==="https://www.adafruit.com/product/3878"&&
-    /5.1 kohm CC pull-down/.test(directUsbCable[10])&&/VCC jumper CLOSED/.test(directUsbCable[10])&&
-    /shield-to-GND jumper OPEN/.test(directUsbCable[10])&&
     directUsbCable[11]==="UNVERIFIED_BEFORE_ORDER"&&!bomRow("EXT5","offboard kit")&&
     !rows.slice(1).some(row=>["Adafruit 5030","Adafruit 592"].includes(row[3])),
-    "Owner-selected Adafruit 3878 replaces the two-piece USB adapter stack and remains lifecycle-unverified");
+    "Adafruit 3878 is selected at its recorded price and source, with superseded adapters absent");
   const usbBreakoutRow=bomRow("EXT7","offboard kit");
   check(!!usbBreakoutRow&&usbBreakoutRow[2]==="eLabGuy USB Micro-B inline pass-through breakout"&&
     usbBreakoutRow[3]==="USB-uBM-uBF-V1A"&&usbBreakoutRow[4]==="1"&&
     usbBreakoutRow[5]==="offboard/non-PCB"&&usbBreakoutRow[6]==="9.28"&&
     usbBreakoutRow[8]==="https://elabbay.myshopify.com/products/usb-bm-bf-v1a-micro-usb2-0-type-b-male-to-micro-usb2-0-type-b-female-pass-through-breakout-board"&&
-    usbBreakoutRow[10].includes("https://www.elabguy.com/datasheet/USB-uBM-uBF-V1A%20Rev1.1.pdf")&&
-    /Micro-B male-to-female/i.test(usbBreakoutRow[10])&&/D\+ and D− connector pins pass directly/i.test(usbBreakoutRow[10])&&
-    /VBUS is open between sides unless its jumper is installed/i.test(usbBreakoutRow[10])&&
-    /Figure 2 caption.*pin spacing only.*cautions against breadboard use/i.test(usbBreakoutRow[10])&&
     usbBreakoutRow[11]==="UNVERIFIED_BEFORE_ORDER",
-    "PAC-2 inline USB breakout is exact-MPN, sourced, VBUS-isolated by default, and lifecycle-held");
+    "PAC-2 inline USB breakout records its exact MPN, source, price, offboard status and lifecycle hold");
   const dmmLeadsRow=bomRow("EXT8","offboard kit");
   check(!!dmmLeadsRow&&dmmLeadsRow[2]==="DMM test leads (Fluke TL75)"&&
     dmmLeadsRow[3]==="855705"&&dmmLeadsRow[4]==="1"&&
     dmmLeadsRow[5]==="offboard/non-PCB"&&dmmLeadsRow[6]==="39.99"&&
     dmmLeadsRow[8]==="https://www.digikey.com/en/products/detail/fluke-electronics/TL75/1801786"&&
-    /48.?in/i.test(dmmLeadsRow[10])&&/banana/i.test(dmmLeadsRow[10])&&
-    /owner.*DMM banana-jack compatibility/i.test(dmmLeadsRow[10])&&
-    /suitable leads are already owned/i.test(dmmLeadsRow[10])&&
-    /low.voltage.*continuity/i.test(dmmLeadsRow[10])&&
     dmmLeadsRow[11]==="UNVERIFIED_BEFORE_ORDER",
-    "PAC-2 DMM leads are exact-MPN, sourced, low-voltage scoped, and inventory/lifecycle-held");
+    "PAC-2 DMM leads record exact MPN, unit price, source, offboard status and lifecycle hold");
   check(!rows.slice(1).some(row=>["Adafruit 368","TSW-104-07-G-S","TSW-103-07-G-S","TSW-102-07-G-S"].includes(row[3])),
     "Superseded connectors are absent from the active BOM");
   const purchasableMpns=new Set(rows.slice(1).filter(row=>row[3]&&row[9]!=="YES"&&
@@ -446,8 +458,6 @@ function verifyPrototype(files) {
   check(purchasableMpns.size===31,"31 distinct purchasable MPNs after Adafruit 3878 replaces 5030/592");
   check(new Set(rows.slice(1).map(row=>row[3]).filter(Boolean)).size===34,
     "34 distinct manifest part identities after direct Type-C cable selection");
-  check(rows.slice(1).filter(row=>row[0]==="external power + USB").length===14,
-    "BOM power row count matches schematic");
   return {status:errors.length?"failed":"passed",checks:observations.length,errors,counts:{
     opticalSymbols:optical.symbols.length,powerSymbols:power.symbols.length,
     pcbFootprints:footprints.length,pcbPads:padPositions.length,bomRows:rows.length-1

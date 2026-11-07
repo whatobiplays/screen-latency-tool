@@ -2937,7 +2937,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.pololu.com/file/0J373/JST_ePH.pdf"
+		(property "Datasheet" "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)

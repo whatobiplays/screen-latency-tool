@@ -7,7 +7,7 @@
 | File | Purpose | Readiness |
 | --- | --- | --- |
 | [Optical schematic](optical/one-sensor.kicad_sch) | Pin-numbered, one-channel photodiode → OPA320 TIA → TLV3501 comparator, bias, threshold, bypass, monitoring and test points | **Draft**; KiCad 10.0.8 ERC reports 0 errors and 0 warnings. The previous model-based analog run is not reproducible from the currently available external files; see simulation provenance. Physical electrical and optical acceptance remain unverified. |
-| [Optical PCB](optical/one-sensor.kicad_pcb) | 50 × 44 mm two-layer routed prototype B.Cu GND zone, signal clearances, and input-loop void | **Editable native KiCad source.** Current KiCad 10.0.8 DRC (`--severity-all --schematic-parity`) reports 0 violations, 0 unconnected items and 0 schematic-parity issues on board SHA-256 `e4e53ecd714066aa89afe4351c4a5ddddc24c1f3467c77a571ab70ff6abd8822`. Five DRC categories remain `Ignore`; no per-item exclusions were added. `/EDGE` is routed entirely on F.Cu without signal vias. `/VREF` and `/THRESH` retain open plane-gap findings. The board has no mounting holes or modeled detector body. Its optical axis and physical fit remain unverified, and no Gerbers are approved. |
+| [Optical PCB](optical/one-sensor.kicad_pcb) | 50 × 44 mm two-layer routed prototype B.Cu GND zone, signal clearances, and input-loop void | **Editable native KiCad source.** Current KiCad 10.0.8 DRC (`--severity-all --schematic-parity`) reports 0 violations, 0 unconnected items and 0 schematic-parity issues on board SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88`. Five DRC categories remain `Ignore`; no per-item exclusions were added. `/EDGE` is routed entirely on F.Cu without signal vias. `/VREF` and `/THRESH` retain open plane-gap findings. The board has no mounting holes or modeled detector body. Its optical axis and physical fit remain unverified, and no Gerbers are approved. |
 | [Active SFH 203 footprint](optical/ProtoOpto.pretty/Photodiode_SFH203.kicad_mod) and [library table](optical/fp-lib-table) | 2.54 mm lead pitch; pad 1 anode / pad 2 cathode; 2.0 mm lands and 1.0 mm drills; 5.90 mm maximum flange, 5.85 mm nominal flange and 6.40 mm courtyard | The official datasheet drawing confirms 2.54 mm lead spacing, and its recommended-pad artwork shows 2.0 mm pads with 1.0 mm holes. Physical lead fit, installed orientation, optical axis, cathode inspection and provisional boot fit still require review. |
 | [Power/USB candidate schematic](power-usb/power-usb.kicad_sch) | Off-board adapter → MF-R050 PTC → Pololu 5383 reverse-current protector → Teensy VIN; isolated VUSB sensing through an Ioff-capable buffer with a 47 kΩ pull-down; diagnostic LED | **Draft wiring logic only.** The design has no routed carrier PCB or complete USB data wiring, and backfeed behavior remains unverified. Do not energize it until the unpowered continuity and isolation checks and the staged input checks below are complete. |
 | [Derived components](BOM.csv) | One-channel component instances, candidate MPNs, provisional footprints, dated price snapshots, DNP field, and offboard items | **Not order-ready**; 44 rows represent 34 part identities, 31 purchasing MPNs and 37 populated units, one DNP resistor and six non-purchasable pad rows. Generated BOM subtotal is $138.89; Strategy A is $138.94. Current screen: 24 REVIEW / 7 HOLD. L721A and GST18U05-P1J are conditional REVIEW for owner purchase review; both XT30U J2 MPNs remain HOLD. |
@@ -42,7 +42,7 @@ J1 uses Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical. A normalized compar
 
 Both footprints use four through-hole pads on 2.00 mm pitch, with 0.75 mm drills and 1.2 × 1.75 mm lands. JST specifies 2.00 ±0.05 mm pitch and Ø0.7 +0.1/0 mm holes in its [PH series drawing](https://www.jst-mfg.com/product/pdf/eng/ePH.pdf). The [JST PH product page](https://www.jst-mfg.com/product/index.php?lang=2&search_product=B4B-PH-K-S&type=1) lists the B4B-PH-K-S header selected for the design; physical mating and clearance remain unverified.
 
-The embedded footprint and installed library copy differ in instance and metadata fields: the board has `J1` / `SENSOR_IO` and procurement properties, while the library template has generic reference/value fields and KiCad library metadata. The normalized comparison found matching pad and graphic geometry. The `lib_footprint_mismatch` finding was reported on an earlier board revision; current DRC on board SHA-256 `e4e53ecd714066aa89afe4351c4a5ddddc24c1f3467c77a571ab70ff6abd8822` reports no such finding. Geometry comparison does not verify mating fit, cable clearance, or retention.
+The embedded footprint and installed library copy differ in instance and metadata fields: the board has `J1` / `SENSOR_IO` and procurement properties, while the library template has generic reference/value fields and KiCad library metadata. The normalized comparison found matching pad and graphic geometry. The `lib_footprint_mismatch` finding was reported on an earlier board revision; current DRC on board SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88` reports no such finding. Geometry comparison does not verify mating fit, cable clearance, or retention.
 
 This geometry comparison does not verify mating fit, cable clearance, or retention; keep those items on HOLD.
 At nominal 3.3 V and ignoring tolerances/op-amp offsets,
@@ -58,8 +58,10 @@ The comparator is intentionally arranged to switch as `TIA_OUT` **falls** below 
 
 [`simulation/gate-a.mjs`](simulation/gate-a.mjs) runs the external TI macro models in ngspice and writes decks, raw data, logs and the provenance manifest outside Git.
 
+Gate A clears `gate-a-summary.json` in a supplied `--out-dir` before checking required options or input files. A missing option or file therefore cannot leave an older run's summary behind.
+
 - **Historical run (2026-10-31):** passed all **12/12** assertions. Its simulator and model details are retained below as historical evidence.
-- **Latest run (2026-11-05):** passed all **12/12** assertions (0 failed) across **35** ngspice invocations using the TI models documented below. The summary and generated files are in `/tmp/slt-gate-a-ngspice47-20261105/`; `gate-a-summary.json` SHA-256 is `a766833f4096c1ba1cc85f08431261cae3004556c3a8e496f58df4035e5812f6`.
+- **Latest historical run (2026-11-05):** its recorded summary reports **12/12** assertions (0 failed) across **35** ngspice invocations using the TI models documented below. The summary SHA-256 is `a766833f4096c1ba1cc85f08431261cae3004556c3a8e496f58df4035e5812f6`; the summary, decks, raw data, logs, external models, and simulator-provenance file are no longer available at their recorded temporary paths. This is not a rerun of the current candidate.
 
 Gate A is model-based circuit analysis only. It does **not** validate PCB layout, board assembly, physical electrical behavior, or optical response.
 
@@ -115,7 +117,7 @@ Download the archives from the TI pages and use them under TI's terms. Do not co
 node hardware/prototype/simulation/gate-a.mjs   --ngspice /path/to/ngspice   --opa-model /path/to/OPAx320-Q1.LIB   --tlv-model /path/to/tlv3501.lib   --simulator-provenance /path/to/ngspice-build-provenance.json   --out-dir /tmp/slt-issue3-gate-a
 ```
 
-The provenance JSON needs `sourceVersion`, `sourceIdentity`, `configureArguments`, `compilerFlags`, `featureEvidence`, `buildEvidence`, and `limitations`. Each `buildEvidence` entry names a surviving file and the observations taken from it. `gate-a.mjs` hashes those files and records every deck invocation in `gate-a-summary.json`.
+The provenance file requires non-empty `sourceVersion`, `sourceIdentity`, and `compilerFlags` strings. `simulatorSha256` must match the ngspice executable. `configureArguments` and `limitations` are string arrays; either may be empty when there is nothing to record. `featureEvidence` must be a non-empty array of objects, each with a non-empty `feature` string and a boolean `enabled` value. Each `buildEvidence` entry must name an existing file and contain a non-empty `observations` array of non-empty strings. Before running ngspice, `gate-a.mjs` validates these fields, hashes the evidence files, and records each deck invocation in `gate-a-summary.json`.
 
 **No instruction here authorizes fabrication of the draft PCB.** First route and validate a revised PCB after schematic review and analog modeling, then obtain explicit prototype-fabrication approval. Final professionally assembled PCB production remains after the Phase-1 feasibility gate.
 
@@ -167,9 +169,9 @@ A custom, project-local KiCad symbol library now exactly matches the embedded `P
 
 ## Reproducibility and validation commands
 
-Run these commands **on the actual repository checkout with Node.js and KiCad installed**. The current KiCad 10.0.8 ERC JSON reports for the one-sensor and power/USB schematics each contain 0 errors and 0 warnings. Their SHA-256 values are optical `32d385e0fdc282b54606fe598a9878b5e890d1bc94f3f37f4287c89ac9aef4b2` and power/USB `0eebab78aeb29254a9cdd00b9cbb2e27e31159a0f5be9808401d507d051c109c`. Both list four ignored checks: single-use global labels, four-way junctions, SPICE-model issues, and footprint-filter mismatches. These remain review obligations.
+Run these commands **on the actual repository checkout with Node.js and KiCad installed**. On 2026-11-07, KiCad 10.0.8 ERC reports were generated from optical schematic SHA-256 `a4b7185e4046e1e98c51c2a31939fae99246ea0aa45d6bf09f145577e745c5d7` and power/USB schematic SHA-256 `7821e62ef52b7ab9f884bb14fa4a57be5c1672338fad9f21865c103f2f35d372`. Each report contains 0 violations. The optical JSON at `/tmp/slt-optical-erc.json` has SHA-256 `4a01d56f8ad3963e487971b04e80cb3a7ca139053048fa3a0af9f6f9a4b4b7e2`; the power/USB JSON at `/tmp/slt-power-erc.json` has SHA-256 `115e2e3a9af4d227cdd886b609b9fcb8a9efd90c75a24ce145671b452193c038`. Each lists four ignored checks: single-use global labels, four-way junctions, SPICE-model issues, and footprint-filter mismatches. These remain review obligations.
 
-Historical saved-board DRC on board SHA-256 `5727e81accea582dbb818c41f6af7d25ebd05c2e0b4c4f1e7f6e51eb9764ab9c` reported one J1 `lib_footprint_mismatch` warning: the 2026-11-04 report SHA-256 was `eac9ffb745a30af64d452a6cacd9eb5d23ca0bbed30c82e7cf8b3036183da74f`, and the 2026-11-05 rerun SHA-256 was `4cfa67db33afb0e25e836b0c7981ffd3a71d2fccd88f1b3423fe92a991c2a87b`. Current KiCad 10.0.8 DRC on optical board SHA-256 `e4e53ecd714066aa89afe4351c4a5ddddc24c1f3467c77a571ab70ff6abd8822`, with `--severity-all --schematic-parity`, reports 0 violations, 0 unconnected items, and 0 schematic-parity findings; JSON report SHA-256 is `98d749a1274971e0cfb9bfdfad5eba77a6fc1ae3e0593e632d36210621feb057`. Five project categories remain `Ignore`: `missing_courtyard`, `track_not_centered_on_via`, `tuning_profile_track_geometries`, `footprint_filters_mismatch`, and `footprint_type_mismatch`; no per-item exclusions were added. The earlier board hash `9b983eee2e39ced97e929a83c3d588c071b794c91568f47c300efb125895acb9` had seven zone-fill errors and the J1 warning before the refill. Current checks pass 387 structural assertions, and `generate.mjs --check` reports `stale: 0`. These checks do not establish electrical safety or physical fit. Keep raw reports outside the repository and record remaining gates in [Issue #3](https://github.com/whatobiplays/screen-latency-tool/issues/3).
+Historical saved-board DRC on board SHA-256 `5727e81accea582dbb818c41f6af7d25ebd05c2e0b4c4f1e7f6e51eb9764ab9c` reported one J1 `lib_footprint_mismatch` warning: the 2026-11-04 report SHA-256 was `eac9ffb745a30af64d452a6cacd9eb5d23ca0bbed30c82e7cf8b3036183da74f`, and the 2026-11-05 rerun SHA-256 was `4cfa67db33afb0e25e836b0c7981ffd3a71d2fccd88f1b3423fe92a991c2a87b`. Current KiCad 10.0.8 DRC on optical board SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88`, with `--severity-all --schematic-parity`, reports 0 violations, 0 unconnected items, and 0 schematic-parity findings; JSON report SHA-256 is `16cebc366910f10d2d1f1760f3cefa0ae7b918c6feb9357c27f04eb3d261e5b2`. Five project categories remain `Ignore`: `missing_courtyard`, `track_not_centered_on_via`, `tuning_profile_track_geometries`, `footprint_filters_mismatch`, and `footprint_type_mismatch`; no per-item exclusions were added. The earlier board hash `9b983eee2e39ced97e929a83c3d588c071b794c91568f47c300efb125895acb9` had seven zone-fill errors and the J1 warning before the refill. Current checks pass 389 structural assertions, and `generate.mjs --check` reports `stale: 0`. These checks do not establish electrical safety or physical fit. Keep raw reports outside the repository and record remaining gates in [Issue #3](https://github.com/whatobiplays/screen-latency-tool/issues/3).
 
 A before-and-after structural comparison found no changes to component placement, tracks, or zone boundaries. The refill changed generated zone-fill polygons. KiCad also serialized J1's unchanged 270° rotation as -90°; the structural checker accepts both values.
 
@@ -177,9 +179,6 @@ A before-and-after structural comparison found no changes to component placement
 node hardware/prototype/generate.mjs --check
 node hardware/prototype/check.mjs
 node hardware/prototype/erc-report-gate.mjs --selftest
-"$KICAD_CLI" pcb drc --severity-all --schematic-parity --exit-code-violations --refill-zones \
-  --format report --output /tmp/slt-optical-drc.rpt \
-  hardware/prototype/optical/one-sensor.kicad_pcb
 
 # macOS: KiCad does not normally add its CLI to your shell PATH.
 # If installed elsewhere, adjust KICAD_CLI to the executable inside KiCad.app.
@@ -188,18 +187,50 @@ if [ ! -x "$KICAD_CLI" ]; then
   printf 'KiCad CLI not found at %s\n' "$KICAD_CLI"
 else
   "$KICAD_CLI" version &&
+  # Reproduce the saved-board check without refilling zones.
+  "$KICAD_CLI" pcb drc --severity-all --schematic-parity --exit-code-violations \
+    --format report --output /tmp/slt-optical-drc.rpt \
+    hardware/prototype/optical/one-sensor.kicad_pcb &&
   "$KICAD_CLI" sch erc --severity-error --severity-warning \
     -o /tmp/slt-optical-erc.rpt hardware/prototype/optical/one-sensor.kicad_sch &&
   "$KICAD_CLI" sch erc --severity-error --severity-warning \
     -o /tmp/slt-power-erc.rpt hardware/prototype/power-usb/power-usb.kicad_sch &&
+  "$KICAD_CLI" sch erc --severity-all --format json \
+    --output /tmp/slt-optical-erc.json hardware/prototype/optical/one-sensor.kicad_sch &&
+  "$KICAD_CLI" sch erc --severity-all --format json \
+    --output /tmp/slt-power-erc.json hardware/prototype/power-usb/power-usb.kicad_sch &&
   node hardware/prototype/erc-report-gate.mjs \
-    /tmp/slt-optical-erc.rpt /tmp/slt-power-erc.rpt
+    /tmp/slt-optical-erc.rpt /tmp/slt-power-erc.rpt &&
+  # Export both board sides without refilling zones.
+  "$KICAD_CLI" pcb export svg --output /tmp/slt-optical-front.svg \
+    --layers F.Cu,F.Silkscreen,Edge.Cuts,F.Fab --page-size-mode 2 \
+    --fit-page-to-board --exclude-drawing-sheet --mode-single \
+    hardware/prototype/optical/one-sensor.kicad_pcb &&
+  "$KICAD_CLI" pcb export svg --output /tmp/slt-optical-back.svg \
+    --layers B.Cu,B.Silkscreen,Edge.Cuts,B.Fab --page-size-mode 2 \
+    --fit-page-to-board --exclude-drawing-sheet --mode-single \
+    hardware/prototype/optical/one-sensor.kicad_pcb
+fi
+```
+
+The archived DRC reports were generated without `--refill-zones`; the command above preserves that behavior and does not rewrite the native board. An optional new refill check is a separate analysis and cannot reproduce the archived report hash. Run it against a disposable board copy, not the authoritative PCB:
+
+```sh
+KICAD_CLI="/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
+if [ ! -x "$KICAD_CLI" ]; then
+  printf 'KiCad CLI not found at %s\n' "$KICAD_CLI"
+else
+  refill_dir="$(mktemp -d /tmp/slt-optical-drc-refill.XXXXXX)"
+  cp hardware/prototype/optical/one-sensor.kicad_pcb "$refill_dir/one-sensor.kicad_pcb"
+  "$KICAD_CLI" pcb drc --severity-all --exit-code-violations --refill-zones \
+    --format report --output "$refill_dir/optical-drc-refilled.rpt" \
+    "$refill_dir/one-sensor.kicad_pcb"
 fi
 ```
 
 To deliberately regenerate generated sources and BOM, run `node hardware/prototype/generate.mjs` without `--check`. It does not write `one-sensor.kicad_pcb`; the routed board is native KiCad source and must be edited in KiCad. Inspect the schematic and PCB in KiCad before fabrication. No Gerber or CPL output is approved.
 
-**Current local checks:** `generate.mjs --check` reports `stale: 0`, and `check.mjs` passes 387 checks. KiCad ERC reports no errors or warnings in either schematic. Optical PCB DRC and schematic parity report no violations or unconnected items. KiCad XML exports preserve component references, values, footprints, and pin-to-net mappings from the pre-edit snapshots (optical: 23 components and 9 nets; power/USB: 14 components and 12 nets). Replacing the four KM MPN strings and two source URLs with their former KT values restores the optical PCB byte-for-byte. Copper, pads, nets, placement, and mechanical geometry therefore match the pre-edit board. Five DRC categories and four ERC checks remain ignored. These checks do not establish physical fit, safety, or electrical performance.
+**Current local checks:** `generate.mjs --check` reports `stale: 0`, and `check.mjs` passes 389 checks. KiCad ERC reports no violations in either schematic. Optical PCB DRC and schematic parity report no violations or unconnected items. KiCad XML exports preserve component references, values, footprints, and pin-to-net mappings from the pre-edit snapshots (optical: 23 components and 9 nets; power/USB: 14 components and 12 nets). Reverting the four KM MPN strings, related capacitor source URLs, and J1 datasheet URL to their PR-base values restores the optical PCB byte-for-byte. Copper, pads, nets, placement, and mechanical geometry match the pre-edit board. Five DRC categories and four ERC checks remain ignored. Full-board 2D front and back SVGs were rendered and visually reviewed for board SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88`. This review does not establish package-body or enclosure clearance, connector mating, cable routing, optical-axis alignment, electrical safety, or performance.
 
 
 ### Critical pin and footprint cross-check
@@ -216,11 +247,13 @@ I checked the current KiCad XML netlists against the selected package drawings a
 
 The power/USB netlist now exports 14 uniquely referenced components without an annotation warning after the connector references changed from `J2A`/`J2B` to `J2`/`J6`. The electrical nets are unchanged. No carrier footprint is selected for the SN74LVC1G17, so its assembly remains unresolved.
 
-The KiCad CLI location above is documented for official macOS installs; check with `ls -l "$KICAD_CLI"` and, if needed, locate a nonstandard install using `find /Applications "$HOME/Applications" -name kicad-cli -type f 2>/dev/null`. Invoke the app-bundled binary directly rather than assuming `kicad-cli` is available on `PATH`. The ERC commands explicitly request both error and warning severities and short-circuit report validation if KiCad fails.
+The default macOS CLI path is `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`; check it with `ls -l /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`. For a nonstandard installation, locate `kicad-cli` with `find /Applications "$HOME/Applications" -name kicad-cli -type f 2>/dev/null`. Invoke the app-bundled binary directly; do not assume `kicad-cli` is on `PATH`. The ERC commands request both error and warning severities and stop report validation if KiCad fails.
 
-`generate.mjs --check` compares generated CAD outputs with their sources byte for byte. It detects drift but does not check KiCad correctness. The independent `check.mjs` structural checker parses the saved S-expressions and verifies project names, selected pin-to-net links, symbol/PCB UUID correspondence, pad numbers, DNP metadata, obvious overlaps between different-net pads, component counts, both copper layers, ground zone, tracks, vias, and routed net names. It also verifies `/EDGE` remains on F.Cu with no signal vias and both SFH 203 footprint copies show the maximum flange and 6.40 mm courtyard. The current run passed **387 checks with zero failures**, including J1 JST pad geometry and EDGE/MON fanout assertions, J2/J6 logical-pin and offboard-state assertions, and J5 preservation checks. Counts are 23 optical symbols, 14 power/USB symbols, 23 PCB footprints, 51 pads, and 44 BOM rows. It also checks the custom symbol library and both KiCad project manifests. These checks do not replace native KiCad ERC/DRC, electrical safety checks, or 3D visual inspection. Verify the vendor package revision and all symbol and pad numbers against manufacturer documentation.
+`generate.mjs --check` compares generated CAD outputs with their sources byte for byte. It detects drift but does not check KiCad correctness. The independent `check.mjs` structural checker parses the saved S-expressions and verifies project names, selected pin-to-net links, symbol/PCB UUID correspondence, pad numbers, DNP metadata, obvious overlaps between different-net pads, component counts, both copper layers, ground zone, tracks, vias, and routed net names. It also verifies `/EDGE` remains on F.Cu with no signal vias and both SFH 203 footprint copies show the maximum flange and 6.40 mm courtyard. The current run passed **389 checks with zero failures**, including J1 JST pad geometry and EDGE/MON fanout assertions, J2/J6 logical-pin and offboard-state assertions, and J5 preservation checks. Counts are 23 optical symbols, 14 power/USB symbols, 23 PCB footprints, 51 pads, and 44 BOM rows. It also checks the custom symbol library and both KiCad project manifests. These checks do not replace native KiCad ERC/DRC, electrical safety checks, or 3D visual inspection. Verify the vendor package revision and all symbol and pad numbers against manufacturer documentation.
 
-SPICE analysis is **PASS WITH LIMITATIONS** for the supplied TI macro models and the stated sensitivity envelope. It does not establish physical stability, the real photocurrent under panel illumination, or comparator discrimination. Keep the external models and evidence with the corresponding design revision. No software calculation substitutes for bench measurements.
+The structural checker reads BOM identity, source, price, and lifecycle fields. It checks J4 pin 1=`3V3`, pin 2=`GND`, and pin 3=`VBUS_PRESENT`. It rejects `DISCONTINUED`, `EOL`, `NRND`, `LAST_TIME_BUY`, and `OBSOLETE` statuses. BOM comments remain descriptive evidence.
+
+The **historical 2026-11-05** SPICE run was recorded as **PASS WITH LIMITATIONS** for supplied TI macro models and the stated sensitivity envelope. Its model files, simulator-provenance file, and output artifacts are unavailable; Gate A was **NOT_RERUN** for this candidate. It does not establish physical stability, real photocurrent under panel illumination, or comparator discrimination. No software calculation substitutes for bench measurements.
 
 ### Gate C analysis outcome
 
@@ -228,22 +261,22 @@ Current KiCad 10.0.8 checks and retained analyzer results:
 
 | Check | Result |
 | --- | --- |
-| Optical and power/USB ERC | KiCad 10.0.8 ERC JSON reports contain no errors or warnings. Optical `/tmp/issue3-capalt-optical-erc.json` SHA-256: `32d385e0fdc282b54606fe598a9878b5e890d1bc94f3f37f4287c89ac9aef4b2`; power/USB `/tmp/issue3-capalt-power-erc.json` SHA-256: `0eebab78aeb29254a9cdd00b9cbb2e27e31159a0f5be9808401d507d051c109c`. Each report lists four ignored checks. |
-| Generator and structural checker | Scoped `node hardware/prototype/generate.mjs --write-power-usb-only` followed by `--check`: `stale: 0`. `node hardware/prototype/check.mjs`: 387 checks, 0 failures; 23 optical symbols, 14 power/USB symbols, 23 PCB footprints, 51 pads and 44 BOM rows. |
-| Native PCB DRC and schematic parity | KiCad 10.0.8 `--severity-all --schematic-parity` on board SHA-256 `e4e53ecd714066aa89afe4351c4a5ddddc24c1f3467c77a571ab70ff6abd8822`: no violations, unconnected items, or schematic-parity findings. JSON report `/tmp/issue3-capalt-optical-drc.json` SHA-256: `98d749a1274971e0cfb9bfdfad5eba77a6fc1ae3e0593e632d36210621feb057`. Five project `Ignore` categories remain; no per-item exclusions were added. |
+| Optical and power/USB ERC | KiCad 10.0.8 ERC JSON reports contain no errors or warnings. Optical `/tmp/issue3-final-optical-erc.json` SHA-256: `b5a12a39d3fec4933807c29113a25d4b52401dfe8f107eeac72e4b30fac50edc`; power/USB `/tmp/issue3-final-power-erc.json` SHA-256: `2f144b16abba5db094683e9c39a270156a12eaa5964f3043f2b4f322d45b5dd8`. Each report lists four ignored checks. |
+| Generator and structural checker | Scoped `node hardware/prototype/generate.mjs --write-power-usb-only` followed by `--check`: `stale: 0`. `node hardware/prototype/check.mjs`: 389 checks, 0 failures; 23 optical symbols, 14 power/USB symbols, 23 PCB footprints, 51 pads and 44 BOM rows. |
+| Native PCB DRC and schematic parity | KiCad 10.0.8 `--severity-all --schematic-parity` on board SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88`: no violations, unconnected items, or schematic-parity findings. JSON report `/tmp/issue3-final-optical-drc.json` SHA-256: `16cebc366910f10d2d1f1760f3cefa0ae7b918c6feb9357c27f04eb3d261e5b2`. Five project `Ignore` categories remain; no per-item exclusions were added. |
 | Full PCB analysis | Historical 2026-11-05 report for predecessor board SHA-256 `9e1d17c113513dc6a83d4a4c4f935cb8eb841978bf7ce502709861c79c1f18fe`: 0 errors, 0 warnings and 12 informational findings; report SHA-256 `d99553d5c397b68729cd5d0e5ea5adbc23ce5b165111f400b230154e1a1505e4`. It was not rerun on the current board. |
 | Schematic/PCB cross-analysis | Historical 2026-11-05 result for predecessor board SHA-256 `9e1d17c113513dc6a83d4a4c4f935cb8eb841978bf7ce502709861c79c1f18fe`: 0 findings; report SHA-256 `6e77d4d63b9d542ae3a2d39a61fb3cd480f62d87acc76ad52cc69e7cdffd6f4e`. It was not rerun on the current board. |
 | EMC analysis | Historical run `20261105T225212Z-4a83ac`, bound to predecessor board SHA-256 `9e1d17c113513dc6a83d4a4c4f935cb8eb841978bf7ce502709861c79c1f18fe`: 8 findings (2 errors, 3 warnings and 3 informational) and an 80.5 heuristic score. Trust is low: 2 deterministic findings, 6 heuristic findings and 0% provenance coverage. Report SHA-256 `1fa3564ecaceb5fb88edbf548d3a768821356577c1759d9656e8e1a2b75746cb`. No EMC run was made on the current board; the design review is not compliance evidence. |
-| Structural checker | `node hardware/prototype/check.mjs` passed 387 checks with 0 failures. |
+| Structural checker | `node hardware/prototype/check.mjs` passed 389 checks with 0 failures. |
 | Thermal analysis | Skipped because the design has no trustworthy component-dissipation data; report SHA-256 `64a7c30391fb95e443934049b442bfeb6558cbbfab25ca1c7565c65b3c749c32`. |
-| Gate A SPICE | The prior 2026-11-05 run reported 12/12 assertions across 35 ngspice invocations, but its external inputs and output files are unavailable. It was not rerun for this candidate. |
-| Native full-board visual review | No full-board visual review was made against the current board hash. The earlier review is tied to an older board revision and does not qualify this candidate. |
+| Gate A SPICE | Historical 2026-11-05 run was recorded as **PASS WITH LIMITATIONS**; its prior summary reports 12/12 assertions across 35 ngspice invocations. External inputs and output files are unavailable. Gate A is **NOT_RERUN** for this candidate. |
+| Native full-board 2D layout review | Front and back KiCad SVGs for board SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88` were reviewed. Package-body and enclosure clearance, connector mating and retention, cable routing, and detector optical alignment remain unverified. |
 
-Fresh KiCad JSON reports are stored outside Git at `/tmp/issue3-capalt-optical-erc.json`, `/tmp/issue3-capalt-power-erc.json`, and `/tmp/issue3-capalt-optical-drc.json`; their hashes are recorded above. The historical analyzer and EMC raw files are not in the repository or the previously cited `/tmp/issue3-stage-a-20261105-final-analysis/` directory; only their recorded hashes, predecessor-board binding, and dispositions remain. The optical board SHA-256 is `e4e53ecd714066aa89afe4351c4a5ddddc24c1f3467c77a571ab70ff6abd8822`. KiCad 10.0.8 DRC used `--severity-all --schematic-parity`; it did not refill zones or write the board file.
+Fresh KiCad JSON reports are stored outside Git at `/tmp/issue3-final-optical-erc.json`, `/tmp/issue3-final-power-erc.json`, and `/tmp/issue3-final-optical-drc.json`; their hashes are recorded above. KiCad CLI exited 0 for all three commands; the host emitted Fontconfig configuration warnings. The historical analyzer and EMC raw files are not in the repository or the previously cited `/tmp/issue3-stage-a-20261105-final-analysis/` directory; only their recorded hashes, predecessor-board binding, and dispositions remain. The optical board SHA-256 is `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88`. KiCad 10.0.8 DRC used `--severity-all --schematic-parity`; it did not refill zones or write the board file.
 
 The pre-refill report for board hash `9b983eee2e39ced97e929a83c3d588c071b794c91568f47c300efb125895acb9` had three clearance errors, two hole-clearance errors, and two solder-mask-bridge errors. J1 pad 1 (/3V3) had 0.1755 mm copper clearance against the 0.2000 mm rule. J1 pads 3 (/EDGE) and 4 (/MON) each had 0.0000 mm copper clearance and 0.0000 mm hole clearance against the 0.2500 mm rule; both also had a rear solder-mask bridge. The J1 warning says its JST footprint differs from the Connector_JST library copy. The saved-board post-refill report and earlier in-memory refill report both have zero unconnected items and zero schematic-parity findings.
 
-The latest EMC report, run `20261105T225212Z-4a83ac`, is historical and bound to predecessor PCB SHA-256 `9e1d17c113513dc6a83d4a4c4f935cb8eb841978bf7ce502709861c79c1f18fe`. It reported low-trust findings: two deterministic and six heuristic, with 0% provenance coverage. The current candidate differs only in capacitor MPN/source metadata, and its copper and physical geometry match the predecessor. No EMC analysis was run on the current file hash. Report SHA-256: `1fa3564ecaceb5fb88edbf548d3a768821356577c1759d9656e8e1a2b75746cb`; PCB analysis JSON SHA-256: `d99553d5c397b68729cd5d0e5ea5adbc23ce5b165111f400b230154e1a1505e4`. This report is design-review input, not compliance evidence.
+The latest EMC report, run `20261105T225212Z-4a83ac`, is historical and bound to predecessor PCB SHA-256 `9e1d17c113513dc6a83d4a4c4f935cb8eb841978bf7ce502709861c79c1f18fe`. It reported low-trust findings: two deterministic and six heuristic, with 0% provenance coverage. The current candidate changes capacitor MPN/source metadata and J1's datasheet URL; its copper and physical geometry match the predecessor. No EMC analysis was run on the current file hash. Report SHA-256: `1fa3564ecaceb5fb88edbf548d3a768821356577c1759d9656e8e1a2b75746cb`; PCB analysis JSON SHA-256: `d99553d5c397b68729cd5d0e5ea5adbc23ce5b165111f400b230154e1a1505e4`. This report is design-review input, not compliance evidence.
 
 The /EDGE route remains on F.Cu without signal vias; the scan reported no finding for it. The coverage percentages below are analyzer estimates of opposite-layer copper presence. They do not establish that sampled copper is GND, measure return impedance, or demonstrate EMC performance. The board has one copper zone, a B.Cu GND plane; /VREF and /THRESH also route on B.Cu. Confidence below separates saved-board facts from the analyzer's heuristic interpretation and unmeasured physical effect.
 
@@ -262,7 +295,7 @@ The Stage-A EMC Design Review (EMC-DSR) is complete for this candidate and bound
 
 The PCB analyzer reports no opposite-layer copper beneath D1, U1, J1, RV1 or the through-hole test pads. The board has no separate keepout object; the input-loop void is the intentional GND-zone clearance, alongside local drilled-pad clearances. The board has no fiducials; its coarsest SMD pad pitch makes this a low pick-and-place risk. Test pads expose 5 of the 9 nets.
 
-The thermal analyzer could not estimate component temperatures because the design has no trustworthy dissipation data. The automated lifecycle audit was not run because manufacturer API credentials were unavailable; the manual lifecycle evidence and unresolved exact-MPN declarations are recorded in BENCH-003. Gerber analysis does not apply because no fabrication outputs were requested or generated. The latest model-based Gate A run is recorded above. No full-board native KiCad visual review was made against the current board hash. Gate A does not validate PCB layout or physical behavior; neither it nor DRC establishes electrical correctness, mechanical fit, or physical performance.
+The thermal analyzer could not estimate component temperatures because the design has no trustworthy dissipation data. The automated lifecycle audit was not run because manufacturer API credentials were unavailable; the manual lifecycle evidence and unresolved exact-MPN declarations are recorded in BENCH-003. Gerber analysis does not apply because no fabrication outputs were requested or generated. The latest model-based Gate A run is recorded above. Front and back KiCad SVGs for the current board were reviewed as a 2D layout. Package-body and enclosure clearance, connector mating and retention, cable routing, and detector optical alignment remain unverified. Gate A does not validate PCB layout or physical behavior; neither it nor DRC establishes electrical correctness, mechanical fit, or physical performance.
 
 ## Acceptance boundaries
 
