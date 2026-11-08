@@ -27,7 +27,7 @@ test('CSV parser preserves quoted commas and doubled quote characters', () => {
 
 test('Markdown link checker handles valid anchors and rejects broken local paths', (t) => {
   const root = scratch(t);
-  put(root, 'docs/index.md', '# Start\n[Read](other.md#operating-rules)\n');
+  put(root, 'docs/index.md', '# Start\n[Read](other.md#operating-rules)\n[Current](#start)\n');
   put(root, 'docs/other.md', '# Operating Rules\n');
   assert.equal(validateMarkdown(root).passed, true);
   put(root, 'docs/index.md', '# Start\n[Read](other.md#nonexistent)\n');

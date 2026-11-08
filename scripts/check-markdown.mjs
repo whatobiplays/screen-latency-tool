@@ -91,7 +91,7 @@ export function validateMarkdown(root = defaultRoot) {
       const [pathPart, fragment, ...extra] = target.split('#');
       if (extra.length) { errors.push(`${relative(root, file)}: invalid link fragment: ${target}`); continue; }
       if (pathPart.startsWith('/')) { errors.push(`${relative(root, file)}: absolute local link: ${target}`); continue; }
-      const resolved = resolve(dirname(file), pathPart || '.');
+      const resolved = pathPart ? resolve(dirname(file), pathPart) : file;
       if (relative(root, resolved).split(sep)[0] === '..' || isAbsolute(relative(root, resolved))) {
         errors.push(`${relative(root, file)}: link escapes repository: ${target}`);
         continue;
