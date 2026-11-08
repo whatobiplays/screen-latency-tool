@@ -1,0 +1,24 @@
+hardware/prototype/simulation/gate-a.mjs
+  s_dc91d14cda0e5d::t_1f9c7409985e5f 7,44
+  s_dc91d14cda0e5d::t_43eb4cdfd02d74 37-43
+hardware/prototype/simulation/model-provenance.test.mjs
+  s_dc91d14cda0e5d::t_1f9c7409985e5f 80-87,300,319,323
+  s_dc91d14cda0e5d::t_4fbf4e9693a42d 324-340
+  s_dc91d14cda0e5d::t_59805c018bbd7b 320-322
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "90e13c4739bebc736e98fb3231405217e39235bc",
+  "prompts": {},
+  "sessions": {
+    "s_dc91d14cda0e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1a915-74f7-7c52-a7c8-bdcf5296b7a3",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  }
+}
