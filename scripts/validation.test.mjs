@@ -94,6 +94,42 @@ test('Markdown headings join around HTML comments and quoted titles may contain 
   assert.doesNotMatch(result.errors.join('\n'), /Unclosed Markdown link/);
 });
 
+test('HTML-comment removal cannot fabricate code fences or deindent code', (t) => {
+  const root = scratch(t);
+  const index = 'docs/index.md';
+  put(root, index, [
+    '<!-- note -->' + '```',
+    '[Broken](missing-adjacent.md)',
+  ].join('\n') + '\n');
+  assert.match(validateMarkdown(root).errors.join('\n'), /missing-adjacent\.md/);
+
+  put(root, index, [
+    '<!--',
+    '```',
+    '-->' + '```',
+    '[Broken](missing-multiline.md)',
+  ].join('\n') + '\n');
+  assert.match(validateMarkdown(root).errors.join('\n'), /missing-multiline\.md/);
+
+  put(root, index, [
+    '    <!-- note -->[Ignored](missing-indented.md)',
+    '<!-- note -->' + '```',
+    '[Broken](missing-after-indented.md)',
+  ].join('\n') + '\n');
+  const errors = validateMarkdown(root).errors.join('\n');
+  assert.match(errors, /missing-after-indented\.md/);
+  assert.doesNotMatch(errors, /missing-indented\.md/);
+
+  put(root, index, [
+    '# Join<!-- note -->ed',
+    '[Heading](#joined)',
+    '```md',
+    '[Ignored](missing-real-fence.md)',
+    '```',
+  ].join('\n') + '\n');
+  assert.deepEqual(validateMarkdown(root).errors, []);
+});
+
 const knownBench001 = [
   'Low parts basket, not first-power ready',
   'Low parts basket plus deferred DHO814 what-if',

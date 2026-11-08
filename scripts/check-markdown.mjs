@@ -31,15 +31,21 @@ function visibleMarkdown(source, { links = false } = {}) {
   // headings (their rendered text contributes to a GitHub heading anchor).
   const withoutComments = source.replace(/<!--[\s\S]*?(?:-->|$)/g,
     (comment) => comment.replace(/[^\n]/g, ''));
+  const originalLines = source.split(/\r?\n/);
   let fence = null;
-  return withoutComments.split(/\r?\n/).map((line) => {
-    const marker = line.match(/^ {0,3}(`{3,}|~{3,})/);
+  return withoutComments.split(/\r?\n/).map((line, index) => {
+    const original = originalLines[index];
+    // A fence must begin at a valid position in the original Markdown, not
+    // become one merely because an earlier HTML comment was removed.
+    const marker = original.match(/^ {0,3}(`{3,}|~{3,})/) &&
+      line.match(/^ {0,3}(`{3,}|~{3,})/);
     if (marker) {
       if (!fence) fence = { character: marker[1][0], length: marker[1].length };
       else if (marker[1][0] === fence.character && marker[1].length >= fence.length) fence = null;
       return '';
     }
-    if (fence || /^(?: {4}|\t)/.test(line)) return '';
+    // Preserve indented-code semantics when removing a leading HTML comment.
+    if (fence || /^(?: {4}|\t)/.test(original)) return '';
     return links ? line.replace(/(`+)([^`\n]*?)\1/g, '') : line;
   }).join('\n');
 }
