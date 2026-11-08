@@ -1,4 +1,4 @@
-// Fail closed on broken repository-local Markdown links and heading anchors.
+// Validate repository-local Markdown destinations and GitHub-style heading anchors.
 // External URLs are intentionally not fetched: CI must remain deterministic/offline.
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -26,17 +26,21 @@ function markdownFiles(root) {
   return [...new Set(found)].sort();
 }
 
-function markdownText(text) {
+function visibleMarkdown(source, { links = false } = {}) {
+  // Preserve newlines while removing multiline comments. Code spans remain in
+  // headings (their rendered text contributes to a GitHub heading anchor).
+  const withoutComments = source.replace(/<!--[\s\S]*?(?:-->|$)/g,
+    (comment) => comment.replace(/[^\n]/g, ' '));
   let fence = null;
-  return text.split(/\r?\n/).map((line) => {
-    const marker = line.match(/^\s*(`{3,}|~{3,})/);
+  return withoutComments.split(/\r?\n/).map((line) => {
+    const marker = line.match(/^ {0,3}(`{3,}|~{3,})/);
     if (marker) {
       if (!fence) fence = { character: marker[1][0], length: marker[1].length };
       else if (marker[1][0] === fence.character && marker[1].length >= fence.length) fence = null;
       return '';
     }
-    if (fence) return '';
-    return line.replace(/<!--.*?-->/g, '').replace(/`[^`]*`/g, '');
+    if (fence || /^(?: {4}|\t)/.test(line)) return '';
+    return links ? line.replace(/(`+)([^`\n]*?)\1/g, '') : line;
   }).join('\n');
 }
 
@@ -54,23 +58,66 @@ function slug(text) {
 function headingIds(markdown) {
   const ids = new Set();
   const duplicates = new Map();
-  for (const match of markdown.matchAll(/^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$/gm)) {
-    const base = slug(match[1]);
-    if (!base) continue;
+  function add(text) {
+    const base = slug(text);
+    if (!base) return;
     const count = duplicates.get(base) ?? 0;
     ids.add(count ? `${base}-${count}` : base);
     duplicates.set(base, count + 1);
   }
+  const lines = markdown.split('\n');
+  for (let index = 0; index < lines.length; index++) {
+    const atx = lines[index].match(/^ {0,3}#{1,6}\s+(.+?)\s*#*\s*$/);
+    if (atx) add(atx[1]);
+    else if (index + 1 < lines.length &&
+             /^ {0,3}(?:=+|-+)\s*$/.test(lines[index + 1]) &&
+             lines[index].trim()) add(lines[index].trim());
+  }
   return ids;
 }
 
+function inlineDestinations(markdown) {
+  const result = [];
+  const opener = /!?\[[^\]\n]*\]\(/g;
+  for (const match of markdown.matchAll(opener)) {
+    let depth = 1;
+    let angle = false;
+    let end = match.index + match[0].length;
+    for (; end < markdown.length && depth; end++) {
+      const char = markdown[end];
+      if (char === '\\') { end++; continue; }
+      if (char === '\n') break;
+      if (char === '<' && depth === 1) angle = true;
+      else if (char === '>' && angle) angle = false;
+      else if (!angle && char === '(') depth++;
+      else if (!angle && char === ')') depth--;
+    }
+    if (depth === 0) result.push({ raw: markdown.slice(match.index + match[0].length, end - 1) });
+    else result.push({ error: `Unclosed Markdown link near ${markdown.slice(match.index, match.index + 55)}` });
+  }
+  return result;
+}
+
+function destinations(markdown) {
+  return [
+    ...inlineDestinations(markdown),
+    ...[...markdown.matchAll(/^ {0,3}\[[^\]\n]+\]:\s*(<[^>\n]*>|\S+)/gm)]
+      .map((match) => ({ raw: match[1] })),
+  ];
+}
+
 function localTarget(raw) {
-  const text = raw.trim().replace(/^<|>$/g, '');
-  const candidate = text.match(/^(\S+?)(?:\s+['"].*['"])?$/)?.[1] ?? text;
+  const text = raw.trim();
+  const angle = text.match(/^<([^>\n]*)>(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*$/);
+  const plain = text.match(/^((?:\\.|[^\s])+?)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*$/);
+  const candidate = angle?.[1] ?? plain?.[1] ?? text;
   if (/^(?:[A-Za-z][A-Za-z\d+.-]*:|\/\/)/.test(candidate)) return null;
-  if (candidate.startsWith('data:')) return null;
-  try { return decodeURIComponent(candidate); }
-  catch { return candidate; }
+  return candidate.replace(/\\([()\\#])/g, '$1');
+}
+
+function decodeComponent(value) {
+  try { return decodeURIComponent(value); }
+  catch { throw Error(`Invalid URI encoding: ${value}`); }
 }
 
 export function validateMarkdown(root = defaultRoot) {
@@ -80,16 +127,16 @@ export function validateMarkdown(root = defaultRoot) {
   let links = 0;
   let anchors = 0;
   for (const file of files) {
-    const text = markdownText(readFileSync(file, 'utf8'));
-    const destinations = [
-      ...text.matchAll(/!?\[[^\]\n]*\]\((<[^>]*>|[^)\n]+)\)/g),
-      ...text.matchAll(/^\s*\[[^\]]+\]:\s*(\S+)/gm),
-    ];
-    for (const match of destinations) {
-      const target = localTarget(match[1]);
+    const raw = readFileSync(file, 'utf8');
+    for (const entry of destinations(visibleMarkdown(raw, { links: true }))) {
+      if (entry.error) { errors.push(`${relative(root, file)}: ${entry.error}`); continue; }
+      const target = localTarget(entry.raw);
       if (target === null) continue;
-      const [pathPart, fragment, ...extra] = target.split('#');
+      const [rawPath, rawFragment, ...extra] = target.split('#');
       if (extra.length) { errors.push(`${relative(root, file)}: invalid link fragment: ${target}`); continue; }
+      let pathPart, fragment;
+      try { pathPart = decodeComponent(rawPath); fragment = rawFragment ? decodeComponent(rawFragment) : rawFragment; }
+      catch (error) { errors.push(`${relative(root, file)}: ${error.message}`); continue; }
       if (pathPart.startsWith('/')) { errors.push(`${relative(root, file)}: absolute local link: ${target}`); continue; }
       const resolved = pathPart ? resolve(dirname(file), pathPart) : file;
       if (relative(root, resolved).split(sep)[0] === '..' || isAbsolute(relative(root, resolved))) {
@@ -100,12 +147,12 @@ export function validateMarkdown(root = defaultRoot) {
       if (!existsSync(resolved)) { errors.push(`${relative(root, file)}: missing target ${target}`); continue; }
       if (fragment) {
         anchors++;
-        if (!statSync(resolved).isFile() || extname(resolved) !== '.md') {
+        if (!statSync(resolved).isFile() || extname(resolved).toLowerCase() !== '.md') {
           errors.push(`${relative(root, file)}: anchor on non-Markdown target: ${target}`);
           continue;
         }
         if (!cachedHeadings.has(resolved)) {
-          cachedHeadings.set(resolved, headingIds(markdownText(readFileSync(resolved, 'utf8'))));
+          cachedHeadings.set(resolved, headingIds(visibleMarkdown(readFileSync(resolved, 'utf8'))));
         }
         if (!cachedHeadings.get(resolved).has(fragment.toLowerCase())) {
           errors.push(`${relative(root, file)}: missing heading #${fragment} in ${relative(root, resolved)}`);

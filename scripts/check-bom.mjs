@@ -49,22 +49,61 @@ function cents(amount, label = 'amount') {
 }
 
 function moneyFrom(text, label) {
-  const match = text?.match(/\$([\d,]+(?:\.\d{1,2})?)/);
-  if (!match) throw Error(`Missing USD in ${label}: ${text}`);
+  const match = text?.match(/^\s*\$([\d,]+(?:\.\d{1,2})?)\s*$/);
+  if (!match) throw Error(`Invalid USD in ${label}: ${text}`);
   return cents(match[1], label);
 }
 
 function sumExpression(text, label) {
-  const expr = text.split('=')[0];
-  const tokens = [...expr.matchAll(/([+-])?\s*\$([\d,]+(?:\.\d{1,2})?)/g)];
+  const parts = text.split('=');
+  if (parts.length > 2) throw Error(`Multiple equality signs in ${label}`);
+  const expr = parts[0];
+  const tokens = [...expr.matchAll(/\$([\d,]+(?:\.\d{1,2})?)(?![\d.])/g)];
   if (!tokens.length) throw Error(`No arithmetic amounts in ${label}`);
-  // The scenario arithmetic columns use additions. Refuse an unsupported operator.
-  const stripped = expr.replace(/\$[\d,]+(?:\.\d{1,2})?/g, '').replace(/[+\s]/g, '');
-  if (stripped && !/[A-Za-z()/.]/.test(stripped)) {
-    throw Error(`Unrecognized scenario arithmetic in ${label}: ${expr}`);
-  }
-  return tokens.reduce((total, token) => total + (token[1] === '-' ? -1 : 1) * cents(token[2], label), 0);
+  const remainder = expr.replace(/\$[\d,]+(?:\.\d{1,2})?(?![\d.])/g, '');
+  if (/[*/%^$]/.test(remainder)) throw Error(`Unsupported operator or malformed amount in ${label}: ${expr}`);
+  // Source tables use additive itemized price terms. Descriptive labels (e.g.
+  // "Korad PE+") may occur between terms but do not alter their arithmetic.
+  const sum = tokens.reduce((total, token) => total + cents(token[1], label), 0);
+  const displayed = parts.length === 2 ? moneyFrom(parts[1], label + ' equation result') : null;
+  if (displayed !== null && sum !== displayed)
+    throw Error(`Equation result disagrees with arithmetic in ${label}: ${text}`);
+  return sum;
 }
+
+// These are the currently approved active scenario identities. Historical
+// alternative/MOQ tables are separate and must not be silently counted.
+const expectedScenarios = {
+  'BENCH-001:known': [
+    'Low parts basket, not first-power ready',
+    'Low parts basket plus deferred DHO814 what-if',
+    'Owner-incremental first-power base',
+    'Owner-incremental first-power base plus deferred DHO814 what-if',
+    'Owner-incremental six-board hypothetical, DHO814 deferred',
+    'Owner-incremental six-board hypothetical plus deferred DHO814 what-if',
+    'Full-purchase base, hypothetical',
+    'Full-purchase base plus deferred DHO814 what-if',
+    'Full-purchase six-board hypothetical, DHO814 included',
+  ],
+  'BENCH-003:known': [
+    'Low parts basket, not first-power ready',
+    'Owner-incremental first-power base',
+    'Owner-incremental six-board hypothetical, DHO814 deferred',
+    'Owner-incremental first-power base with deferred DHO814 what-if',
+    'Owner-incremental six-board hypothetical with deferred DHO814 what-if',
+    'Full-purchase base, hypothetical',
+    'Full-purchase six-board hypothetical with deferred DHO814 what-if',
+  ],
+  'BENCH-003:sensitivity': [
+    'Low parts basket, not first-power ready',
+    'Owner-incremental first-power base',
+    'Owner-incremental six-board hypothetical, DHO814 deferred',
+    'Owner-incremental first-power base with deferred DHO814 what-if',
+    'Owner-incremental six-board hypothetical with deferred DHO814 what-if',
+    'Full-purchase base, hypothetical',
+    'Full-purchase six-board hypothetical with deferred DHO814 what-if',
+  ],
+};
 
 function assertEqual(actual, expected, description, errors) {
   if (actual !== expected) errors.push(`${description}: expected $${(expected / 100).toFixed(2)}, got $${(actual / 100).toFixed(2)}`);
@@ -120,6 +159,8 @@ export function validateBom(root = defaultRoot) {
 
   let scenarios = 0;
   let highCase = null;
+  let highArithmetic = null;
+  const seen = new Map(Object.keys(expectedScenarios).map((key) => [key, new Set()]));
   for (const [path, body] of [['BENCH-001', bomDoc], ['BENCH-003', sourcingDoc]]) {
     let scenarioColumns = null;
     for (const line of body.split(/\r?\n/)) {
@@ -127,38 +168,52 @@ export function validateBom(root = defaultRoot) {
       const fields = line.split('|').slice(1, -1).map((field) => field.trim());
       if (fields[0] === 'Scenario' && fields.includes('Arithmetic')) {
         scenarioColumns = { kind: 'known', arithmetic: fields.indexOf('Arithmetic'), total: fields.indexOf('Known subtotal'), remainder: fields.indexOf('Remainder from $1,100 target'), cap: fields.indexOf('Remainder from approximately $1,300 ceiling') };
-        continue;
-      }
-      if (fields[0] === 'Scenario' && fields.includes('Calculation')) {
+      } else if (fields[0] === 'Scenario' && fields.includes('Calculation')) {
         scenarioColumns = { kind: 'sensitivity', arithmetic: fields.indexOf('Calculation'), total: fields.indexOf('Sensitivity subtotal'), remainder: fields.indexOf('Remainder from $1,100 target'), cap: fields.indexOf('Remainder from approximately $1,300 ceiling') };
-        continue;
+      } else {
+        if (!scenarioColumns || /^-+$/.test(fields[0])) continue;
+        const { arithmetic, total, remainder, cap, kind } = scenarioColumns;
+        if (arithmetic < 0 || total < 0 || !fields[arithmetic]?.includes('$')) continue;
+        const group = `${path}:${kind}`;
+        const label = `${path} / ${fields[0]}`;
+        if (!seen.has(group)) { errors.push(`Unexpected budget table ${group}`); continue; }
+        if (seen.get(group).has(fields[0])) errors.push(`Duplicate budget scenario ${label}`);
+        seen.get(group).add(fields[0]);
+        if (path === 'BENCH-003' && (remainder < 0 || cap < 0)) {
+          errors.push(`${label}: missing required headroom columns`);
+          continue;
+        }
+        let sum, subtotal;
+        try {
+          sum = sumExpression(fields[arithmetic], label);
+          subtotal = moneyFrom(fields[total], label);
+          if (remainder >= 0 && cap >= 0) {
+            assertEqual(moneyFrom(fields[remainder], label), 110000 - subtotal, label + ' $1,100 headroom', errors);
+            assertEqual(moneyFrom(fields[cap], label), 130000 - subtotal, label + ' $1,300 headroom', errors);
+          }
+        } catch (error) { errors.push(error.message); continue; }
+        assertEqual(sum, subtotal, label + ' arithmetic', errors);
+        if (fields[0] === 'Full-purchase six-board hypothetical, DHO814 included' && path === 'BENCH-001') {
+          highCase = subtotal;
+          highArithmetic = fields[arithmetic];
+        }
+        if (fields[0] === 'Full-purchase six-board hypothetical with deferred DHO814 what-if' && path === 'BENCH-003' && kind === 'known') {
+          if (highCase !== null) assertEqual(subtotal, highCase, 'High scenario across documents', errors);
+        }
+        scenarios++;
       }
-      if (!scenarioColumns || /^-+$/.test(fields[0])) continue;
-      const { arithmetic, total, remainder, cap } = scenarioColumns;
-      if (arithmetic < 0 || total < 0 || !fields[arithmetic]?.includes('$')) continue;
-      const label = `${path} / ${fields[0]}`;
-      let sum, subtotal;
-      try {
-        sum = sumExpression(fields[arithmetic], label);
-        subtotal = moneyFrom(fields[total], label);
-      } catch (error) { errors.push(error.message); continue; }
-      assertEqual(sum, subtotal, label + ' arithmetic', errors);
-      if (remainder >= 0 && cap >= 0) {
-        assertEqual(moneyFrom(fields[remainder], label), 110000 - subtotal, label + ' $1,100 headroom', errors);
-        assertEqual(moneyFrom(fields[cap], label), 130000 - subtotal, label + ' $1,300 headroom', errors);
-      }
-      if (fields[0].startsWith('Full-purchase six-board hypothetical') && scenarioColumns.kind === 'known') {
-        highCase = highCase == null ? subtotal : highCase;
-        assertEqual(subtotal, highCase, 'High scenario across documents', errors);
-      }
-      scenarios++;
     }
   }
-  if (scenarios < 10) errors.push(`Expected at least 10 active budget scenario reconciliations; saw ${scenarios}`);
-  if (highCase === null) errors.push('Active full-purchase high scenario missing');
-  // This exact scenario should still start from the active Strategy A basket.
-  if (strategyTotal && !bomDoc.includes(`$${(strategyTotal / 100).toFixed(2)} + $34.10`)) {
-    errors.push('BENCH-001 high scenario does not include current Strategy A subtotal');
+  for (const [group, names] of Object.entries(expectedScenarios)) {
+    for (const name of names) if (!seen.get(group).has(name)) errors.push(`Missing budget scenario ${group} / ${name}`);
+    for (const name of seen.get(group)) if (!names.includes(name)) errors.push(`Unexpected budget scenario ${group} / ${name}`);
+  }
+  if (highCase === null || highArithmetic === null) errors.push('Active full-purchase high scenario missing');
+  // Bind the source-basket assertion to the actual high-case row, not to any
+  // other scenario that happens to mention the same amount.
+  const prefix = `$${(strategyTotal / 100).toFixed(2)} + $34.10`;
+  if (highArithmetic && !highArithmetic.trim().startsWith(prefix)) {
+    errors.push(`BENCH-001 high scenario must start with current Strategy A and second PCB set: ${prefix}`);
   }
   return { passed: errors.length === 0, rows: csv.length, totalUsd: (totalCents / 100).toFixed(2), strategyAUsd: (strategyTotal / 100).toFixed(2), scenarioCount: scenarios, errors };
 }

@@ -69,7 +69,8 @@ export function validateKiCad({ root = defaultRoot, cli = cliPath(process.env.KI
   }
   const before = fileDigests(root);
   const version = run(cli, ['version'], 'KiCad CLI version', root).trim();
-  if (!new RegExp(`(^|[^0-9])${expectedVersion.replaceAll('.', '\\.')}([^0-9]|$)`).test(version)) {
+  const versionToken = version.match(/(?:^|[^0-9.])([0-9]+\.[0-9]+\.[0-9]+(?:[-+.][A-Za-z0-9.-]+)?)(?=$|[^A-Za-z0-9.+-])/)?.[1];
+  if (versionToken !== expectedVersion) {
     throw Error(`Expected KiCad ${expectedVersion}, got ${JSON.stringify(version)}; update the pinned validation profile deliberately`);
   }
 
