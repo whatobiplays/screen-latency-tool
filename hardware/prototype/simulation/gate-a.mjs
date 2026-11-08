@@ -4,7 +4,7 @@
 // model hashes, writes every generated deck and raw result to --out-dir, and prints a
 // concise JSON summary suitable for review.
 import { createHash } from "node:crypto";
-import { existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { basename, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import {
@@ -34,7 +34,14 @@ function clearPriorSummariesForIdentifiedOutputDirectories(argv) {
       if (!outputDirectories.has(outputDirectory)) {
         outputDirectories.add(outputDirectory);
 
-        if (existsSync(outputDirectory) && lstatSync(outputDirectory).isDirectory()) {
+        let isDirectory = false;
+        try {
+          isDirectory = statSync(outputDirectory).isDirectory();
+        } catch (error) {
+          if (error.code !== "ENOENT" && error.code !== "ENOTDIR") throw error;
+        }
+        if (isDirectory) {
+          // --out-dir selects this destination; remove only its prior summary, even through a directory symlink.
           rmSync(resolve(outputDirectory, "gate-a-summary.json"), { force: true });
         }
       }

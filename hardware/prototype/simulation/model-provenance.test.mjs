@@ -77,6 +77,14 @@ test("verifies supplied model identities only when every digest is approved", ()
   assert.equal(modelIdentityVerificationStatus(), "unverified");
 });
 
+test("marks an unrecognized model name unverified", () => {
+  assert.deepEqual(identifyModel("unknown-model", "0".repeat(64)), {
+    identityStatus: "unverified",
+    version: "UNVERIFIED",
+    approvedSha256: null,
+  });
+});
+
 const currentSimulatorSha256 = "a".repeat(64);
 const completeSimulatorProvenance = {
   sourceVersion: "ngspice-47",
@@ -289,7 +297,7 @@ test("removes a previous Gate A summary when a required option is omitted", () =
   }
 });
 
-test("does not remove a summary through a symlinked output directory", () => {
+test("removes a stale summary through the requested symlinked output directory", () => {
   const testRoot = mkdtempSync(join(tmpdir(), "gate-a-symlink-output-"));
   const targetDirectory = join(testRoot, "target");
   const linkedOutputDirectory = join(testRoot, "linked-output");
@@ -308,7 +316,28 @@ test("does not remove a summary through a symlinked output directory", () => {
     assert.ifError(result.error);
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /Arguments must be --name value pairs/);
-    assert.equal(existsSync(summaryPath), true);
+    assert.equal(existsSync(summaryPath), false);
+  } finally {
+    rmSync(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("reports malformed arguments without throwing for a dangling output-directory symlink", () => {
+  const testRoot = mkdtempSync(join(tmpdir(), "gate-a-dangling-output-link-"));
+  const linkedOutputDirectory = join(testRoot, "linked-output");
+  symlinkSync(join(testRoot, "missing-target"), linkedOutputDirectory, "dir");
+
+  try {
+    const result = spawnSync(process.execPath, [
+      gateAPath,
+      "--out-dir", linkedOutputDirectory,
+      "--opa-model",
+    ], { encoding: "utf8" });
+
+    assert.ifError(result.error);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Arguments must be --name value pairs/);
+    assert.doesNotMatch(result.stderr, /ENOENT|statSync/);
   } finally {
     rmSync(testRoot, { recursive: true, force: true });
   }
