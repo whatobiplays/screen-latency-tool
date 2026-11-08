@@ -175,66 +175,18 @@ Historical saved-board DRC on board SHA-256 `5727e81accea582dbb818c41f6af7d25ebd
 
 A before-and-after structural comparison found no changes to component placement, tracks, or zone boundaries. The refill changed generated zone-fill polygons. KiCad also serialized J1's unchanged 270° rotation as -90°; the structural checker accepts both values.
 
-```sh
-node hardware/prototype/generate.mjs --check
-node hardware/prototype/check.mjs
-node hardware/prototype/erc-report-gate.mjs --selftest
-node --test hardware/prototype/simulation/model-provenance.test.mjs
-
-# macOS: KiCad does not normally add its CLI to your shell PATH.
-# If installed elsewhere, adjust KICAD_CLI to the executable inside KiCad.app.
-KICAD_CLI="/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
-if [ ! -x "$KICAD_CLI" ]; then
-  printf 'KiCad CLI not found at %s\n' "$KICAD_CLI"
-else
-  "$KICAD_CLI" version &&
-  # Reproduce the saved-board check without refilling zones.
-  "$KICAD_CLI" pcb drc --severity-all --schematic-parity --exit-code-violations \
-    --format report --output /tmp/slt-optical-drc.rpt \
-    hardware/prototype/optical/one-sensor.kicad_pcb &&
-  "$KICAD_CLI" sch erc --severity-error --severity-warning \
-    -o /tmp/slt-optical-erc.rpt hardware/prototype/optical/one-sensor.kicad_sch &&
-  "$KICAD_CLI" sch erc --severity-error --severity-warning \
-    -o /tmp/slt-power-erc.rpt hardware/prototype/power-usb/power-usb.kicad_sch &&
-  "$KICAD_CLI" sch erc --severity-all --format json \
-    --output /tmp/slt-optical-erc.json hardware/prototype/optical/one-sensor.kicad_sch &&
-  "$KICAD_CLI" sch erc --severity-all --format json \
-    --output /tmp/slt-power-erc.json hardware/prototype/power-usb/power-usb.kicad_sch &&
-  node hardware/prototype/erc-report-gate.mjs \
-    /tmp/slt-optical-erc.rpt /tmp/slt-power-erc.rpt &&
-  # Export both board sides without refilling zones.
-  "$KICAD_CLI" pcb export svg --output /tmp/slt-optical-front.svg \
-    --layers F.Cu,F.Silkscreen,Edge.Cuts,F.Fab --page-size-mode 2 \
-    --fit-page-to-board --exclude-drawing-sheet --mode-single \
-    hardware/prototype/optical/one-sensor.kicad_pcb &&
-  "$KICAD_CLI" pcb export svg --output /tmp/slt-optical-back.svg \
-    --layers B.Cu,B.Silkscreen,Edge.Cuts,B.Fab --page-size-mode 2 \
-    --fit-page-to-board --exclude-drawing-sheet --mode-single \
-    hardware/prototype/optical/one-sensor.kicad_pcb
-fi
-```
-
-The archived DRC reports were generated without `--refill-zones`; the command above preserves that behavior and does not rewrite the native board. An optional new refill check is a separate analysis and cannot reproduce the archived report hash. Run it against a disposable board copy, not the authoritative PCB:
+The repository has one deterministic source check and a separate native KiCad profile. Run them from the repository root:
 
 ```sh
-KICAD_CLI="/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
-if [ ! -x "$KICAD_CLI" ]; then
-  printf 'KiCad CLI not found at %s\n' "$KICAD_CLI"
-else
-  refill_dir="$(mktemp -d /tmp/slt-optical-drc-refill.XXXXXX)"
-  cp hardware/prototype/optical/one-sensor.kicad_pcb "$refill_dir/one-sensor.kicad_pcb"
-  cp hardware/prototype/optical/one-sensor.kicad_pro "$refill_dir/one-sensor.kicad_pro"
-  cp hardware/prototype/optical/fp-lib-table "$refill_dir/fp-lib-table"
-  cp -R hardware/prototype/optical/ProtoOpto.pretty "$refill_dir/ProtoOpto.pretty"
-  "$KICAD_CLI" pcb drc --severity-all --exit-code-violations --refill-zones \
-    --format report --output "$refill_dir/optical-drc-refilled.rpt" \
-    "$refill_dir/one-sensor.kicad_pcb"
-fi
+make check
+make check-kicad
 ```
 
-The matching project file preserves the board's custom DRC severities. Copying the footprint table and library keeps the project context available in the temporary directory. This command does not run schematic parity and does not save changes to the authoritative board.
+`make check` is the CI gate. It runs generated-source drift and structural checks, the ERC report-gate self-test, Gate A model-provenance/summary regressions, independently reconciled BOM arithmetic, local Markdown links/anchors, and validation-script fixture tests. It does **not** execute analog Gate A simulations or KiCad and does not qualify first-power or physical hardware.
 
-To deliberately regenerate generated sources and BOM, run `node hardware/prototype/generate.mjs` without `--check`. It does not write `one-sensor.kicad_pcb`; the routed board is native KiCad source and must be edited in KiCad. Inspect the schematic and PCB in KiCad before fabrication. No Gerber or CPL output is approved.
+`make check-kicad` requires **KiCad CLI 10.0.8** (macOS app-bundled CLI or `KICAD_CLI` override). The maintained `scripts/check-kicad.mjs` copies the source PCB and both schematics, matching `.kicad_pro` files, footprint/symbol library tables, shared symbols and `ProtoOpto.pretty` into a disposable directory. It verifies the five project-specific ignored DRC categories, executes **new** refilled optical DRC with schematic parity and both enabled ERC checks, and compares every authoritative input hash before and after. Raw reports stay outside the repository; set `KICAD_KEEP_REPORTS=1` to retain successful report exports in the printed temporary directory. A failed run retains its disposable project for inspection.
+
+The previously archived DRC results were captured **without** `--refill-zones`; the new refilled check is distinct evidence and cannot reproduce those historical report hashes. Neither check modifies the authoritative PCB, approves Gerbers, or clears Stage-B or Stage-C safety/measurement gates. For a changed KiCad version or ignored-rule configuration, update the pinned profile deliberately and review the evidence rather than silently accepting drift.
 
 **Current local checks:** `generate.mjs --check` reports `stale: 0`, and `check.mjs` passes 389 checks. KiCad ERC reports no violations in either schematic. Optical PCB DRC and schematic parity report no violations or unconnected items. KiCad XML exports preserve component references, values, footprints, and pin-to-net mappings from the recorded snapshots (optical: 23 components and 9 nets; power/USB: 14 components and 12 nets). The optical-board metadata comparison starts from commit `a54ba2d3be7af7e84236752619fd93688ff913e5`, whose board SHA-256 is `e4e53ecd714066aa89afe4351c4a5ddddc24c1f3467c77a571ab70ff6abd8822`. The candidate board at `fe0f64ac08a1f7b81f3f818b37803a6f352271d7` has SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88`; its only board-file change from that snapshot is the J1 datasheet URL. The PR-base board at `8159dbddd19f1df490b89d0bf0a5112f328b7c43` has SHA-256 `0ca87c5e09f40fc6def6420eb239e26818b0fee28e4d9d4c6afdffe6080b528a` and a 2.54 mm pin header at J1. The candidate uses a 2.00 mm JST PH footprint. Copper, pads, nets, placement, and mechanical geometry match the `a54ba2d` snapshot. Five DRC categories and four ERC checks remain ignored. Full-board 2D front and back SVGs were rendered and visually reviewed for the candidate board hash above. This review does not establish package-body or enclosure clearance, connector mating, cable routing, optical-axis alignment, electrical safety, or performance.
 

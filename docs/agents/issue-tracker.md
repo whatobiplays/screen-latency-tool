@@ -339,6 +339,15 @@ Use the [triage labels](triage-labels.md) to classify readiness. Use `ready-for-
 
 On completion, link the pull request or commit and the observable automated or physical qualification evidence to the issue. Preserve links to source specifications and qualification output. A failed qualification attempt must remain distinguishable from later successful evidence.
 
+## Implementation isolation and final-head review
+
+**Isolation before implementation.** Capture the active base commit, current checkout status, and branch before editing. Use a separate named feature branch and Git worktree for each issue slice; keep the primary checkout and existing uncommitted work intact. When a tool environment cannot create or access a local worktree, use an isolated remote branch with exact-blob verification, or stop with a precise limitation. Never use unrelated primary-checkout edits as the implicit candidate for a new issue. This prevents local history/artifacts and in-flight work from contaminating an unrelated PR.
+
+**Final-head gate.** Before recommending a merge, compare the entire candidate with its merge base and capture the exact proposed HEAD, all changed paths, and current test/CI evidence. Require separate Standards and Spec reviews bound to that HEAD, and disposition in-scope review threads with evidence. A later documentation-only commit can inherit a completed full-candidate review *only* if a new exact-head delta review proves the change is prose-only, identifies the retained source/test hashes, and states which earlier checks were not rerun. Code, generator, CAD, simulation, security, safety, or acceptance-contract changes require fresh full-diff review and impacted validation. Never describe a stale-head or incomplete review as a clean current-head pass.
+
+**Evidence and authorization.** Record merge readiness and limitations on the PR, and owner acceptance/closure authorization on the GitHub issue. A clean merge state or green CI does not approve purchasing, physical tests, fabrication, or issue closure; preserve any separate safety or owner gates.
+
+
 ## Issue #1 navigation
 
 Issue #1 is the initial documentation-publication slice for this repository, but it is not a portable task identifier for forks or checkouts with different issue history. Run this block in the same shell in which the discovery sequence above completed successfully. The block stops if Issue #1 is not the expected documentation-publication task. Do not reuse Issue #1 navigation after a mismatch; identify and confirm the active repository's current task issue before running issue operations.
