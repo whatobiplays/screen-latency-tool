@@ -1,0 +1,42 @@
+hardware/prototype/simulation/gate-a.mjs
+  s_dc91d14cda0e5d::t_7b77832bc75c47 7,37
+  s_dc91d14cda0e5d::t_c1bc1114ec3251 13,21-22,25,44,47-49,55-63,68-70,469
+  s_dc91d14cda0e5d::t_e6a08ac5a6e833 23-24,26-36,38-43,45-46
+docs/specs/SPEC-X-001-fixture-and-mechanics.md
+  s_dc91d14cda0e5d::t_38ce92da81f4d6 28-31
+hardware/prototype/simulation/model-provenance.mjs
+  s_dc91d14cda0e5d::t_c1bc1114ec3251 26-30,32-33
+hardware/prototype/simulation/model-provenance.test.mjs
+  s_dc91d14cda0e5d::t_487d8a565184ea 248,251
+  s_dc91d14cda0e5d::t_c6fa87a7a6bf5e 3,291-311
+  s_dc91d14cda0e5d::t_c1bc1114ec3251 11,75-77
+  s_dc91d14cda0e5d::t_45a0feb8bd4698 16-36,70,211-212,219-226,228-229,231-247,249-250,252-264,269-270,312-314
+  s_dc91d14cda0e5d::t_379dfd30df3034 227,230,265-268
+  s_572fff539c3fed::t_31fdfd1d9351e2 271-272,315
+hardware/prototype/README.md
+  s_dc91d14cda0e5d::t_38ce92da81f4d6 182,226-228,235-236,239
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cc9cda10cf4e60ccfffcc851692706992ed85709",
+  "prompts": {},
+  "sessions": {
+    "s_572fff539c3fed": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a188a8-3280-7891-9d5c-5b2049a8842a",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    },
+    "s_dc91d14cda0e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1a915-74f7-7c52-a7c8-bdcf5296b7a3",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "WhatObiPlays <219249021+whatobiplays@users.noreply.github.com>"
+    }
+  }
+}
