@@ -4,13 +4,13 @@
 // model hashes, writes every generated deck and raw result to --out-dir, and prints a
 // concise JSON summary suitable for review.
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import {
   identifyModel,
   missingSimulatorProvenanceFields,
-  modelQualificationStatus,
+  modelIdentityVerificationStatus,
 } from "./model-provenance.mjs";
 
 function fail(message) {
@@ -18,24 +18,60 @@ function fail(message) {
   process.exit(2);
 }
 
+function clearPriorSummariesForIdentifiedOutputDirectories(argv) {
+  const outputDirectories = new Set();
+  for (let index = 0; index < argv.length;) {
+    const key = argv[index];
+    const candidate = argv[index + 1];
+    if (!key?.startsWith("--") || key === "--") {
+      index += candidate == null ? 1 : 2;
+      continue;
+    }
+
+    if (key === "--out-dir" && typeof candidate === "string" && candidate.length > 0 &&
+        !candidate.startsWith("--")) {
+      const outputDirectory = resolve(candidate);
+      if (!outputDirectories.has(outputDirectory)) {
+        outputDirectories.add(outputDirectory);
+
+        if (existsSync(outputDirectory) && lstatSync(outputDirectory).isDirectory()) {
+          rmSync(resolve(outputDirectory, "gate-a-summary.json"), { force: true });
+        }
+      }
+      index += 2;
+      continue;
+    }
+
+    // Consume option-looking values with their key so they are never mistaken for options.
+    index += candidate == null ? 1 : 2;
+  }
+}
+
 function argumentsFrom(argv) {
   const values = {};
   for (let index = 0; index < argv.length; index += 2) {
     const key = argv[index];
     const value = argv[index + 1];
-    if (!key?.startsWith("--") || value == null) fail("Arguments must be --name value pairs.");
-    values[key.slice(2)] = value;
+    if (!key?.startsWith("--") || key === "--" || typeof value !== "string" ||
+        value.length === 0 || value.startsWith("--")) {
+      fail("Arguments must be --name value pairs with a non-empty value.");
+    }
+    const name = key.slice(2);
+    if (name === "out-dir" && Object.hasOwn(values, name)) {
+      fail("Duplicate --out-dir arguments are not allowed.");
+    }
+    values[name] = value;
   }
   return values;
 }
 
-const args = argumentsFrom(process.argv.slice(2));
+const argv = process.argv.slice(2);
+clearPriorSummariesForIdentifiedOutputDirectories(argv);
+const args = argumentsFrom(argv);
 const outDir = args["out-dir"] ? resolve(args["out-dir"]) : undefined;
 const summaryPath = outDir ? resolve(outDir, "gate-a-summary.json") : undefined;
 if (outDir) {
   mkdirSync(outDir, { recursive: true });
-  // Clear an old summary before a missing option or input file can stop the run.
-  rmSync(summaryPath, { force: true });
 }
 
 for (const required of ["opa-model", "tlv-model", "out-dir", "simulator-provenance"]) {
@@ -430,6 +466,7 @@ wrdata __DATA__ v(cmp_out) v(vcc)
 const summary = {
   status: "passed",
   modelProvenance: {
+    identityVerificationStatus: modelIdentityVerificationStatus(opaModelIdentity, tlvModelIdentity),
     opa320: {
       file: basename(paths.opa), sha256: opaModelSha256,
       sourcePage: "https://www.ti.com/product/OPA320-Q1#design-tools-simulation",
@@ -528,9 +565,6 @@ const gates = [
 const failures = gates.filter(([passed]) => !passed).map(([, name]) => name);
 summary.assertions = { passed: gates.length - failures.length, failed: failures };
 if (failures.length) summary.status = "failed";
-else if (modelQualificationStatus(opaModelIdentity, tlvModelIdentity) === "unqualified") {
-  summary.status = "unqualified";
-}
 
 writeFileSync(summaryPath, `${JSON.stringify(summary, null, 2)}\n`);
 console.log(JSON.stringify(summary, null, 2));

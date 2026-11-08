@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,11 +8,32 @@ import test from "node:test";
 import {
   identifyModel,
   missingSimulatorProvenanceFields,
-  modelQualificationStatus,
+  modelIdentityVerificationStatus,
 } from "./model-provenance.mjs";
 
 const opaSha256 = "7b69547828f702638d32e2fddc632defd6bb0d66c66cb1d2d2baca61ff471f35";
 const tlvSha256 = "4e4345dc2929ee91a99a0b5437369c32b3817e9c8673a7ae90310d5485a81ba9";
+const gateAPath = fileURLToPath(new URL("./gate-a.mjs", import.meta.url));
+
+function runGateAWithPriorSummaries(outputDirectoryNames, argsFor) {
+  const testRoot = mkdtempSync(join(tmpdir(), "gate-a-arguments-"));
+  const outputDirectories = outputDirectoryNames.map((name) => join(testRoot, name));
+  for (const outputDirectory of outputDirectories) {
+    mkdirSync(outputDirectory);
+    writeFileSync(join(outputDirectory, "gate-a-summary.json"), JSON.stringify({ status: "passed" }));
+  }
+
+  try {
+    const result = spawnSync(process.execPath, [gateAPath, ...argsFor(outputDirectories)], { encoding: "utf8" });
+    return {
+      result,
+      remainingSummaries: outputDirectories.map((outputDirectory) =>
+        existsSync(join(outputDirectory, "gate-a-summary.json"))),
+    };
+  } finally {
+    rmSync(testRoot, { recursive: true, force: true });
+  }
+}
 
 test("recognizes the approved OPAx320-Q1 model digest", () => {
   const identity = identifyModel("opa320", opaSha256);
@@ -46,13 +67,14 @@ test("marks a mismatched TLV3501 model digest unverified", () => {
   assert.equal(identity.approvedSha256, tlvSha256);
 });
 
-test("marks model analysis unqualified when any supplied model digest is unverified", () => {
+test("verifies supplied model identities only when every digest is approved", () => {
   const verifiedOpa = identifyModel("opa320", opaSha256);
   const verifiedTlv = identifyModel("tlv3501", tlvSha256);
   const unverifiedTlv = identifyModel("tlv3501", "0".repeat(64));
 
-  assert.equal(modelQualificationStatus(verifiedOpa, verifiedTlv), "qualified");
-  assert.equal(modelQualificationStatus(verifiedOpa, unverifiedTlv), "unqualified");
+  assert.equal(modelIdentityVerificationStatus(verifiedOpa, verifiedTlv), "verified");
+  assert.equal(modelIdentityVerificationStatus(verifiedOpa, unverifiedTlv), "unverified");
+  assert.equal(modelIdentityVerificationStatus(), "unverified");
 });
 
 const currentSimulatorSha256 = "a".repeat(64);
@@ -186,9 +208,65 @@ test("removes a previous Gate A summary before validating input files", () => {
 
     assert.ifError(result.error);
     assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Required file does not exist:/);
+    assert.doesNotMatch(result.stderr, /Arguments must be --name value pairs/);
     assert.equal(existsSync(summaryPath), false);
   } finally {
     rmSync(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("removes every identifiable prior summary before malformed Gate A arguments fail", async (t) => {
+  const cases = [
+    {
+      name: "dangling option after --out-dir",
+      outputDirectories: ["out"],
+      args: ([out]) => ["--out-dir", out, "--opa-model"],
+    },
+    {
+      name: "does not infer --out-dir from an option-looking model value",
+      outputDirectories: ["out"],
+      args: ([out]) => ["--opa-model", "--out-dir", out],
+      expectedRemainingSummaries: [true],
+    },
+    {
+      name: "malformed pair before --out-dir",
+      outputDirectories: ["out"],
+      args: ([out]) => ["bare-token", "value", "--out-dir", out],
+    },
+    {
+      name: "malformed pair after --out-dir",
+      outputDirectories: ["out"],
+      args: ([out]) => ["--out-dir", out, "bare-token", "value"],
+    },
+    {
+      name: "duplicate output directories",
+      outputDirectories: ["first", "second"],
+      args: ([first, second]) => ["--out-dir", first, "--out-dir", second],
+    },
+    {
+      name: "does not infer an output directory from an option-looking --out-dir value",
+      outputDirectories: ["out"],
+      args: ([out]) => ["--out-dir", "--out-dir", out],
+      expectedRemainingSummaries: [true],
+    },
+  ];
+
+  for (const invocation of cases) {
+    await t.test(invocation.name, () => {
+      const { result, remainingSummaries } = runGateAWithPriorSummaries(
+        invocation.outputDirectories,
+        invocation.args,
+      );
+
+      assert.ifError(result.error);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /Arguments must be --name value pairs|Duplicate --out-dir/);
+      assert.deepEqual(
+        remainingSummaries,
+        invocation.expectedRemainingSummaries ?? invocation.outputDirectories.map(() => false),
+      );
+    });
   }
 });
 
@@ -206,6 +284,31 @@ test("removes a previous Gate A summary when a required option is omitted", () =
     assert.ifError(result.error);
     assert.notEqual(result.status, 0);
     assert.equal(existsSync(summaryPath), false);
+  } finally {
+    rmSync(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("does not remove a summary through a symlinked output directory", () => {
+  const testRoot = mkdtempSync(join(tmpdir(), "gate-a-symlink-output-"));
+  const targetDirectory = join(testRoot, "target");
+  const linkedOutputDirectory = join(testRoot, "linked-output");
+  mkdirSync(targetDirectory);
+  symlinkSync(targetDirectory, linkedOutputDirectory, "dir");
+  const summaryPath = join(targetDirectory, "gate-a-summary.json");
+  writeFileSync(summaryPath, JSON.stringify({ status: "passed" }));
+
+  try {
+    const result = spawnSync(process.execPath, [
+      gateAPath,
+      "--out-dir", linkedOutputDirectory,
+      "--opa-model",
+    ], { encoding: "utf8" });
+
+    assert.ifError(result.error);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Arguments must be --name value pairs/);
+    assert.equal(existsSync(summaryPath), true);
   } finally {
     rmSync(testRoot, { recursive: true, force: true });
   }

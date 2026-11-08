@@ -23,11 +23,14 @@ export function identifyModel(name, suppliedSha256) {
   };
 }
 
-/** Returns "qualified" when at least one model is supplied and every identity is verified; otherwise returns "unqualified". */
-export function modelQualificationStatus(...identities) {
+/**
+ * Reports whether every supplied model file matches a recorded hash identity.
+ * Hash verification does not establish electrical, package, lifecycle, or circuit suitability.
+ */
+export function modelIdentityVerificationStatus(...identities) {
   return identities.length > 0 && identities.every(({ identityStatus }) => identityStatus === "verified")
-    ? "qualified"
-    : "unqualified";
+    ? "verified"
+    : "unverified";
 }
 
 const simulatorProvenanceFields = Object.freeze([

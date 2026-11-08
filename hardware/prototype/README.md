@@ -179,6 +179,7 @@ A before-and-after structural comparison found no changes to component placement
 node hardware/prototype/generate.mjs --check
 node hardware/prototype/check.mjs
 node hardware/prototype/erc-report-gate.mjs --selftest
+node --test hardware/prototype/simulation/model-provenance.test.mjs
 
 # macOS: KiCad does not normally add its CLI to your shell PATH.
 # If installed elsewhere, adjust KICAD_CLI to the executable inside KiCad.app.
@@ -222,15 +223,20 @@ if [ ! -x "$KICAD_CLI" ]; then
 else
   refill_dir="$(mktemp -d /tmp/slt-optical-drc-refill.XXXXXX)"
   cp hardware/prototype/optical/one-sensor.kicad_pcb "$refill_dir/one-sensor.kicad_pcb"
+  cp hardware/prototype/optical/one-sensor.kicad_pro "$refill_dir/one-sensor.kicad_pro"
+  cp hardware/prototype/optical/fp-lib-table "$refill_dir/fp-lib-table"
+  cp -R hardware/prototype/optical/ProtoOpto.pretty "$refill_dir/ProtoOpto.pretty"
   "$KICAD_CLI" pcb drc --severity-all --exit-code-violations --refill-zones \
     --format report --output "$refill_dir/optical-drc-refilled.rpt" \
     "$refill_dir/one-sensor.kicad_pcb"
 fi
 ```
 
+The matching project file preserves the board's custom DRC severities. Copying the footprint table and library keeps the project context available in the temporary directory. This command does not run schematic parity and does not save changes to the authoritative board.
+
 To deliberately regenerate generated sources and BOM, run `node hardware/prototype/generate.mjs` without `--check`. It does not write `one-sensor.kicad_pcb`; the routed board is native KiCad source and must be edited in KiCad. Inspect the schematic and PCB in KiCad before fabrication. No Gerber or CPL output is approved.
 
-**Current local checks:** `generate.mjs --check` reports `stale: 0`, and `check.mjs` passes 389 checks. KiCad ERC reports no violations in either schematic. Optical PCB DRC and schematic parity report no violations or unconnected items. KiCad XML exports preserve component references, values, footprints, and pin-to-net mappings from the pre-edit snapshots (optical: 23 components and 9 nets; power/USB: 14 components and 12 nets). Reverting the four KM MPN strings, related capacitor source URLs, and J1 datasheet URL to their PR-base values restores the optical PCB byte-for-byte. Copper, pads, nets, placement, and mechanical geometry match the pre-edit board. Five DRC categories and four ERC checks remain ignored. Full-board 2D front and back SVGs were rendered and visually reviewed for board SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88`. This review does not establish package-body or enclosure clearance, connector mating, cable routing, optical-axis alignment, electrical safety, or performance.
+**Current local checks:** `generate.mjs --check` reports `stale: 0`, and `check.mjs` passes 389 checks. KiCad ERC reports no violations in either schematic. Optical PCB DRC and schematic parity report no violations or unconnected items. KiCad XML exports preserve component references, values, footprints, and pin-to-net mappings from the pre-edit snapshots (optical: 23 components and 9 nets; power/USB: 14 components and 12 nets). The PR-base board used a 2.54 mm pin header at J1; the current board uses the 2.00 mm JST PH footprint. Reverting MPN strings and source URLs therefore cannot restore byte identity with the PR-base board. Copper, pads, nets, placement, and mechanical geometry match the pre-edit board. Five DRC categories and four ERC checks remain ignored. Full-board 2D front and back SVGs were rendered and visually reviewed for board SHA-256 `3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88`. This review does not establish package-body or enclosure clearance, connector mating, cable routing, optical-axis alignment, electrical safety, or performance.
 
 
 ### Critical pin and footprint cross-check
