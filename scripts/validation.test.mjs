@@ -77,6 +77,23 @@ test('Markdown checker does not treat encoded fragment delimiters as raw hashes'
   assert.match(validateMarkdown(root).errors.join('\n'), /missing heading/);
 });
 
+test('Markdown headings join around HTML comments and quoted titles may contain parentheses', (t) => {
+  const root = scratch(t);
+  put(root, 'docs/target.md', '# Target\n');
+  put(root, 'docs/index.md', [
+    '# Join<!-- hidden -->ed',
+    '[Heading](#joined)',
+    '[Double title](target.md "description ) with paren")',
+    "[Single title](target.md 'description ( with paren')",
+    '[Title parens](target.md (description))',
+  ].join('\n') + '\n');
+  assert.deepEqual(validateMarkdown(root).errors, []);
+  put(root, 'docs/index.md', '[Missing](missing.md "still ) a title")\n');
+  const result = validateMarkdown(root);
+  assert.match(result.errors.join('\n'), /missing target/);
+  assert.doesNotMatch(result.errors.join('\n'), /Unclosed Markdown link/);
+});
+
 const knownBench001 = [
   'Low parts basket, not first-power ready',
   'Low parts basket plus deferred DHO814 what-if',
@@ -138,6 +155,19 @@ test('BOM checker fails when a manifest line extension changes without its unit 
   const result = validateBom(root);
   assert.equal(result.passed, false);
   assert.match(result.errors.join('\n'), /Incorrect extension|generated subtotal/);
+});
+
+test('BOM checker rejects malformed thousands-grouping in subtotals and formulas', (t) => {
+  const root = scratch(t);
+  bomFixture(root);
+  const doc = join(root, 'docs/bench/PROTOTYPE-BENCH-BOM.md');
+  const baseline = readFileSync(doc, 'utf8');
+  for (const malformed of ['$1,2', '$12,34', '$1,23,456']) {
+    writeFileSync(doc, baseline.replace(' | $35.15 |', ` | ${malformed} |`));
+    assert.match(validateBom(root).errors.join('\n'), /Invalid USD/, malformed);
+    writeFileSync(doc, baseline.replace('$1.05 + $34.10', `${malformed} + $34.10`));
+    assert.match(validateBom(root).errors.join('\n'), /Invalid USD/, malformed);
+  }
 });
 
 function kicadFixture(t) {

@@ -30,7 +30,7 @@ function visibleMarkdown(source, { links = false } = {}) {
   // Preserve newlines while removing multiline comments. Code spans remain in
   // headings (their rendered text contributes to a GitHub heading anchor).
   const withoutComments = source.replace(/<!--[\s\S]*?(?:-->|$)/g,
-    (comment) => comment.replace(/[^\n]/g, ' '));
+    (comment) => comment.replace(/[^\n]/g, ''));
   let fence = null;
   return withoutComments.split(/\r?\n/).map((line) => {
     const marker = line.match(/^ {0,3}(`{3,}|~{3,})/);
@@ -82,11 +82,23 @@ function inlineDestinations(markdown) {
   for (const match of markdown.matchAll(opener)) {
     let depth = 1;
     let angle = false;
+    let titleEnd = null;
     let end = match.index + match[0].length;
     for (; end < markdown.length && depth; end++) {
       const char = markdown[end];
       if (char === '\\') { end++; continue; }
       if (char === '\n') break;
+      if (titleEnd !== null) {
+        if (char === titleEnd) titleEnd = null;
+        continue;
+      }
+      // Quoted or parenthesized Markdown link titles start after whitespace.
+      // Parentheses inside a quoted title are content, not destination nesting.
+      if (!angle && depth === 1 && /[ \t]/.test(markdown[end - 1]) &&
+          (char === '"' || char === "'" || char === '(')) {
+        titleEnd = char === '(' ? ')' : char;
+        continue;
+      }
       if (char === '<' && depth === 1) angle = true;
       else if (char === '>' && angle) angle = false;
       else if (!angle && char === '(') depth++;

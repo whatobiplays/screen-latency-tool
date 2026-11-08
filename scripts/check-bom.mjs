@@ -43,13 +43,15 @@ function currencyMicros(amount, label) {
 }
 
 function cents(amount, label = 'amount') {
+  if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,6})?$/.test(amount))
+    throw Error(`Invalid USD ${label}: ${amount}`);
   const micros = currencyMicros(amount.replaceAll(',', ''), label);
   if (micros % 10_000) throw Error(`Not an exact cent amount (${label}): ${amount}`);
   return micros / 10_000;
 }
 
 function moneyFrom(text, label) {
-  const match = text?.match(/^\s*\$([\d,]+(?:\.\d{1,2})?)\s*$/);
+  const match = text?.match(/^\s*\$((?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?)\s*$/);
   if (!match) throw Error(`Invalid USD in ${label}: ${text}`);
   return cents(match[1], label);
 }
