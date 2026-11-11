@@ -21,3 +21,33 @@ jobs:
           node-version: '22'
       - name: Verify all deterministic source checks
         run: make check
+  firmware:
+    name: Firmware / Teensy 4.1 build and host tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install pinned PlatformIO Core
+        run: |
+          python3 -m venv "${RUNNER_TEMP}/pio-venv"
+          "${RUNNER_TEMP}/pio-venv/bin/python" -m pip install --disable-pip-version-check 'platformio==6.1.18'
+      - name: Build Teensy target and run firmware host tests
+        run: |
+          PLATFORMIO_CORE_DIR="${RUNNER_TEMP}/platformio-core" make check-firmware PLATFORMIO="${RUNNER_TEMP}/pio-venv/bin/pio"
+  android:
+    name: Android / unit tests and debug build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+          cache-dependency-path: android/gradle/wrapper/gradle-wrapper.properties
+      - uses: android-actions/setup-android@651bceb6f9ca583f16b8d75b62c36ded2ae6fc9c # v4.0.0
+        with:
+          packages: 'platforms;android-36 build-tools;36.0.0'
+      - name: Run Android and JVM tests and build the probe
+        run: ./android/gradlew -p android test assembleDebug

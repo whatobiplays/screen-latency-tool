@@ -5,6 +5,18 @@ import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node
 import { fileURLToPath } from 'node:url';
 
 const defaultRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const generatedDirectoryNames = new Set([
+  'build',
+  'cache',
+  'caches',
+  'coverage',
+  'dist',
+  'node_modules',
+  'out',
+  'target',
+  'venv',
+  '__pycache__',
+]);
 
 function markdownFiles(root) {
   const found = [];
@@ -13,12 +25,19 @@ function markdownFiles(root) {
     for (const entry of readdirSync(path, { withFileTypes: true })) {
       if (entry.name.startsWith('.')) continue;
       const target = join(path, entry.name);
+      if (entry.isDirectory() && generatedDirectoryNames.has(entry.name.toLowerCase())) continue;
       if (entry.isDirectory()) visit(target);
       else if (entry.isFile() && extname(entry.name).toLowerCase() === '.md') found.push(target);
     }
   }
-  visit(join(root, 'docs'));
-  visit(join(root, 'hardware', 'prototype'));
+  for (const directory of [
+    ['docs'],
+    ['hardware', 'prototype'],
+    ['android'],
+    ['firmware'],
+  ]) {
+    visit(join(root, ...directory));
+  }
   for (const name of ['AGENTS.md', 'GLOSSARY.md', 'README.md']) {
     const path = join(root, name);
     if (existsSync(path)) found.push(path);

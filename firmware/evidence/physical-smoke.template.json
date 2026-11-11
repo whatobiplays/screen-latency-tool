@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "record_status": "NOT_RUN",
+  "run_id": null,
+  "operator": null,
+  "observed_at_utc": null,
+  "fixture": {
+    "physical_label": null,
+    "board": "Teensy 4.1",
+    "board_revision": null,
+    "usb_vendor_id": null,
+    "usb_product_id": null,
+    "usb_serial_descriptor": null,
+    "usb_device_path": null,
+    "firmware_source_revision": null,
+    "firmware_image_sha256": null
+  },
+  "android_host": {
+    "manufacturer_model": null,
+    "android_version": null,
+    "api_level": null,
+    "usb_speed_source": null,
+    "usb_speed_raw_value": null,
+    "usb_speed_mbps": null,
+    "raw_descriptor_capture": null,
+    "raw_descriptor_sha256": null,
+    "matching_usb_devices": null,
+    "matching_input_devices": null
+  },
+  "power_and_safety": {
+    "owner_authorization": "UNRELEASED",
+    "stage_b_s2_current_limit": "UNSET / PENDING REVIEW",
+    "other_stage_b_gates": "UNRELEASED",
+    "external_5v_protected_supply": "UNRELEASED",
+    "vusb_no_backfeed": "UNRELEASED",
+    "wiring_review_record": null,
+    "instrument_model_serial_calibration": null
+  },
+  "checks": [
+    {
+      "id": "full_speed_enumeration",
+      "status": "NOT_RUN",
+      "expected": "Full-Speed at 12 Mbit/s",
+      "observed": null,
+      "evidence": []
+    },
+    {
+      "id": "raw_descriptor_contract",
+      "status": "NOT_RUN",
+      "expected": "EP0 bMaxPacketSize0=64; two interfaces; HID interface 0; vendor interface 1; endpoints 0x81 interrupt IN, 0x02 bulk OUT, 0x83 bulk IN; 64-byte endpoint packets",
+      "observed": {
+        "ep0_max_packet_size": null,
+        "interfaces": [],
+        "endpoint_max_packet_sizes": {},
+        "extra_interfaces": null
+      },
+      "evidence": []
+    },
+    {
+      "id": "os_gamepad_input_and_identity",
+      "status": "NOT_RUN",
+      "observed": {
+        "matching_input_devices": null,
+        "selected_input_device_id": null,
+        "fixture_association_method": null,
+        "ambiguous_events": null,
+        "press_event": null,
+        "release_event": null
+      },
+      "evidence": []
+    },
+    {
+      "id": "vendor_bulk_exchange_without_hid_claim",
+      "status": "NOT_RUN",
+      "observed": {
+        "hid_interface_claimed": null,
+        "vendor_interface_claimed": null,
+        "protocol_version": null,
+        "request_frames": [],
+        "response_frames": [],
+        "engineering_info_snapshot": null,
+        "measured_sequence": null,
+        "press_transfer_completed": null,
+        "release_transfer_completed": null,
+        "sequence_preserved_through_release": null
+      },
+      "evidence": []
+    },
+    {
+      "id": "timeout_fault_reset_detach_reenumeration",
+      "status": "NOT_RUN",
+      "observed": null,
+      "evidence": []
+    },
+    {
+      "id": "usb_vusb_no_backfeed",
+      "status": "NOT_RUN",
+      "observed": {
+        "method": null,
+        "instrument_model_serial_calibration": null,
+        "raw_readings": []
+      },
+      "evidence": []
+    }
+  ],
+  "deviations": [],
+  "reviewer_notes": []
+}

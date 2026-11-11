@@ -1,0 +1,25 @@
+# Teensy 4.1 USB fixture firmware
+
+This firmware is a USB feasibility candidate for the Screen Latency Tool fixture. It exposes one HID gamepad interface and one engineering-only vendor interface. It does not implement fixture acquisition, sensor capture, or timing qualification.
+
+## Build and host checks
+
+The intended firmware toolchain baseline is PlatformIO Core 6.1.18, Teensy platform 6.0.0, Arduino Teensy framework 1.162.0, and GCC toolchain 1.150201.0. Keep these versions for this feasibility candidate unless the owner changes them. The build applies the overlay in `core-overlay/manifest.json` only when every upstream hash and transformed output hash matches. It stops when a core file has different content.
+
+The HID slot pool keeps transfer identities separate from DMA buffers. A canceled or reset slot remains retired until the USB endpoint flush succeeds. The flush stops waiting after 6,000,000 DWT cycles, or 10 ms at the pinned 600 MHz core clock. If it times out, firmware blocks endpoint reconfiguration and keeps the slot retired until a later flush succeeds.
+
+Run `make check-firmware` from the repository root. The target compiles the Teensy candidate, runs deterministic pulse and protocol tests with the host C++17 compiler, then checks the descriptor symbols in the resulting ELF. The host tests and ELF checks validate software structure; they do not establish USB enumeration, negotiated speed, electrical safety, or input timing.
+
+By default, `make check-firmware` stores PlatformIO packages in `firmware/.platformio-core/`, under this checkout. The pre-build hook refuses the default shared `~/.platformio` cache and any framework package outside `PLATFORMIO_CORE_DIR`. CI passes a runner-local cache. Direct local `pio` commands must set `PLATFORMIO_CORE_DIR` to a directory inside the checkout; the overlay stops rather than changing a shared framework package.
+
+The compiled-ELF check confirms one HID descriptor, its 43-byte report length, the exact gamepad usages and ranges, input flags, and endpoint attributes. A measured HID transfer counts as successful only when USB status shows it inactive, with no error bits and zero bytes remaining. A short transfer follows the failed-press path and cannot start the pulse duration.
+
+`ENGINEERING_INFO` is a 32-byte payload containing protocol and firmware versions, USB speed, packed state and validity flags, the 64-bit fixture serial, pulse sequence, USB-session and transfer generations, the diagnostic completion tick, and accepted duration. The pulse request is eight bytes (`tag:u32`, `duration_ms:u16`, zero reserved field); its accepted acknowledgement is twelve bytes and echoes the tag with the assigned sequence and queued state. The device replays an exact duplicate request from its four-entry response cache while engineering commands are available, so a retry after a lost acknowledgement cannot execute a second pulse. During autonomous acquisition or qualification, a cached duplicate of either engineering command returns `InvalidState`; the pulse is not executed again.
+
+The completion tick is sampled from Cortex-M7 `DWT_CYCCNT` at the USB completion callback for a successful six-byte press transfer. At the configured 600 MHz core clock it is a 32-bit, core-clock-domain counter with 1.667 ns nominal ticks and a wrap interval of about 7.158278827 seconds. The frequency is fixed by this build and is not an information-payload field. USB callbacks enqueue immutable completion facts; the main loop alone updates pulse state and serializes vendor responses. This software tick is diagnostic and cannot qualify bus-accurate T0. The information payload exposes only a generic fault state, not a detailed fault code. Release-transfer failures are reported separately and do not invalidate a tick already recorded for a successful press transfer.
+
+## Physical verification gate
+
+Use the [physical verification procedure](docs/physical-verification.md) and a copy of the [physical smoke evidence template](evidence/physical-smoke.template.json) for an owner-run bench session. Do not begin until separate owner authorization and every applicable Stage-B safety gate have been released. The template initializes the Stage-B S2 current limit as `UNSET / PENDING REVIEW` and the other gates as `UNRELEASED`; check the current safety review before a run. Use the Teensy 4.1 device Micro-B port, never its host port, and retain the protected external 5 V supply and no-backfeed constraints.
+
+The canonical wire and control contract remains in [REF-WIRE-001](../docs/reference/REF-WIRE-001-usb-and-control-contract.md#issue-4-physical-smoke-procedure-and-evidence). A successful firmware build, host test, Android unit test, or internal PFSC/PSPD status does not establish a physical pass.
