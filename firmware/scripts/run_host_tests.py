@@ -41,8 +41,8 @@ def verify_replay_epoch_reset_policy() -> None:
     ):
         raise AssertionError("USB endpoint use must still require PE")
     reset_match = re.search(
-        r"if\s*\(slt::shouldResetProtocolSession\(connected\)\)\s*"
-        r"\{\s*protocol\.resetSession\(\);\s*\}",
+        r"if\s*\(\s*slt::shouldResetProtocolSession\s*\(\s*connected\s*\)\s*\)\s*"
+        r"\{?\s*protocol\.resetSession\(\);\s*\}?",
         update_match.group("body"),
     )
     if reset_match is None:
