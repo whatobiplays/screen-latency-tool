@@ -41,7 +41,6 @@ project_name: "screen-latency-tool"
 # Note that when using the JetBrains backend, language servers are not used and this list is correspondingly ignored.
 language_servers:
 - cpp
-- kotlin
 - rust
 
 # the encoding used by text files in the project
