@@ -40,11 +40,12 @@ def verify_replay_epoch_reset_policy() -> None:
         update_match.group("body"),
     ):
         raise AssertionError("USB endpoint use must still require PE")
-    detach_match = re.search(
-        r"if\s*\(!connected\)\s*\{(?P<body>[\s\S]*?)\n  \}",
+    reset_match = re.search(
+        r"if\s*\(slt::shouldResetProtocolSession\(connected\)\)\s*"
+        r"\{\s*protocol\.resetSession\(\);\s*\}",
         update_match.group("body"),
     )
-    if detach_match is None or reset_call not in detach_match.group("body"):
+    if reset_match is None:
         raise AssertionError(
             "protocol replay state must reset only when CCS confirms disconnect"
         )

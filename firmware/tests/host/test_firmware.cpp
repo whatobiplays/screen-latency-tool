@@ -1046,24 +1046,91 @@ void reset_between_state_processing_and_hid_dispatch_blocks_submission() {
 
   uint32_t processed_lifecycle_generation = 7;
   uint32_t lifecycle_generation = processed_lifecycle_generation;
-  expect(slt::maySubmitHidTransfer(processed_lifecycle_generation,
+  expect(slt::maySubmitUsbTransfer(processed_lifecycle_generation,
                                    lifecycle_generation, true),
          "a current configured lifecycle permits HID submission");
 
   ++lifecycle_generation;
-  expect(!slt::maySubmitHidTransfer(processed_lifecycle_generation,
-                                   lifecycle_generation, true),
+  expect(!slt::maySubmitUsbTransfer(processed_lifecycle_generation,
+                                    lifecycle_generation, true),
          "a changed lifecycle generation blocks a pending HID submission");
   const bool usb_configured = false;
-  expect(!slt::maySubmitHidTransfer(processed_lifecycle_generation,
+  expect(!slt::maySubmitUsbTransfer(processed_lifecycle_generation,
                                     lifecycle_generation, usb_configured),
          "a reset after state processing blocks the pending HID submission");
-  expect(!slt::maySubmitHidTransfer(lifecycle_generation,
+  expect(!slt::maySubmitUsbTransfer(lifecycle_generation,
                                     lifecycle_generation, false),
          "an unconfigured USB device cannot submit a HID action");
   expect(engine.snapshot().state == PulseState::PressQueued &&
              !engine.snapshot().tick_valid,
          "a blocked submission cannot establish measured press completion");
+}
+
+void stale_reset_event_cannot_rewind_processed_lifecycle_generation() {
+  uint32_t current_generation = 2;
+  uint32_t processed_generation = current_generation;
+  const uint32_t queued_older_event = 1;
+
+  if (slt::isCurrentUsbLifecycleEvent(queued_older_event,
+                                      current_generation)) {
+    processed_generation = queued_older_event;
+  }
+  expect(processed_generation == current_generation,
+         "overflow recovery ignores an older reset event without rewinding progress");
+
+  current_generation = 3;
+  const uint32_t current_event = 3;
+  if (slt::isCurrentUsbLifecycleEvent(current_event, current_generation)) {
+    processed_generation = current_event;
+  }
+  expect(processed_generation == current_generation,
+         "the matching reset event advances processing to the current generation");
+}
+
+void usb_reset_rebuilds_endpoints_only_after_required_flushes() {
+  slt::UsbEndpointLifecycle lifecycle;
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "reset lifecycle test starts with configured endpoints");
+
+  lifecycle.onUsbReset();
+  expect(!lifecycle.endpointsConfigured() &&
+             lifecycle.takeCancellationRequest(),
+         "USB reset invalidates endpoint configuration and requests a flush");
+  lifecycle.finishCancellation(false, true, true);
+  expect(lifecycle.reconfigurationBlocked() &&
+             !lifecycle.shouldConfigureEndpoints(),
+         "failed HID flush blocks the whole endpoint reconfiguration");
+
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.takeCancellationRequest(),
+         "Full-Speed re-verification permits one retry after the failed HID flush");
+  lifecycle.finishCancellation(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints(),
+         "all successful flushes permit endpoint setup after reset");
+}
+
+void cancellation_requested_during_flush_runs_before_reconfiguration() {
+  slt::UsbEndpointLifecycle lifecycle;
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "concurrent cancellation test starts with configured endpoints");
+  lifecycle.requestCancellation();
+  expect(lifecycle.takeCancellationRequest(),
+         "the first cancellation request begins a flush pass");
+
+  lifecycle.requestCancellation();
+  lifecycle.finishCancellation(true, true, true);
+  expect(lifecycle.reconfigurationBlocked() &&
+             !lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.takeCancellationRequest(),
+         "a cancellation request during flush is retained for another pass");
+  lifecycle.finishCancellation(true, true, true);
+  expect(!lifecycle.reconfigurationBlocked() &&
+             lifecycle.shouldConfigureEndpoints(),
+         "reconfiguration resumes after the retained flush request succeeds");
 }
 
 void short_vendor_request_rearms_before_the_next_valid_request() {
@@ -1099,6 +1166,237 @@ void short_vendor_request_rearms_before_the_next_valid_request() {
          "a valid request succeeds after the malformed request was rearmed");
 }
 
+void full_speed_loss_quiesces_vendor_out_until_flush_and_reverification() {
+  slt::UsbEndpointLifecycle lifecycle;
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "a verified Full-Speed configuration can configure endpoints");
+
+  slt::VendorTransferIdentity rejected{};
+  expect(!lifecycle.beginVendorTransfer(
+             slt::VendorEndpoint::Out, kSessionGeneration, 4, 5, true,
+             rejected) &&
+             !lifecycle.vendorTransferPending(slt::VendorEndpoint::Out),
+         "a reset between readiness processing and enqueue leaves no pending OUT transfer");
+
+  slt::VendorTransferIdentity original{};
+  expect(lifecycle.beginVendorTransfer(slt::VendorEndpoint::Out,
+                                       kSessionGeneration, original),
+         "vendor OUT starts with a transfer identity");
+  slt::VendorTransferIdentity overlapping{};
+  expect(!lifecycle.beginVendorTransfer(slt::VendorEndpoint::In,
+                                       kSessionGeneration, overlapping) &&
+             !lifecycle.vendorTransferPending(slt::VendorEndpoint::In),
+         "vendor OUT and IN transfers cannot be pending at the same time");
+  lifecycle.observeUsbState(true, true, false);
+  expect(lifecycle.takeCancellationRequest(),
+         "verified-speed loss requests one endpoint quiesce");
+  lifecycle.finishCancellation(true, false, true);
+  expect(lifecycle.vendorTransferPending(slt::VendorEndpoint::Out) &&
+             lifecycle.reconfigurationBlocked() &&
+             !lifecycle.shouldConfigureEndpoints(),
+         "failed or timed-out OUT flush retains its pending state and blocks reuse");
+
+  lifecycle.observeUsbState(true, true, false);
+  expect(!lifecycle.takeCancellationRequest(),
+         "invalid speed does not cause a repeated cancel loop");
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.takeCancellationRequest(),
+         "Full-Speed re-verification permits one bounded flush retry");
+  lifecycle.finishCancellation(true, true, true);
+  expect(!lifecycle.vendorTransferPending(slt::VendorEndpoint::Out) &&
+             !lifecycle.reconfigurationBlocked() &&
+             lifecycle.shouldConfigureEndpoints(),
+         "confirmed flush clears pending state and permits reconfiguration");
+  expect(lifecycle.markEndpointsConfigured(),
+         "reverified endpoints can be configured without disconnecting");
+
+  slt::VendorTransferIdentity replacement{};
+  expect(lifecycle.beginVendorTransfer(slt::VendorEndpoint::Out,
+                                       kSessionGeneration + 1, replacement) &&
+             replacement.transfer_generation > original.transfer_generation,
+         "the replacement OUT transfer receives a new identity");
+  expect(!lifecycle.completeVendorTransfer(slt::VendorEndpoint::Out, original) &&
+             lifecycle.vendorTransferPending(slt::VendorEndpoint::Out),
+         "a stale callback cannot retire the replacement transfer");
+  expect(lifecycle.completeVendorTransfer(slt::VendorEndpoint::Out, replacement) &&
+             !lifecycle.vendorTransferPending(slt::VendorEndpoint::Out),
+         "only the matching OUT completion clears pending state");
+}
+
+void full_speed_loss_quiesces_vendor_in_until_matching_completion_or_flush() {
+  slt::UsbEndpointLifecycle lifecycle;
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "vendor IN test starts from configured Full-Speed endpoints");
+  slt::VendorTransferIdentity in_flight{};
+  expect(lifecycle.beginVendorTransfer(slt::VendorEndpoint::In,
+                                       kSessionGeneration, in_flight),
+         "vendor IN starts with a transfer identity");
+  slt::VendorTransferIdentity overlapping{};
+  expect(!lifecycle.beginVendorTransfer(slt::VendorEndpoint::Out,
+                                       kSessionGeneration, overlapping) &&
+             !lifecycle.vendorTransferPending(slt::VendorEndpoint::Out),
+         "vendor IN and OUT transfers cannot be pending at the same time");
+
+  lifecycle.observeUsbState(true, true, false);
+  expect(lifecycle.takeCancellationRequest(),
+         "Full-Speed loss requests IN endpoint cancellation");
+  lifecycle.finishCancellation(true, true, false);
+  expect(lifecycle.vendorTransferPending(slt::VendorEndpoint::In) &&
+             lifecycle.reconfigurationBlocked(),
+         "failed IN flush retains its descriptor and blocks endpoint reuse");
+
+  slt::VendorTransferIdentity stale{};
+  stale.session_generation = in_flight.session_generation;
+  stale.transfer_generation = in_flight.transfer_generation + 1;
+  expect(!lifecycle.completeVendorTransfer(slt::VendorEndpoint::In, stale) &&
+             lifecycle.vendorTransferPending(slt::VendorEndpoint::In),
+         "a mismatched IN callback cannot clear the in-flight transfer");
+  expect(lifecycle.completeVendorTransfer(slt::VendorEndpoint::In, in_flight) &&
+             lifecycle.vendorTransferPending(slt::VendorEndpoint::In) == false &&
+             lifecycle.reconfigurationBlocked(),
+         "matching completion retires IN state without bypassing a failed flush gate");
+
+  lifecycle.observeUsbState(true, true, false);
+  expect(!lifecycle.takeCancellationRequest(),
+         "IN cancellation is not retried continuously at invalid speed");
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.takeCancellationRequest(),
+         "IN flush retry is limited to the next Full-Speed re-verification");
+  lifecycle.finishCancellation(true, true, true);
+  expect(!lifecycle.reconfigurationBlocked() &&
+             lifecycle.shouldConfigureEndpoints(),
+         "successful IN flush restores the reconfiguration path");
+  expect(lifecycle.markEndpointsConfigured(),
+         "verified endpoints can accept the next IN response");
+  slt::VendorTransferIdentity retry{};
+  expect(lifecycle.beginVendorTransfer(slt::VendorEndpoint::In,
+                                       kSessionGeneration + 1, retry),
+         "a new IN transfer starts after confirmed recovery");
+  expect(!lifecycle.confirmVendorTransferCancelled(slt::VendorEndpoint::In,
+                                                   in_flight) &&
+             lifecycle.vendorTransferPending(slt::VendorEndpoint::In),
+         "a stale timeout cancellation cannot retire a newer IN transfer");
+  expect(lifecycle.confirmVendorTransferCancelled(slt::VendorEndpoint::In,
+                                                   retry) &&
+             !lifecycle.vendorTransferPending(slt::VendorEndpoint::In),
+         "only confirmed cancellation of the matching IN transfer clears pending state");
+}
+
+void rapid_full_speed_loss_and_recovery_still_quiesces_before_reuse() {
+  slt::UsbEndpointLifecycle lifecycle;
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "rapid transition test starts configured");
+  slt::VendorTransferIdentity pending{};
+  expect(lifecycle.beginVendorTransfer(slt::VendorEndpoint::Out,
+                                       kSessionGeneration, pending),
+         "rapid transition test has an OUT request in flight");
+
+  lifecycle.observeUsbState(true, true, false);
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.takeCancellationRequest() &&
+             !lifecycle.shouldConfigureEndpoints(),
+         "recovery cannot bypass the pending cancellation");
+  lifecycle.finishCancellation(true, true, true);
+  expect(!lifecycle.takeCancellationRequest() &&
+             lifecycle.shouldConfigureEndpoints(),
+         "one successful flush permits reconfiguration without a cancel loop");
+}
+
+void speed_loss_invalidates_hid_completion_without_a_measured_release() {
+  PulseEngine engine;
+  ready(engine);
+  slt::UsbEndpointLifecycle lifecycle;
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "HID lifecycle test starts with configured endpoints");
+
+  const auto accepted = engine.acceptPulse(10, 1);
+  expect(accepted.status == Status::Ok && accepted.sequence == 1,
+         "the measured press is accepted before speed loss");
+  const Action press = takeTransfer(engine, TransferKind::Press);
+
+  lifecycle.observeUsbState(true, true, false);
+  expect(lifecycle.takeCancellationRequest(),
+         "speed loss quiesces the HID endpoint with vendor endpoints");
+  engine.observeUsbState(true, false, false, 0, 2);
+  expect(!engine.snapshot().tick_valid && engine.snapshot().state == PulseState::Fault,
+         "speed loss invalidates press completion evidence");
+  const auto invalidated = engine.snapshot();
+  expect(!slt::mayAcceptHidCompletion(press.token.session_generation,
+                                     press.token.transfer_generation,
+                                     invalidated.session_generation,
+                                     invalidated.transfer_generation,
+                                     invalidated.session_valid,
+                                     invalidated.full_speed_verified),
+         "queued HID completion is rejected after the session loses Full-Speed");
+  lifecycle.finishCancellation(true, true, true);
+  finish(engine, press, TransferResult::Success, 3);
+  expect(!engine.snapshot().tick_valid && engine.snapshot().sequence == 1,
+         "a late press callback cannot restore evidence or allocate another sequence");
+
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "Full-Speed recovery restores endpoint configuration");
+  engine.observeUsbState(true, true, true, 0, 4);
+  const Action recovery = takeTransfer(engine, TransferKind::Recovery);
+  expect(engine.snapshot().sequence == 1 &&
+             recovery.report[0] == 0 && recovery.report[1] == 0,
+         "recovery is an unmeasured neutral report, not another measured press or release");
+}
+
+void speed_loss_with_ccs_set_preserves_the_protocol_replay_epoch() {
+  PulseEngine engine;
+  ready(engine);
+  Protocol protocol(engine);
+  std::array<uint8_t, 64> first_response{};
+  std::array<uint8_t, 64> replayed_response{};
+  size_t first_size = 0;
+  size_t replayed_size = 0;
+  const auto request = makePulseRequest(1, 0x11223344u, 10);
+  expect(protocol.process(request.data(), request.size(), first_response.data(),
+                          first_response.size(), first_size) == Status::Ok,
+         "the fixture accepts one pulse request before Full-Speed loss");
+
+  slt::UsbEndpointLifecycle lifecycle;
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "request-ID lifecycle test starts with configured endpoints");
+  lifecycle.observeUsbState(true, true, false);
+  expect(lifecycle.takeCancellationRequest(),
+         "speed loss quiesces endpoints while CCS remains asserted");
+  lifecycle.finishCancellation(true, true, true);
+  engine.observeUsbState(true, false, false, 0, 2);
+  expect(!slt::shouldResetProtocolSession(true) &&
+             slt::shouldResetProtocolSession(false),
+         "only CCS=0 authorizes clearing the firmware replay epoch");
+
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "Full-Speed recovery can configure endpoints in the same port epoch");
+  engine.observeUsbState(true, true, true, 0, 3);
+  expect(protocol.process(request.data(), request.size(), replayed_response.data(),
+                          replayed_response.size(), replayed_size) == Status::Ok &&
+             first_size == replayed_size &&
+             std::equal(first_response.begin(), first_response.begin() + first_size,
+                        replayed_response.begin()) &&
+             engine.snapshot().sequence == 1,
+         "retry after speed loss replays the exact acknowledgement without a second pulse");
+  takeTransfer(engine, TransferKind::Recovery);
+  Action second_action{};
+  expect(!engine.takeAction(second_action),
+         "replay after speed recovery does not queue another HID operation");
+}
+
 }  // namespace
 
 int main() {
@@ -1123,6 +1421,14 @@ int main() {
   full_speed_is_verified_from_pspd_and_not_the_legacy_flag();
   hid_transfer_status_requires_exact_report_completion();
   reset_between_state_processing_and_hid_dispatch_blocks_submission();
+  stale_reset_event_cannot_rewind_processed_lifecycle_generation();
+  usb_reset_rebuilds_endpoints_only_after_required_flushes();
+  cancellation_requested_during_flush_runs_before_reconfiguration();
   short_vendor_request_rearms_before_the_next_valid_request();
+  full_speed_loss_quiesces_vendor_out_until_flush_and_reverification();
+  full_speed_loss_quiesces_vendor_in_until_matching_completion_or_flush();
+  rapid_full_speed_loss_and_recovery_still_quiesces_before_reuse();
+  speed_loss_invalidates_hid_completion_without_a_measured_release();
+  speed_loss_with_ccs_set_preserves_the_protocol_replay_epoch();
   std::cout << "firmware host tests passed\n";
 }
