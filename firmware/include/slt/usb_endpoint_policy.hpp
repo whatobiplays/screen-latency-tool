@@ -76,6 +76,15 @@ class UsbEndpointLifecycle {
     if (needs_flush) requestCancellation();
   }
 
+  bool acceptUsbResetEvent(uint32_t event_generation,
+                           uint32_t current_generation) noexcept {
+    if (!isCurrentUsbLifecycleEvent(event_generation, current_generation)) {
+      return false;
+    }
+    onUsbReset();
+    return true;
+  }
+
   void requestCancellation() noexcept {
     if (cancellation_in_progress_) {
       cancellation_requested_ = true;

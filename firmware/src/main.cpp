@@ -251,13 +251,13 @@ bool cancelEndpoints() {
 
 void handleEvent(const Event& event, uint32_t now_tick) {
   if (event.kind == EventKind::UsbReset) {
-    endpoint_lifecycle.onUsbReset();
+    if (!endpoint_lifecycle.acceptUsbResetEvent(event.lifecycle_generation,
+                                               usb_lifecycle_generation)) {
+      return;
+    }
     if (!cancelEndpoints()) retireInFlightHidSlots();
     pulse_engine.onUsbReset();
-    if (slt::isCurrentUsbLifecycleEvent(event.lifecycle_generation,
-                                        usb_lifecycle_generation)) {
-      processed_usb_lifecycle_generation = event.lifecycle_generation;
-    }
+    processed_usb_lifecycle_generation = event.lifecycle_generation;
     return;
   }
 

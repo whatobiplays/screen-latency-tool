@@ -1067,24 +1067,32 @@ void reset_between_state_processing_and_hid_dispatch_blocks_submission() {
 }
 
 void stale_reset_event_cannot_rewind_processed_lifecycle_generation() {
-  uint32_t current_generation = 2;
-  uint32_t processed_generation = current_generation;
-  const uint32_t queued_older_event = 1;
+  slt::UsbEndpointLifecycle lifecycle;
+  lifecycle.observeUsbState(true, true, true);
+  expect(lifecycle.shouldConfigureEndpoints() &&
+             lifecycle.markEndpointsConfigured(),
+         "reset-event test starts from configured Full-Speed endpoints");
+  PulseEngine engine;
+  ready(engine);
+  engine.onUsbReset();
+  engine.observeUsbState(true, true, true, 0, 10);
+  const auto recovered = engine.snapshot();
+  expect(recovered.session_valid && recovered.state == PulseState::Recovery,
+         "a newer reset has already recovered the engine session");
 
-  if (slt::isCurrentUsbLifecycleEvent(queued_older_event,
-                                      current_generation)) {
-    processed_generation = queued_older_event;
-  }
-  expect(processed_generation == current_generation,
-         "overflow recovery ignores an older reset event without rewinding progress");
+  if (lifecycle.acceptUsbResetEvent(1, 2)) engine.onUsbReset();
+  expect(engine.snapshot().session_valid &&
+             engine.snapshot().session_generation == recovered.session_generation &&
+             lifecycle.endpointsConfigured(),
+         "a stale reset event cannot invalidate the newer session or endpoints");
 
-  current_generation = 3;
-  const uint32_t current_event = 3;
-  if (slt::isCurrentUsbLifecycleEvent(current_event, current_generation)) {
-    processed_generation = current_event;
-  }
-  expect(processed_generation == current_generation,
-         "the matching reset event advances processing to the current generation");
+  expect(lifecycle.acceptUsbResetEvent(2, 2),
+         "the reset event matching the current generation is accepted");
+  engine.onUsbReset();
+  expect(!engine.snapshot().session_valid &&
+             !lifecycle.endpointsConfigured() &&
+             lifecycle.takeCancellationRequest(),
+         "a current reset invalidates the session and requests endpoint flush");
 }
 
 void usb_reset_rebuilds_endpoints_only_after_required_flushes() {
