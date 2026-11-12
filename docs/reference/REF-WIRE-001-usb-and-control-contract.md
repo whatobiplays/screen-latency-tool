@@ -37,7 +37,7 @@ All 20-byte headers are little-endian and explicitly byte-serialized (no native 
 | --- | --- | --- |
 | 0 | byte[4] | ASCII SLT1 |
 | 4 | u8 | protocol major=1 |
-| 5 | u8 | minor=0 |
+| 5 | u8 | protocol minor: 0 for legacy engineering commands; 1 for capture commands |
 | 6 | u8 | request=1, response=2 |
 | 7 | u8 | flags (reserved=0 v1) |
 | 8 | u32 | request_id |
@@ -66,9 +66,53 @@ Reject wrong magic, unsupported major, nonzero reserved, invalid lengths, traili
 
 ## Engineering smoke commands (provisional)
 
-The `0xE0xx` commands are engineering-only. They do not advertise capture channels, calibration, acquisition, or production readiness. This slice implements `ENGINEERING_INFO` and `ENGINEERING_PRESS_PULSE`; it does not implement `GET_FIXTURE_INFO` as a substitute for the real five-sensor fixture.
+The `0xE0xx` commands are engineering-only. They do not advertise production readiness. `E001 ENGINEERING_INFO` and `E002 ENGINEERING_PRESS_PULSE` retain their existing payloads; Issue #5 adds capture through `E003 BEGIN_CAPTURE` and `E004 CAPTURE_ARCHIVE`. These engineering commands do not replace `GET_FIXTURE_INFO` or the real five-sensor fixture.
 
-`ENGINEERING_INFO` remains available throughout an engineering pulse, including queued, completed, release, busy, timeout, recovery, and fault states. `ENGINEERING_PRESS_PULSE` is accepted only while the pulse engine is idle, the USB session is valid, and firmware has internally verified Full-Speed. A pulse request received while the engine is not idle returns `BUSY` and does not change the current sequence. Both commands return `INVALID_STATE` during autonomous acquisition or qualification; no vendor traffic is permitted in those modes. The availability gate is checked before replaying cached responses too: during autonomous acquisition or qualification, an exact duplicate engineering request returns `InvalidState` without executing again. If still retained in the four-entry cache, the original response can be replayed after engineering mode resumes.
+### Engineering capture extension, protocol 1.1 candidate
+
+`E003 BEGIN_CAPTURE` and `E004 CAPTURE_ARCHIVE` are engineering-only additions. Production command IDs and the payloads of `E001 ENGINEERING_INFO` and `E002 ENGINEERING_PRESS_PULSE` stay unchanged. Firmware accepts E001 and E002 at protocol minor 0 or 1. Capture commands require minor 1. A legacy host continues using minor 0. A capture-capable host first sends E001 at minor 1. If a legacy fixture replies `UNSUPPORTED_VERSION` at minor 0, the host spends a new, higher request ID on E001 at minor 0 and does not send E003 or E004.
+
+| Host / fixture | E001 and E002 | E003 and E004 |
+| --- | --- | --- |
+| 1.0 host / 1.0 fixture | Existing minor-0 frames and responses | Host sends no capture command |
+| 1.1 host / 1.0 fixture | Minor-1 probe receives `UNSUPPORTED_VERSION`, then minor-0 fallback preserves normal behavior | Unsupported; host sends no capture command |
+| 1.0 host / 1.1 fixture | Existing minor-0 frames and responses | Not used |
+| 1.1 host / 1.1 fixture | Minor 0 or 1 is accepted for E001/E002 | Minor 1 only |
+
+The 20-byte frame header leaves 44 payload bytes under the 64-byte engineering frame limit. All values below use little-endian byte order. Firmware and host code reject wrong payload sizes, nonzero reserved fields, out-of-range values, unaligned offsets, and frames larger than 64 bytes.
+
+`E003 BEGIN_CAPTURE` request payload, 16 bytes (36-byte total frame):
+
+| Payload offset | Type | Field |
+| --- | --- | --- |
+| 0 | u64 | nonce; must equal the nonzero request ID |
+| 8 | u16 | samples per channel; exactly 10,000 |
+| 10 | u8 | selected optical edge: 1 ascending / rising, 2 descending / falling |
+| 11 | u8 | rate stage: 1 qualified `R_sensor_max`, 2 `2 × R_sensor_max` |
+| 12 | u32 | capture timeout in milliseconds; 1,000 through 86,400,000 |
+
+The successful `E003` response payload is 20 bytes (40-byte total frame): nonce:u64 at 0, archive generation:u32 at 8, USB session generation:u32 at 12, state:u8 at 16, selected polarity:u8 at 17, and samples-per-channel:u16 at 18. The response is an accepted request acknowledgement. Firmware arms capture only after the corresponding vendor IN transfer completes successfully and its transfer, session, and USB lifecycle generations still match. Firmware validates Full-Speed at that boundary, uses the five paths synchronized during initialization, and arms the selected edge. A failed or unobserved acknowledgement, reset, detach, speed loss, timeout, or accepted unexpected vendor OUT completion retains an incomplete archive when the device remains powered. The host does not retry E003 after an empty IN response. It persists the nonce before sending E003, stays silent during acquisition, and can discover the retained generation after reconnect if the acknowledgement was lost. The device does not rearm vendor OUT during acquisition. Android announces stimulus readiness after a 500 ms quiet interval from the successful acknowledgement. That callback is the host stimulus gate; it is not a hardware acknowledgement of the later FlexPWM arm operation. Physical testing must show that stimulus starts after the archive's captured arm tick and that independent edge counts match all five archive counts.
+
+`E004 CAPTURE_ARCHIVE` uses the same 12-byte request payload for every operation:
+
+| Payload offset | Type | Field |
+| --- | --- | --- |
+| 0 | u8 | operation: 1 status, 2 read, 3 release |
+| 1 | u8 | reserved; zero |
+| 2 | u32 | archive generation; zero only for status discovery |
+| 6 | u32 | archive byte offset; status and release require zero |
+| 10 | u8 | read length; status and release require zero |
+| 11 | u8 | reserved; zero |
+
+Status returns 24 payload bytes (44-byte frame): generation:u32 at 0, state:u8 at 4 (`4` complete, `5` incomplete), polarity:u8 at 5, fault flags:u16 at 6, five channel counts:u16 at 8–17, archive length:u32 at 18, and reserved:u16 at 22. Status discovery accepts generation zero. A read request requires the known nonzero generation, a 32-byte-aligned offset, and length 32 while offset is below the archive end. The only zero-length read is EOF at offset 400,128. A full read response has 44 payload bytes (64-byte frame): generation:u32, offset:u32, CRC-32:u32, and 32 data bytes. EOF returns the 12-byte metadata only (32-byte frame). CRC-32/ISO-HDLC is calculated over `generation:u32 || offset:u32 || length:u8 || data`. Release requires the exact current generation, offset zero, and length zero; its successful payload is generation:u32, state:u8 zero, and three reserved zero bytes (28-byte frame).
+
+The raw archive is a fixed 400,128-byte object: a 128-byte SLA1 header followed by 50,000 little-endian u64 timestamps in channel-major order. The header includes archive and session generations, nonce, firmware version, the first eight source-commit bytes, selected polarity and rate stage, capture clock frequency, timeout, arm and end ticks, per-channel counts, service diagnostics, SHA-256 of the 400,000 sample bytes, total length, and a CRC-32 over the first 124 header bytes. The firmware writes the source-commit prefix only for a clean build; dirty builds use zeroes. A complete archive has exactly 10,000 samples on every channel. The header records complete/incomplete state and per-channel counts. `E004 STATUS` carries the fault flags and counts; the Android result object retains this verified status beside the raw bytes. A retrieval tool that saves the raw bytes must save the status metadata with them. The Android retrieval path verifies every chunk CRC, the exact zero-length EOF, header CRC, sample SHA-256, generations, nonce, polarity, rate stage, timeout, status fault flags, and status/header agreement before reporting the archive as complete or incomplete.
+
+One archive owns the fixed RAM2 buffer for the current boot. It remains available after completion, timeout, USB reset, or detach until the host releases the matching generation or power is lost. Releasing clears the archive but keeps the consumed request-ID high-water value and capture nonce in firmware for the remainder of that boot, so a request retry cannot execute the same capture again. Android uses the same persisted, per-fixture request-ID sequence for E001–E004 and E003. The pending reference is synchronously stored before E003 and updated with the accepted generations when that acknowledgement arrives. The reference remains until the caller has retained the verified archive and status metadata and E004 release succeeds. If retrieval stops, resume with that reference and newly allocated increasing request IDs; interrupted chunk retrieval restarts from offset zero and validates the complete archive again. Do not reset a valid counter to recover synchronization. Only one engineering archive may be retained; production batch results remain separate and are never selected or rewritten by E004.
+
+The archive is volatile and independent of optional PSRAM. Firmware rejects capture when the qualified service profile is unavailable or RAM checks fail; it never shortens the sample count. The current build keeps pin routing disabled pending board identity, fitted-memory inspection, and owner acceptance. Missing `R_sensor_max` remains a physical qualification hold. The simulated 1.905 MHz analog bandwidth is not a qualified comparator-edge rate.
+
+`ENGINEERING_INFO` remains available throughout an engineering pulse, including queued, completed, release, busy, timeout, recovery, and fault states. `ENGINEERING_PRESS_PULSE` is accepted only while the pulse engine is idle, the USB session is valid, and firmware has internally verified Full-Speed. A pulse request received while the engine is not idle returns `BUSY` and does not change the current sequence. During Issue #5 capture, the host sends no vendor traffic. After the matching successful BEGIN_CAPTURE IN completion, firmware keeps one vendor OUT receive armed as a guard; it does not send vendor responses or accept normal commands during acquisition. Any completed unexpected OUT transfer aborts capture, retains an incomplete archive, and receives no response. The protocol-level guard returns `INVALID_STATE` without serializing a response if a caller bypasses the endpoint owner. An exact duplicate request is not replayed during capture; after engineering mode resumes, the four-entry cache retains its existing exact-request replay behavior.
 
 After a pulse completes or recovery succeeds, `complete` or a recovered terminal `fault` remains visible until an `ENGINEERING_INFO` response serializes that state. The firmware then sets the engine to `idle` while retaining the sequence, transfer generations, and any valid completion tick. A fault with recovery still required remains faulted and blocks new pulses. The 32-byte information payload carries only the fault state, not a detailed fault code; Android reports `UNSPECIFIED` for that state. The response header carries the status of the current command.
 

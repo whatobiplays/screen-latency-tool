@@ -16,6 +16,8 @@
 #include <string>
 #include <vector>
 
+void runCaptureTests();
+
 namespace {
 
 using slt::Action;
@@ -144,7 +146,7 @@ void common_vectors_match() {
     std::getline(row, vector.response, '\t');
     rows.push_back(std::move(vector));
   }
-  expect(rows.size() == 4, "all shared engineering vectors are loaded");
+  expect(rows.size() == 10, "all shared engineering vectors are loaded");
 
   auto check_request = [&](size_t index) {
     // Golden rows are independent captures with their own request-ID epochs.
@@ -345,6 +347,66 @@ void callback_reordering_and_stale_generation_are_ignored() {
   finish(engine, release, TransferResult::Success, 100 + 20 * kTicksPerMillisecond + 1);
   expect(engine.snapshot().state == PulseState::Complete,
          "release callback completes after reordered stale callback");
+}
+
+void capture_t0_is_promoted_only_by_matching_successful_press() {
+  PulseEngine engine;
+  ready(engine);
+  expect(engine.acceptPulse(25, 100).status == Status::Ok,
+         "measured press is accepted before capture-clock callback test");
+  Action press = takeTransfer(engine, TransferKind::Press);
+
+  Action stale = press;
+  ++stale.token.transfer_generation;
+  engine.onTransferComplete(stale.token, TransferResult::Success, 123,
+                            true, 0x123456789ABCDEF0ull);
+  expect(!engine.snapshot().capture_t0_valid,
+         "stale successful callback cannot establish a capture-clock T0");
+
+  engine.onTransferComplete(press.token, TransferResult::Error, 124,
+                            true, 0x1111111111111111ull);
+  expect(!engine.snapshot().capture_t0_valid &&
+             !engine.snapshot().tick_valid,
+         "failed matching press cannot promote either completion tick");
+
+  PulseEngine successful;
+  ready(successful);
+  expect(successful.acceptPulse(25, 200).status == Status::Ok,
+         "second press is accepted for the successful callback case");
+  Action successful_press = takeTransfer(successful, TransferKind::Press);
+  successful.onTransferComplete(successful_press.token,
+                                TransferResult::Success, 456, true,
+                                0xFEDCBA9876543210ull);
+  const slt::Snapshot measured = successful.snapshot();
+  expect(measured.tick_valid && measured.completion_tick == 456 &&
+             measured.capture_t0_valid &&
+             measured.capture_t0_tick == 0xFEDCBA9876543210ull,
+         "matching successful press preserves DWT diagnostics and stores callback-time capture T0");
+  successful.service(456 + 25 * kTicksPerMillisecond);
+  Action release = takeTransfer(successful, TransferKind::Release);
+  finish(successful, release, TransferResult::Success,
+         456 + 25 * kTicksPerMillisecond + 1);
+  expect(successful.snapshot().capture_t0_valid &&
+             successful.snapshot().capture_t0_tick == 0xFEDCBA9876543210ull,
+         "release completion cannot replace the press-time capture T0");
+
+  PulseEngine reset;
+  ready(reset);
+  expect(reset.acceptPulse(25, 300).status == Status::Ok,
+         "press is accepted before reset fencing case");
+  Action before_reset = takeTransfer(reset, TransferKind::Press);
+  reset.onTransferComplete(before_reset.token, TransferResult::Success, 700,
+                           true, 0x3333333333333333ull);
+  expect(reset.snapshot().capture_t0_valid,
+         "successful press establishes a candidate before session reset");
+  reset.onUsbReset();
+  expect(!reset.snapshot().capture_t0_valid,
+         "reset clears previously captured T0 from the invalid session");
+  reset.onTransferComplete(before_reset.token, TransferResult::Success, 789,
+                           true, 0x2222222222222222ull);
+  expect(!reset.snapshot().capture_t0_valid &&
+             !reset.snapshot().tick_valid,
+         "reset and stale callback cannot establish capture T0");
 }
 
 void cancellation_reset_and_disconnect_invalidate_evidence() {
@@ -1408,11 +1470,13 @@ void speed_loss_with_ccs_set_preserves_the_protocol_replay_epoch() {
 }  // namespace
 
 int main() {
+  runCaptureTests();
   usb_serial_uses_sixteen_uppercase_mac_hex_digits();
   common_vectors_match();
   duration_boundaries_and_delayed_press_completion();
   busy_request_does_not_mutate_pulse();
   callback_reordering_and_stale_generation_are_ignored();
+  capture_t0_is_promoted_only_by_matching_successful_press();
   cancellation_reset_and_disconnect_invalidate_evidence();
   press_failure_timeout_and_failed_recovery_are_fail_closed();
   release_transfer_error_preserves_successful_press_tick();

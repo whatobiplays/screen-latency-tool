@@ -41,6 +41,15 @@ interface EngineeringPulseListener {
     fun onGamepadEventDiagnostics(result: GamepadEventResult) = Unit
 }
 
+/** Reports a bounded capture and its verified archive chunks on the main thread. */
+interface EngineeringCaptureListener {
+    fun onCapturePrepared(reference: EngineeringCaptureReference) = Unit
+    fun onCaptureAccepted(reference: EngineeringCaptureReference) = Unit
+    fun onCaptureReadyForStimulus(reference: EngineeringCaptureReference) = Unit
+    fun onChunkReceived(reference: EngineeringCaptureReference, offset: Long, bytes: ByteArray) = Unit
+    fun onFinished(result: Result<EngineeringCaptureRunResult>)
+}
+
 /** Android 11+ adapter for permission, descriptor validation, vendor transport, and diagnostics. */
 class AndroidUsbVendorProbe(
     context: Context,
@@ -52,6 +61,7 @@ class AndroidUsbVendorProbe(
     private val requestIdSequences = EngineeringRequestIdSequenceProvider { serial ->
         AndroidEngineeringRequestIdStateStore(appContext, serial)
     }
+    private val captureReferences = AndroidEngineeringCaptureReferenceStore(appContext)
     private val coordinator = UsbProbeCoordinator(platform, requestIdSequences)
     private val mainHandler = Handler(Looper.getMainLooper())
     private val stateLock = Any()
@@ -273,6 +283,198 @@ class AndroidUsbVendorProbe(
             }
         } catch (failure: Exception) {
             dispatch { listener.onFinished(Result.failure(failure)) }
+        }
+    }
+
+    /** Arms one engineer-only capture, stays quiet during acquisition, and retrieves the verified archive. */
+    fun runEngineeringCapture(
+        polarity: Int,
+        rateStage: Int,
+        timeoutMs: Long,
+        listener: EngineeringCaptureListener,
+    ) {
+        val session = synchronized(stateLock) { activeSession }
+        if (session == null) {
+            dispatch {
+                listener.onFinished(Result.success(
+                    EngineeringCaptureRunResult.Rejected(ProtocolStatus.INVALID_STATE),
+                ))
+            }
+            return
+        }
+        try {
+            worker.execute {
+                var attemptedReference: EngineeringCaptureReference? = null
+                val result = runCatching {
+                    val retained = captureReferences.load(session.identity.serial)
+                    if (retained != null) {
+                        throw IllegalStateException(
+                            "Retrieve and release the retained capture archive before starting another run",
+                        )
+                    }
+                    session.runEngineeringCapture(
+                        polarity = polarity,
+                        rateStage = rateStage,
+                        timeoutMs = timeoutMs,
+                        onCapturePrepared = { reference ->
+                            if (!captureReferences.save(reference)) {
+                                throw IllegalStateException(
+                                    "Could not persist capture identity; no BEGIN_CAPTURE was sent",
+                                )
+                            }
+                            attemptedReference = reference
+                            dispatch { listener.onCapturePrepared(reference) }
+                        },
+                        onCaptureAccepted = { reference ->
+                            if (captureReferences.save(reference)) {
+                                attemptedReference = reference
+                            }
+                            dispatch { listener.onCaptureAccepted(reference) }
+                        },
+                        onCaptureReadyForStimulus = { reference ->
+                            dispatch { listener.onCaptureReadyForStimulus(reference) }
+                        },
+                        onCaptureWindowElapsed = { reference ->
+                            if (captureReferences.save(reference)) attemptedReference = reference
+                        },
+                        onChunkReceived = { reference, offset, bytes ->
+                            dispatch { listener.onChunkReceived(reference, offset, bytes.copyOf()) }
+                        },
+                    )
+                }
+                val value = result.getOrNull()
+                when (value) {
+                    EngineeringCaptureRunResult.Unsupported,
+                    is EngineeringCaptureRunResult.Rejected -> attemptedReference?.let {
+                        captureReferences.clear(it.fixtureSerial, it.nonce)
+                    }
+                    EngineeringCaptureRunResult.Unavailable -> attemptedReference?.let {
+                        // The full quiet capture window elapsed and the fixture
+                        // reported no retained archive. Keep request-ID high-water
+                        // state intact; only discard this archive reference.
+                        captureReferences.clear(it.fixtureSerial, it.nonce)
+                    }
+                    is EngineeringCaptureRunResult.Interrupted ->
+                        value.reference?.let(captureReferences::save)
+                    else -> Unit
+                }
+                synchronized(stateLock) {
+                    if (activeSession === session && session.isClosed) activeSession = null
+                }
+                dispatch { listener.onFinished(result) }
+            }
+        } catch (failure: Exception) {
+            dispatch { listener.onFinished(Result.failure(failure)) }
+        }
+    }
+
+    /** Resumes retrieval from a persisted fixture and archive reference after interruption. */
+    fun retrieveEngineeringCapture(
+        reference: EngineeringCaptureReference,
+        listener: EngineeringCaptureListener,
+    ) {
+        val session = synchronized(stateLock) { activeSession }
+        if (session == null) {
+            dispatch {
+                listener.onFinished(Result.failure(
+                    IllegalStateException("Connect to the matching fixture before retrieving its archive"),
+                ))
+            }
+            return
+        }
+        try {
+            worker.execute {
+                var retainedReference: EngineeringCaptureReference? = null
+                val result: Result<EngineeringCaptureRunResult> = try {
+                    val retained = captureReferences.load(reference.fixtureSerial)
+                        ?: throw IllegalStateException("No retained capture archive reference exists for this fixture")
+                    if (retained.fixtureSerial != session.identity.serial ||
+                        retained.nonce != reference.nonce ||
+                        retained.polarity != reference.polarity ||
+                        retained.rateStage != reference.rateStage ||
+                        retained.timeoutMs != reference.timeoutMs ||
+                        (reference.archiveGeneration != 0L &&
+                            reference.archiveGeneration != retained.archiveGeneration) ||
+                        (reference.sessionGeneration != 0L &&
+                            reference.sessionGeneration != retained.sessionGeneration)
+                    ) {
+                        throw ProtocolViolation("Capture reference does not match the retained fixture archive")
+                    }
+                    retainedReference = retained
+                    var elapsedReference = retained
+                    val archive = session.retrieveEngineeringCapture(
+                        // The persisted boundary is authoritative. A caller's stale
+                        // object cannot skip the quiet wait after reconnect.
+                        reference = retained,
+                        onCaptureWindowElapsed = { updated ->
+                            elapsedReference = updated
+                            captureReferences.save(updated)
+                        },
+                        onChunkReceived = { checkedReference, offset, bytes ->
+                            dispatch {
+                                listener.onChunkReceived(checkedReference, offset, bytes.copyOf())
+                            }
+                        },
+                    )
+                    val resolved = elapsedReference.copy(
+                        archiveGeneration = archive.generation,
+                        sessionGeneration = archive.sessionGeneration,
+                    )
+                    captureReferences.save(resolved)
+                    Result.success(
+                        if (archive.complete) EngineeringCaptureRunResult.Complete(archive)
+                        else EngineeringCaptureRunResult.Incomplete(archive),
+                    )
+                } catch (_: EngineeringCaptureArchiveUnavailableException) {
+                    val retained = retainedReference
+                    if (retained != null && captureReferences.clear(retained.fixtureSerial, retained.nonce)) {
+                        Result.success(EngineeringCaptureRunResult.Unavailable)
+                    } else {
+                        Result.failure(IllegalStateException("Could not clear the unavailable capture reference"))
+                    }
+                } catch (failure: Exception) {
+                    Result.failure(failure)
+                }
+                synchronized(stateLock) {
+                    if (activeSession === session && session.isClosed) activeSession = null
+                }
+                dispatch { listener.onFinished(result) }
+            }
+        } catch (failure: Exception) {
+            dispatch { listener.onFinished(Result.failure(failure)) }
+        }
+    }
+
+    /** Returns the last archive reference retained for a validated fixture serial. */
+    fun retainedEngineeringCaptureReference(serial: String): EngineeringCaptureReference? =
+        captureReferences.load(serial)
+
+    /** Releases the fixture's single archive after the caller has stored the validated raw bytes. */
+    fun releaseEngineeringCapture(
+        reference: EngineeringCaptureReference,
+        callback: (Result<Boolean>) -> Unit,
+    ) {
+        val session = synchronized(stateLock) { activeSession }
+        if (session == null) {
+            dispatch { callback(Result.failure(
+                IllegalStateException("Connect to the matching fixture before releasing its archive"),
+            )) }
+            return
+        }
+        try {
+            worker.execute {
+                val result = runCatching {
+                    val released = session.releaseEngineeringCapture(reference)
+                    if (released) captureReferences.clear(reference.fixtureSerial, reference.nonce)
+                    released
+                }
+                synchronized(stateLock) {
+                    if (activeSession === session && session.isClosed) activeSession = null
+                }
+                dispatch { callback(result) }
+            }
+        } catch (failure: Exception) {
+            dispatch { callback(Result.failure(failure)) }
         }
     }
 

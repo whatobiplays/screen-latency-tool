@@ -134,6 +134,8 @@ PulseResult PulseEngine::acceptPulse(uint16_t duration_ms, uint32_t now_tick) {
   state_.duration_ms = duration_ms;
   state_.tick_valid = false;
   state_.completion_tick = 0;
+  state_.capture_t0_valid = false;
+  state_.capture_t0_tick = 0;
   state_.fault = Fault::None;
   state_.recovery_required = false;
   state_.state = PulseState::PressQueued;
@@ -206,6 +208,14 @@ void PulseEngine::service(uint32_t now_tick) {
 void PulseEngine::onTransferComplete(const TransferToken& token,
                                      TransferResult result,
                                      uint32_t completion_tick) {
+  onTransferComplete(token, result, completion_tick, false, 0);
+}
+
+void PulseEngine::onTransferComplete(const TransferToken& token,
+                                     TransferResult result,
+                                     uint32_t completion_tick,
+                                     bool capture_t0_valid,
+                                     uint64_t capture_t0_tick) {
   if (!sameToken(token, active_token_)) return;
 
   if (cancel_pending_) {
@@ -240,6 +250,10 @@ void PulseEngine::onTransferComplete(const TransferToken& token,
     }
     state_.tick_valid = true;
     state_.completion_tick = completion_tick;
+    if (capture_t0_valid) {
+      state_.capture_t0_valid = true;
+      state_.capture_t0_tick = capture_t0_tick;
+    }
     hold_started_tick_ = completion_tick;
     state_.state = PulseState::Holding;
     return;
@@ -381,6 +395,8 @@ void PulseEngine::invalidateSession() {
   state_.full_speed_verified = false;
   state_.tick_valid = false;
   state_.completion_tick = 0;
+  state_.capture_t0_valid = false;
+  state_.capture_t0_tick = 0;
   state_.fault = Fault::SessionInvalidated;
   state_.state = PulseState::Fault;
   state_.recovery_required = true;
@@ -396,6 +412,8 @@ void PulseEngine::failCurrentTransfer(Fault fault, bool invalidate_tick) {
   if (invalidate_tick) {
     state_.tick_valid = false;
     state_.completion_tick = 0;
+    state_.capture_t0_valid = false;
+    state_.capture_t0_tick = 0;
   }
 }
 

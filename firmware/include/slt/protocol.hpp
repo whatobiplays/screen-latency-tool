@@ -4,20 +4,30 @@
 #include <cstddef>
 #include <cstdint>
 
+#include "slt/capture.hpp"
 #include "slt/pulse_engine.hpp"
 
 namespace slt {
 
 constexpr uint16_t kEngineeringInfoCommand = 0xE001;
 constexpr uint16_t kEngineeringPressPulseCommand = 0xE002;
+constexpr uint16_t kEngineeringBeginCaptureCommand = 0xE003;
+constexpr uint16_t kEngineeringCaptureArchiveCommand = 0xE004;
 constexpr size_t kEngineeringInfoPayloadSize = 32;
 constexpr size_t kEngineeringPressRequestPayloadSize = 8;
 constexpr size_t kEngineeringPressAckPayloadSize = 12;
+constexpr size_t kEngineeringBeginCaptureRequestPayloadSize = 16;
+constexpr size_t kEngineeringBeginCaptureAckPayloadSize = 20;
+constexpr size_t kEngineeringCaptureArchiveRequestPayloadSize = 12;
+constexpr size_t kEngineeringCaptureStatusPayloadSize = 24;
+constexpr size_t kEngineeringCaptureReadMetadataSize = 12;
+constexpr size_t kEngineeringCaptureReleasePayloadSize = 8;
 constexpr size_t kProtocolHeaderSize = 20;
 constexpr size_t kMaximumEngineeringFrameSize = 64;
 constexpr size_t kRequestReplayCacheEntries = 4;
 constexpr uint8_t kEngineeringProtocolMajor = 1;
 constexpr uint8_t kEngineeringProtocolMinor = 0;
+constexpr uint8_t kEngineeringProtocolMinorCapture = 1;
 constexpr uint8_t kEngineeringFirmwareMajor = 0;
 constexpr uint8_t kEngineeringFirmwareMinor = 1;
 
@@ -25,9 +35,15 @@ class Protocol {
  public:
   explicit Protocol(PulseEngine& engine, uint64_t fixture_serial = 0)
       : engine_(engine), fixture_serial_(fixture_serial) {}
+  Protocol(PulseEngine& engine, CaptureEngine& capture,
+           uint64_t fixture_serial = 0)
+      : engine_(engine), capture_(&capture), fixture_serial_(fixture_serial) {}
 
   void setFixtureSerial(uint64_t fixture_serial) {
     fixture_serial_ = fixture_serial;
+  }
+  void setCaptureMetadata(const CaptureMetadata& metadata) {
+    capture_metadata_ = metadata;
   }
 
   // Returns the command status encoded in the response. Invalid input never
@@ -53,16 +69,22 @@ class Protocol {
   void serializeInfo(uint8_t* payload, const Snapshot& snapshot) const;
   void writeResponse(uint8_t* response, uint32_t request_id, uint16_t command,
                      Status status, const uint8_t* payload, size_t payload_size,
-                     size_t& response_size) const;
+                     size_t& response_size, uint8_t protocol_minor = 0) const;
   void remember(uint32_t request_id, const uint8_t* request,
                 size_t request_size, Status status, const uint8_t* response,
                 size_t response_size);
   PulseEngine& engine_;
+  CaptureEngine* capture_ = nullptr;
+  CaptureMetadata capture_metadata_{};
   uint64_t fixture_serial_ = 0;
   uint32_t last_request_id_ = 0;
   bool has_request_id_ = false;
   size_t replay_next_index_ = 0;
   std::array<CachedExchange, kRequestReplayCacheEntries> replay_cache_{};
 };
+
+// Identifies the exact successful E003 response that may bind capture arming.
+bool isSuccessfulCaptureBeginAcknowledgement(const uint8_t* response,
+                                             size_t response_size);
 
 }  // namespace slt

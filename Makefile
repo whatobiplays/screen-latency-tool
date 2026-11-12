@@ -2,7 +2,7 @@
 # KiCad's native design checks are a separate version-pinned local profile.
 NODE ?= node
 
-.PHONY: check check-generated check-structural check-erc-gate check-provenance check-bom check-markdown check-validation-tests check-kicad check-firmware check-android firmware-host-tests firmware-build descriptor-validation android-test android-build
+.PHONY: check check-generated check-structural check-erc-gate check-provenance check-bom check-markdown check-validation-tests check-kicad check-firmware check-android firmware-host-tests firmware-build descriptor-validation capture-candidate-build capture-memory-tests android-test android-build
 
 check: check-generated check-structural check-erc-gate check-provenance check-bom check-markdown check-validation-tests firmware-host-tests
 
@@ -38,11 +38,18 @@ firmware-host-tests:
 firmware-build:
 	PLATFORMIO_CORE_DIR="$(PLATFORMIO_CORE_DIR)" $(PLATFORMIO) run -d firmware -e teensy41
 
+capture-candidate-build:
+	PLATFORMIO_CORE_DIR="$(PLATFORMIO_CORE_DIR)" $(PLATFORMIO) run -d firmware -e teensy41-flexpwm1-candidate
+	python3 firmware/scripts/check_capture_memory.py --build-dir firmware/.pio/build/teensy41-flexpwm1-candidate --elf firmware/.pio/build/teensy41-flexpwm1-candidate/firmware.elf
+
+capture-memory-tests:
+	python3 firmware/tests/test_capture_memory.py
+
 descriptor-validation: firmware-build
 	python3 firmware/scripts/test_compiled_descriptors.py
 	python3 firmware/scripts/check_compiled_descriptors.py firmware/.pio/build/teensy41/firmware.elf
 
-check-firmware: firmware-host-tests descriptor-validation
+check-firmware: firmware-host-tests descriptor-validation capture-candidate-build capture-memory-tests
 
 # Uses the pinned Gradle wrapper and Android/JVM modules.
 android-test:

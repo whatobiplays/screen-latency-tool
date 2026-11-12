@@ -1,6 +1,6 @@
 # Teensy 4.1 USB fixture firmware
 
-This firmware is a USB feasibility candidate for the Screen Latency Tool fixture. It exposes one HID gamepad interface and one engineering-only vendor interface. It does not implement fixture acquisition, sensor capture, or timing qualification.
+This firmware is a USB feasibility candidate for the Screen Latency Tool fixture. It exposes one HID gamepad interface and one engineering-only vendor interface. It includes a host-tested five-channel FlexPWM1 capture candidate; the physical routing and service profile stay disabled until their owner and hardware gates are met. It does not claim sensor qualification or timing performance.
 
 ## Build and host checks
 
@@ -8,7 +8,7 @@ The intended firmware toolchain baseline is PlatformIO Core 6.1.18, Teensy platf
 
 The HID slot pool keeps transfer identities separate from DMA buffers. A canceled or reset slot remains retired until the USB endpoint flush succeeds. The flush stops waiting after 6,000,000 DWT cycles, or 10 ms at the pinned 600 MHz core clock. If it times out, firmware blocks endpoint reconfiguration and keeps the slot retired until a later flush succeeds.
 
-Run `make check-firmware` from the repository root. The target compiles the Teensy candidate, runs deterministic pulse and protocol tests with the host C++17 compiler, then checks the descriptor symbols in the resulting ELF. The host tests and ELF checks validate software structure; they do not establish USB enumeration, negotiated speed, electrical safety, or input timing.
+Run `make check-firmware` from the repository root. The target compiles the default Teensy image and the routing-disabled FlexPWM1 candidate, runs deterministic pulse/protocol/capture tests with the host C++17 compiler, checks the linked RAM map, and validates descriptor symbols. The host tests and ELF checks validate software structure; they do not establish USB enumeration, negotiated speed, electrical safety, hardware capture coherence, or input timing.
 
 By default, `make check-firmware` stores PlatformIO packages in `firmware/.platformio-core/`, under this checkout. The pre-build hook refuses the default shared `~/.platformio` cache and any framework package outside `PLATFORMIO_CORE_DIR`. CI passes a runner-local cache. Direct local `pio` commands must set `PLATFORMIO_CORE_DIR` to a directory inside the checkout; the overlay stops rather than changing a shared framework package.
 
@@ -17,6 +17,8 @@ The compiled-ELF check confirms one HID descriptor, its 43-byte report length, t
 `ENGINEERING_INFO` is a 32-byte payload containing protocol and firmware versions, USB speed, packed state and validity flags, the 64-bit fixture serial, pulse sequence, USB-session and transfer generations, the diagnostic completion tick, and accepted duration. The pulse request is eight bytes (`tag:u32`, `duration_ms:u16`, zero reserved field); its accepted acknowledgement is twelve bytes and echoes the tag with the assigned sequence and queued state. The device replays an exact duplicate request from its four-entry response cache while engineering commands are available, so a retry after a lost acknowledgement cannot execute a second pulse. During autonomous acquisition or qualification, a cached duplicate of either engineering command returns `InvalidState`; the pulse is not executed again.
 
 The completion tick is sampled from Cortex-M7 `DWT_CYCCNT` at the USB completion callback for a successful six-byte press transfer. At the configured 600 MHz core clock it is a 32-bit, core-clock-domain counter with 1.667 ns nominal ticks and a wrap interval of about 7.158278827 seconds. The frequency is fixed by this build and is not an information-payload field. USB callbacks enqueue immutable completion facts; the main loop alone updates pulse state and serializes vendor responses. This software tick is diagnostic and cannot qualify bus-accurate T0. The information payload exposes only a generic fault state, not a detailed fault code. Release-transfer failures are reported separately and do not invalidate a tick already recorded for a successful press transfer.
+
+The [Issue #5 engineering capture note](docs/engineering-capture.md) records the provisional FlexPWM1 route, register ordering, timebase extension, service bound, linker-map budget, and required physical evidence. `E003` and `E004` are engineering-only protocol 1.1 commands. Capture begins only after the matching successful vendor IN acknowledgement callback. The fixed internal-RAM2 archive has 50,000 64-bit samples and fails closed when the capture profile or memory checks are unavailable. QSPI pin routing is compile-time disabled by default.
 
 ## Physical verification gate
 

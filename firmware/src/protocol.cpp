@@ -22,6 +22,14 @@ uint32_t readU32(const uint8_t* data, size_t offset) {
          (static_cast<uint32_t>(data[offset + 3]) << 24);
 }
 
+uint64_t readU64(const uint8_t* data, size_t offset) {
+  uint64_t value = 0;
+  for (size_t i = 0; i < 8; ++i) {
+    value |= static_cast<uint64_t>(data[offset + i]) << (8 * i);
+  }
+  return value;
+}
+
 void writeU16(uint8_t* data, size_t offset, uint16_t value) {
   data[offset] = static_cast<uint8_t>(value);
   data[offset + 1] = static_cast<uint8_t>(value >> 8);
@@ -41,6 +49,20 @@ void writeU64(uint8_t* data, size_t offset, uint64_t value) {
 
 }  // namespace
 
+bool isSuccessfulCaptureBeginAcknowledgement(const uint8_t* response,
+                                             size_t response_size) {
+  return response != nullptr &&
+         response_size == kProtocolHeaderSize +
+                              kEngineeringBeginCaptureAckPayloadSize &&
+         response[0] == 'S' && response[1] == 'L' && response[2] == 'T' &&
+         response[3] == '1' && response[4] == kEngineeringProtocolMajor &&
+         response[5] == kEngineeringProtocolMinorCapture && response[6] == 2 &&
+         response[7] == 0 && readU32(response, 8) != 0 &&
+         readU16(response, 12) == kEngineeringBeginCaptureCommand &&
+         readU16(response, 14) == static_cast<uint16_t>(Status::Ok) &&
+         readU32(response, 16) == kEngineeringBeginCaptureAckPayloadSize;
+}
+
 Status Protocol::process(const uint8_t* request, size_t request_size,
                          uint8_t* response, size_t response_capacity,
                          size_t& response_size, uint32_t now_tick) {
@@ -55,7 +77,7 @@ Status Protocol::process(const uint8_t* request, size_t request_size,
   uint32_t request_id = readU32(request, 8);
   uint16_t command = readU16(request, 12);
   Status status = Status::BadRequest;
-  std::array<uint8_t, kEngineeringInfoPayloadSize> payload{};
+  std::array<uint8_t, kMaximumEngineeringFrameSize - kProtocolHeaderSize> payload{};
   size_t payload_size = 0;
 
   bool magic_matches = true;
@@ -73,6 +95,12 @@ Status Protocol::process(const uint8_t* request, size_t request_size,
     return Status::BadRequest;
   }
 
+  if (capture_ != nullptr && capture_->acquisitionActive()) {
+    // Acquisition has exclusive vendor ownership. The endpoint owner aborts
+    // unexpected traffic without sending a response during the capture window.
+    return Status::InvalidState;
+  }
+
   for (const CachedExchange& cached : replay_cache_) {
     if (!cached.valid || cached.request_id != request_id) continue;
     const bool exact_duplicate = cached.request_size == request_size &&
@@ -80,6 +108,13 @@ Status Protocol::process(const uint8_t* request, size_t request_size,
     if (!exact_duplicate) {
       writeResponse(response, request_id, command, Status::BadRequest, nullptr,
                     0, response_size);
+      return Status::BadRequest;
+    }
+    if (command == kEngineeringBeginCaptureCommand &&
+        (capture_ == nullptr || capture_->state() == CaptureState::Empty)) {
+      writeResponse(response, request_id, command, Status::BadRequest, nullptr,
+                    0, response_size,
+                    readU8(request, 5) == kEngineeringProtocolMinorCapture ? 1 : 0);
       return Status::BadRequest;
     }
     const bool engineering_command =
@@ -106,7 +141,11 @@ Status Protocol::process(const uint8_t* request, size_t request_size,
   if ((command == kEngineeringInfoCommand &&
        response_capacity < kProtocolHeaderSize + kEngineeringInfoPayloadSize) ||
       (command == kEngineeringPressPulseCommand &&
-       response_capacity < kProtocolHeaderSize + kEngineeringPressAckPayloadSize)) {
+       response_capacity < kProtocolHeaderSize + kEngineeringPressAckPayloadSize) ||
+      (command == kEngineeringBeginCaptureCommand &&
+       response_capacity < kProtocolHeaderSize + kEngineeringBeginCaptureAckPayloadSize) ||
+      (command == kEngineeringCaptureArchiveCommand &&
+       response_capacity < kMaximumEngineeringFrameSize)) {
     engine_.setLastCommandStatus(Status::HardwareFault);
     return Status::HardwareFault;
   }
@@ -118,11 +157,17 @@ Status Protocol::process(const uint8_t* request, size_t request_size,
   const uint8_t message_type = readU8(request, 6);
   const uint8_t flags = readU8(request, 7);
   const uint16_t request_status = readU16(request, 14);
+  const uint8_t response_minor =
+      major == kEngineeringProtocolMajor &&
+              minor <= kEngineeringProtocolMinorCapture
+          ? minor
+          : kEngineeringProtocolMinor;
 
   last_request_id_ = request_id;
   has_request_id_ = true;
 
-  if (major != 1 || minor > 0) {
+  if (major != kEngineeringProtocolMajor ||
+      minor > kEngineeringProtocolMinorCapture) {
     status = Status::UnsupportedVersion;
   } else if (message_type != 1 || flags != 0 || request_status != 0 ||
              !exact_length) {
@@ -138,7 +183,8 @@ Status Protocol::process(const uint8_t* request, size_t request_size,
       return Status::HardwareFault;
     } else {
       serializeInfo(payload.data(), engine_.snapshotForEngineeringInfo());
-      payload_size = payload.size();
+      payload[1] = minor;
+      payload_size = kEngineeringInfoPayloadSize;
       status = Status::Ok;
     }
   } else if (command == kEngineeringPressPulseCommand) {
@@ -158,6 +204,115 @@ Status Protocol::process(const uint8_t* request, size_t request_size,
         payload_size = kEngineeringPressAckPayloadSize;
       }
     }
+  } else if (command == kEngineeringBeginCaptureCommand) {
+    if (minor != kEngineeringProtocolMinorCapture) {
+      status = Status::UnsupportedVersion;
+    } else if (capture_ == nullptr) {
+      status = Status::UnsupportedVersion;
+    } else if (declared_size != kEngineeringBeginCaptureRequestPayloadSize) {
+      status = Status::BadRequest;
+    } else if (engine_.isBusy()) {
+      status = Status::Busy;
+    } else {
+      const size_t offset = kProtocolHeaderSize;
+      const uint64_t nonce = readU64(request, offset);
+      const uint16_t samples = readU16(request, offset + 8);
+      const uint8_t polarity_value = readU8(request, offset + 10);
+      const uint8_t rate_stage_value = readU8(request, offset + 11);
+      const uint32_t timeout_ms = readU32(request, offset + 12);
+      if ((polarity_value != static_cast<uint8_t>(CapturePolarity::Ascending) &&
+           polarity_value != static_cast<uint8_t>(CapturePolarity::Descending)) ||
+          (rate_stage_value != static_cast<uint8_t>(CaptureRateStage::QualifiedMaximum) &&
+           rate_stage_value != static_cast<uint8_t>(CaptureRateStage::DoubleMaximum))) {
+        status = Status::BadRequest;
+      } else {
+        const Snapshot snapshot = engine_.snapshot();
+        if (!snapshot.session_valid || !snapshot.full_speed_verified) {
+          status = Status::NotReady;
+        } else {
+          status = capture_->begin(
+              request_id, nonce, samples,
+              static_cast<CapturePolarity>(polarity_value),
+              static_cast<CaptureRateStage>(rate_stage_value), timeout_ms,
+              snapshot.session_generation, capture_metadata_);
+        }
+        if (status == Status::Ok) {
+          writeU64(payload.data(), 0, nonce);
+          writeU32(payload.data(), 8, capture_->archiveGeneration());
+          writeU32(payload.data(), 12, snapshot.session_generation);
+          payload[16] = static_cast<uint8_t>(CaptureState::AcknowledgementPending);
+          payload[17] = polarity_value;
+          writeU16(payload.data(), 18, samples);
+          payload_size = kEngineeringBeginCaptureAckPayloadSize;
+        }
+      }
+    }
+  } else if (command == kEngineeringCaptureArchiveCommand) {
+    if (minor != kEngineeringProtocolMinorCapture) {
+      status = Status::UnsupportedVersion;
+    } else if (capture_ == nullptr) {
+      status = Status::UnsupportedVersion;
+    } else if (declared_size != kEngineeringCaptureArchiveRequestPayloadSize ||
+               readU8(request, kProtocolHeaderSize + 1) != 0 ||
+               readU8(request, kProtocolHeaderSize + 11) != 0) {
+      status = Status::BadRequest;
+    } else {
+      const uint8_t operation = readU8(request, kProtocolHeaderSize);
+      const uint32_t generation = readU32(request, kProtocolHeaderSize + 2);
+      const uint32_t offset = readU32(request, kProtocolHeaderSize + 6);
+      const uint8_t length = readU8(request, kProtocolHeaderSize + 10);
+      if (capture_->acquisitionActive() && operation != 0) {
+        status = Status::Busy;
+      } else if (operation == 1) {
+        CaptureStatus capture_status{};
+        if (offset != 0 || length != 0 ||
+            (generation != 0 && generation != capture_->archiveGeneration()) ||
+            !capture_->status(capture_status)) {
+          status = Status::NotReady;
+        } else {
+          writeU32(payload.data(), 0, capture_status.archive_generation);
+          payload[4] = static_cast<uint8_t>(capture_status.state);
+          payload[5] = static_cast<uint8_t>(capture_status.polarity);
+          writeU16(payload.data(), 6, capture_status.fault_flags);
+          for (size_t i = 0; i < capture_status.counts.size(); ++i) {
+            writeU16(payload.data(), 8 + i * 2, capture_status.counts[i]);
+          }
+          writeU32(payload.data(), 18, capture_status.archive_length);
+          writeU16(payload.data(), 22, 0);
+          payload_size = kEngineeringCaptureStatusPayloadSize;
+          status = Status::Ok;
+        }
+      } else if (operation == 2) {
+        CaptureReadChunk chunk{};
+        if (capture_->read(generation, offset, length, chunk)) {
+          writeU32(payload.data(), 0, chunk.archive_generation);
+          writeU32(payload.data(), 4, chunk.offset);
+          writeU32(payload.data(), 8, chunk.crc32);
+          std::copy_n(chunk.bytes.begin(), chunk.length,
+                      payload.begin() + kEngineeringCaptureReadMetadataSize);
+          payload_size = kEngineeringCaptureReadMetadataSize + chunk.length;
+          status = Status::Ok;
+        } else {
+          status = capture_->state() == CaptureState::Empty
+                       ? Status::NotReady
+                       : Status::RangeError;
+        }
+      } else if (operation == 3) {
+        if (offset != 0 || length != 0) {
+          status = Status::BadRequest;
+        } else if (capture_->release(generation)) {
+          writeU32(payload.data(), 0, generation);
+          payload[4] = static_cast<uint8_t>(CaptureState::Empty);
+          payload[5] = payload[6] = payload[7] = 0;
+          payload_size = kEngineeringCaptureReleasePayloadSize;
+          status = Status::Ok;
+        } else {
+          status = Status::InvalidState;
+        }
+      } else {
+        status = Status::BadRequest;
+      }
+    }
   } else {
     status = Status::BadRequest;
   }
@@ -169,7 +324,8 @@ Status Protocol::process(const uint8_t* request, size_t request_size,
   engine_.setLastCommandStatus(status);
   writeResponse(response, request_id, command, status,
                 status == Status::Ok ? payload.data() : nullptr,
-                status == Status::Ok ? payload_size : 0, response_size);
+                status == Status::Ok ? payload_size : 0, response_size,
+                response_minor);
   remember(request_id, request, request_size, status, response, response_size);
   return status;
 }
@@ -217,13 +373,14 @@ void Protocol::remember(uint32_t request_id, const uint8_t* request,
 void Protocol::writeResponse(uint8_t* response, uint32_t request_id,
                              uint16_t command, Status status,
                              const uint8_t* payload, size_t payload_size,
-                             size_t& response_size) const {
+                             size_t& response_size,
+                             uint8_t protocol_minor) const {
   response[0] = 'S';
   response[1] = 'L';
   response[2] = 'T';
   response[3] = '1';
   response[4] = 1;
-  response[5] = 0;
+  response[5] = protocol_minor;
   response[6] = 2;
   response[7] = 0;
   writeU32(response, 8, request_id);
