@@ -15,9 +15,9 @@ FlexPWM1 is based at `0x403DC000`; each submodule advances by `0x60`. Register o
 | Channel | Teensy pin / pad | Mux | FlexPWM path | Control / compare | Captured value / cycle |
 | --- | --- | --- | --- | --- | --- |
 | 0 | 48 / GPIO_EMC_24 | ALT1 | SM0 B0 | CAPTCTRLB `0x38` / CAPTCOMPB `0x3A` | CVAL4 `0x50` / CVAL4CYC `0x52` |
-| 1 | 53 / GPIO_EMC_27 | ALT1 | SM1 A0 | CAPTCTRLA `0x94` / CAPTCOMPA `0x96` | CVAL2 `0xA8` / CVAL2CYC `0xAA` |
+| 1 | 53 / GPIO_EMC_25 | ALT1 | SM1 A0 | CAPTCTRLA `0x94` / CAPTCOMPA `0x96` | CVAL2 `0xA8` / CVAL2CYC `0xAA` |
 | 2 | 52 / GPIO_EMC_26 | ALT1 | SM1 B0 | CAPTCTRLB `0x98` / CAPTCOMPB `0x9A` | CVAL4 `0xB0` / CVAL4CYC `0xB2` |
-| 3 | 49 / GPIO_EMC_25 | ALT1 | SM2 A0 | CAPTCTRLA `0xF4` / CAPTCOMPA `0xF6` | CVAL2 `0x108` / CVAL2CYC `0x10A` |
+| 3 | 49 / GPIO_EMC_27 | ALT1 | SM2 A0 | CAPTCTRLA `0xF4` / CAPTCOMPA `0xF6` | CVAL2 `0x108` / CVAL2CYC `0x10A` |
 | 4 | 8 / GPIO_B1_00 | ALT6, daisy 4 | SM3 A0 | CAPTCTRLA `0x154` / CAPTCOMPA `0x156` | CVAL2 `0x168` / CVAL2CYC `0x16A` |
 
 Each path selects the raw PWM input (`INP_SEL=0`), continuous capture, FIFO 0, and one polarity in `EDGA0` or `EDGB0`; it arms only after all five paths are configured. The selected-edge values are `2` for rising and `1` for falling. The edge counter is enabled separately and counts both transitions.
