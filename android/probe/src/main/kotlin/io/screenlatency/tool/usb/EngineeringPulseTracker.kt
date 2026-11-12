@@ -72,7 +72,7 @@ object EngineeringInfoCodec {
 
         val protocolMajor = u8(payload, 0)
         val protocolMinor = u8(payload, 1)
-        if (protocolMajor != 1 || protocolMinor > 0) {
+        if (protocolMajor != 1 || protocolMinor > EngineeringFrameCodec.PROTOCOL_MINOR_1_1) {
             throw ProtocolViolation("ENGINEERING_INFO protocol version is unsupported")
         }
         val firmwareMajor = u8(payload, 2)

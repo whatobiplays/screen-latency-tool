@@ -10,6 +10,321 @@ import org.junit.Test
 
 class EngineeringUsbSessionTest {
     @Test
+    fun captureWaitsForTheQuietArmBarrierAndIssuesNoVendorTrafficDuringAcquisition() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val beginAck = vector("engineering_capture_begin_ascending_v11").also {
+            putU64(it, EngineeringFrameCodec.HEADER_SIZE, 2L)
+        }
+        val (session, connection) = connectedSession(listOf(beginAck), preflightInfo = negotiatedInfo)
+        val clock = FakeClock()
+        val callbackOrder = mutableListOf<String>()
+        var reference: EngineeringCaptureReference? = null
+        var readyReference: EngineeringCaptureReference? = null
+        var detached = false
+
+        val result = session.runEngineeringCapture(
+            polarity = 1,
+            rateStage = 1,
+            timeoutMs = EngineeringUsbSession.MIN_CAPTURE_TIMEOUT_MS,
+            clock = clock,
+            sleeper = ProbeSleeper { millis ->
+                clock.advance(millis)
+                if (readyReference != null && !detached) {
+                    detached = true
+                    session.invalidate()
+                }
+            },
+            onCaptureAccepted = {
+                callbackOrder += "acknowledged"
+                reference = it
+            },
+            onCaptureReadyForStimulus = {
+                callbackOrder += "ready"
+                readyReference = it
+            },
+        )
+
+        val interrupted = result as EngineeringCaptureRunResult.Interrupted
+        assertEquals(listOf("acknowledged", "ready"), callbackOrder)
+        assertEquals(reference, readyReference)
+        assertEquals(2L, interrupted.reference?.nonce)
+        assertEquals(1L, interrupted.reference?.archiveGeneration)
+        assertEquals(1L, interrupted.reference?.sessionGeneration)
+        assertTrue(clock.now >= EngineeringUsbSession.CAPTURE_ARM_SETTLE_MS)
+        assertTrue(detached)
+        assertEquals(listOf(1L, 2L), connection.requestIds)
+        assertEquals(listOf(0xE001, 0xE003), connection.commands)
+        assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun legacyFixtureNegotiatesMinorZeroAndNeverSendsCaptureCommands() {
+        val unsupportedCaptureProbe = emptyStatusResponse(
+            vector("engineering_info_request_0x01020304"),
+            ProtocolStatus.UNSUPPORTED_VERSION,
+        )
+        val (session, connection) = connectedSession(
+            listOf(idleEngineeringInfoResponse()),
+            preflightInfo = unsupportedCaptureProbe,
+        )
+
+        assertEquals(
+            EngineeringCaptureRunResult.Unsupported,
+            session.runEngineeringCapture(1, 1, EngineeringUsbSession.MIN_CAPTURE_TIMEOUT_MS),
+        )
+        assertEquals(listOf(1L, 2L), connection.requestIds)
+        assertEquals(listOf(0xE001, 0xE001), connection.commands)
+        assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun lostCaptureAcknowledgementDoesNotRetryBeginOrResetTheRequestId() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val (session, connection) = connectedSession(
+            listOf(byteArrayOf()),
+            preflightInfo = negotiatedInfo,
+        )
+
+        val result = session.runEngineeringCapture(
+            polarity = 2,
+            rateStage = 1,
+            timeoutMs = EngineeringUsbSession.MIN_CAPTURE_TIMEOUT_MS,
+        )
+
+        val interrupted = result as EngineeringCaptureRunResult.Interrupted
+        assertEquals(2L, interrupted.reference?.nonce)
+        assertEquals(0L, interrupted.reference?.archiveGeneration)
+        assertEquals(0L, interrupted.reference?.sessionGeneration)
+        assertEquals(listOf(1L, 2L), connection.requestIds)
+        assertEquals(listOf(0xE001, 0xE003), connection.commands)
+        assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun rejectsCaptureAcknowledgementStatesOtherThanAcknowledgementPending() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+
+        listOf(0, 2, 4, 5).forEach { state ->
+            val beginAck = vector("engineering_capture_begin_ascending_v11").also {
+                it[EngineeringFrameCodec.HEADER_SIZE + 16] = state.toByte()
+            }
+            val (session, connection) = connectedSession(
+                listOf(beginAck),
+                preflightInfo = negotiatedInfo,
+            )
+
+            assertThrows(ProtocolViolation::class.java) {
+                session.runEngineeringCapture(
+                    polarity = 1,
+                    rateStage = 1,
+                    timeoutMs = EngineeringUsbSession.MIN_CAPTURE_TIMEOUT_MS,
+                )
+            }
+            assertEquals(listOf(1L, 2L), connection.requestIds)
+            assertEquals(listOf(0xE001, 0xE003), connection.commands)
+            assertResourcesClosed(connection)
+        }
+    }
+
+    @Test
+    fun missingArchiveAfterQuietCaptureWindowIsUnavailableWithoutVendorTrafficDuringAcquisition() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val beginAck = vector("engineering_capture_begin_ascending_v11").also {
+            putU64(it, EngineeringFrameCodec.HEADER_SIZE, 2L)
+        }
+        val unavailable = emptyStatusResponse(
+            vector("engineering_capture_status_v11"),
+            ProtocolStatus.NOT_READY,
+        )
+        val (session, connection) = connectedSession(
+            listOf(beginAck, unavailable),
+            preflightInfo = negotiatedInfo,
+        )
+        val clock = FakeClock()
+        var readyForStimulus = false
+        var windowElapsed = false
+
+        val result = session.runEngineeringCapture(
+            polarity = 1,
+            rateStage = 1,
+            timeoutMs = EngineeringUsbSession.MIN_CAPTURE_TIMEOUT_MS,
+            clock = clock,
+            sleeper = ProbeSleeper { millis ->
+                if (readyForStimulus) assertEquals(listOf(0xE001, 0xE003), connection.commands)
+                clock.advance(millis)
+            },
+            onCaptureReadyForStimulus = { readyForStimulus = true },
+            onCaptureWindowElapsed = { windowElapsed = it.captureWindowElapsed },
+        )
+
+        assertEquals(EngineeringCaptureRunResult.Unavailable, result)
+        assertTrue(windowElapsed)
+        assertTrue(clock.now >= EngineeringUsbSession.CAPTURE_ARM_SETTLE_MS +
+            EngineeringUsbSession.MIN_CAPTURE_TIMEOUT_MS)
+        assertEquals(listOf(1L, 2L, 3L), connection.requestIds)
+        assertEquals(listOf(0xE001, 0xE003, 0xE004), connection.commands)
+        assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun resumedCaptureWaitsQuietlyBeforeAnyVendorRequest() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val unavailable = emptyStatusResponse(
+            vector("engineering_capture_status_v11"),
+            ProtocolStatus.NOT_READY,
+        )
+        val (session, connection) = connectedSession(
+            listOf(unavailable),
+            preflightInfo = negotiatedInfo,
+        )
+        val clock = FakeClock()
+        val reference = EngineeringCaptureReference(
+            fixtureSerial = "0123456789ABCDEF",
+            nonce = 7,
+            archiveGeneration = 1,
+            sessionGeneration = 1,
+            polarity = 2,
+            rateStage = 1,
+            timeoutMs = EngineeringUsbSession.MIN_CAPTURE_TIMEOUT_MS,
+        )
+        var elapsedReference: EngineeringCaptureReference? = null
+
+        assertThrows(EngineeringCaptureArchiveUnavailableException::class.java) {
+            session.retrieveEngineeringCapture(
+                reference = reference,
+                clock = clock,
+                sleeper = ProbeSleeper { millis ->
+                    assertTrue(connection.commands.isEmpty())
+                    clock.advance(millis)
+                },
+                onCaptureWindowElapsed = { elapsedReference = it },
+            )
+        }
+
+        assertTrue(clock.now >= reference.timeoutMs + EngineeringUsbSession.CAPTURE_ARM_SETTLE_MS)
+        assertEquals(true, elapsedReference?.captureWindowElapsed)
+        assertEquals(listOf(1L, 2L), connection.requestIds)
+        assertEquals(listOf(0xE001, 0xE004), connection.commands)
+        assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun interruptedArchiveReadKeepsItsReferenceAndAllocatesOnlyNewRequestIds() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val firstChunk = ByteArray(32).also {
+            it[0] = 0x53
+            it[1] = 0x4C
+            it[2] = 0x41
+            it[3] = 0x31
+        }
+        val stateStore = TestRequestIdStateStore(nextRequestId = 1)
+        val connection = FakeConnection(
+            listOf(
+                ScriptedResponse(negotiatedInfo),
+                ScriptedResponse(captureStatusResponse(
+                    generation = 1,
+                    polarity = 1,
+                    faultFlags = 1,
+                    counts = List(5) { 10_000 },
+                )),
+                ScriptedResponse(captureReadResponse(1, 0, firstChunk)),
+            ),
+        )
+        val coordinator = UsbProbeCoordinator(
+            FakePlatform(connection),
+            EngineeringRequestIdSequenceProvider { stateStore },
+        )
+        val session = openSession(coordinator)
+        val reference = EngineeringCaptureReference(
+            fixtureSerial = "0123456789ABCDEF",
+            nonce = 7,
+            archiveGeneration = 1,
+            sessionGeneration = 1,
+            polarity = 1,
+            rateStage = 1,
+            timeoutMs = 60_000,
+            captureWindowElapsed = true,
+        )
+        val offsets = mutableListOf<Long>()
+
+        val failure = assertThrows(IllegalStateException::class.java) {
+            session.retrieveEngineeringCapture(reference) { _, offset, _ ->
+                offsets += offset
+                session.invalidate()
+            }
+        }
+
+        assertTrue(failure.message.orEmpty().contains("detached"))
+        assertEquals(listOf(0L), offsets)
+        assertEquals(listOf(1L, 2L, 3L), connection.requestIds)
+        assertEquals(listOf(0xE001, 0xE004, 0xE004), connection.commands)
+        assertEquals(4L, EngineeringRequestIdSequence(stateStore).allocate())
+        assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun acceptsCaptureReleaseOnlyWithMatchingGenerationAndZeroStateAndReservedBytes() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val (session, connection) = connectedSession(
+            listOf(captureReleaseResponse(generation = 7)),
+            preflightInfo = negotiatedInfo,
+        )
+
+        assertTrue(session.releaseEngineeringCapture(captureReference(generation = 7)))
+        assertEquals(listOf(1L, 2L), connection.requestIds)
+        assertEquals(listOf(0xE001, 0xE004), connection.commands)
+        assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun rejectsCaptureReleaseWithWrongGenerationStateOrReservedBytes() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val malformedResponses = listOf(
+            captureReleaseResponse(generation = 8),
+            captureReleaseResponse(state = 1),
+            captureReleaseResponse(reserved = byteArrayOf(1, 0, 0)),
+            captureReleaseResponse(reserved = byteArrayOf(0, 1, 0)),
+            captureReleaseResponse(reserved = byteArrayOf(0, 0, 1)),
+        )
+
+        malformedResponses.forEach { malformedResponse ->
+            val (session, connection) = connectedSession(
+                listOf(malformedResponse),
+                preflightInfo = negotiatedInfo,
+            )
+
+            assertThrows(ProtocolViolation::class.java) {
+                session.releaseEngineeringCapture(captureReference(generation = 7))
+            }
+            assertResourcesClosed(connection)
+        }
+    }
+
+    @Test
     fun rejectsEngineeringSerialMismatchBeforeSendingPulse() {
         val mismatchedInfo = vector("engineering_info_request_0x01020304").also {
             it[26] = (it[26].toInt() xor 1).toByte()
@@ -500,6 +815,69 @@ class EngineeringUsbSessionTest {
             putU32(it, 16, 0)
         }
 
+    private fun captureStatusResponse(
+        generation: Long,
+        polarity: Int,
+        faultFlags: Int,
+        counts: List<Int> = List(5) { 0 },
+    ): ByteArray {
+        val payload = ByteArray(EngineeringFrameCodec.ENGINEERING_CAPTURE_STATUS_SIZE)
+        putU32(payload, 0, generation)
+        payload[4] = 5
+        payload[5] = polarity.toByte()
+        putU16(payload, 6, faultFlags)
+        counts.forEachIndexed { index, count -> putU16(payload, 8 + index * 2, count) }
+        putU32(payload, 18, EngineeringCaptureArchiveCodec.ARCHIVE_SIZE.toLong())
+        return responseFrame(EngineeringFrameCodec.ENGINEERING_CAPTURE_ARCHIVE, payload)
+    }
+
+    private fun captureReadResponse(generation: Long, offset: Long, data: ByteArray): ByteArray {
+        val payload = ByteArray(EngineeringFrameCodec.ENGINEERING_CAPTURE_READ_METADATA_SIZE + data.size)
+        putU32(payload, 0, generation)
+        putU32(payload, 4, offset)
+        putU32(payload, 8, EngineeringCaptureArchiveCodec.chunkCrc(generation, offset, data))
+        data.copyInto(payload, EngineeringFrameCodec.ENGINEERING_CAPTURE_READ_METADATA_SIZE)
+        return responseFrame(EngineeringFrameCodec.ENGINEERING_CAPTURE_ARCHIVE, payload)
+    }
+
+    private fun captureReleaseResponse(
+        generation: Long = 7,
+        state: Int = 0,
+        reserved: ByteArray = ByteArray(3),
+    ): ByteArray {
+        require(reserved.size == 3)
+        val payload = ByteArray(EngineeringFrameCodec.ENGINEERING_CAPTURE_RELEASE_SIZE)
+        putU32(payload, 0, generation)
+        payload[4] = state.toByte()
+        reserved.copyInto(payload, 5)
+        return responseFrame(EngineeringFrameCodec.ENGINEERING_CAPTURE_ARCHIVE, payload)
+    }
+
+    private fun captureReference(generation: Long) = EngineeringCaptureReference(
+        fixtureSerial = "0123456789ABCDEF",
+        nonce = 6,
+        archiveGeneration = generation,
+        sessionGeneration = 1,
+        polarity = 1,
+        rateStage = 1,
+        timeoutMs = 60_000,
+        captureWindowElapsed = true,
+    )
+
+    private fun responseFrame(command: Int, payload: ByteArray): ByteArray =
+        ByteArray(EngineeringFrameCodec.HEADER_SIZE + payload.size).also { frame ->
+            frame[0] = 0x53
+            frame[1] = 0x4C
+            frame[2] = 0x54
+            frame[3] = 0x31
+            frame[4] = 1
+            frame[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            frame[6] = 2
+            putU16(frame, 12, command)
+            putU32(frame, 16, payload.size.toLong())
+            payload.copyInto(frame, EngineeringFrameCodec.HEADER_SIZE)
+        }
+
     private fun vector(name: String): ByteArray {
         val root = Path.of(requireNotNull(System.getProperty("repositoryRoot")))
         val path = root.resolve("firmware/protocol/engineering-golden-vectors.tsv")
@@ -514,6 +892,10 @@ class EngineeringUsbSessionTest {
 
     private fun putU32(bytes: ByteArray, offset: Int, value: Long) {
         repeat(4) { index -> bytes[offset + index] = (value ushr (index * 8)).toByte() }
+    }
+
+    private fun putU64(bytes: ByteArray, offset: Int, value: Long) {
+        repeat(8) { index -> bytes[offset + index] = (value ushr (index * 8)).toByte() }
     }
 
     private class FakeClock : MonotonicClock {

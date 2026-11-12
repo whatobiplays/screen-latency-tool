@@ -70,9 +70,11 @@ def main() -> int:
             "-DSLT_HOST_TEST",
             "-Iinclude",
             "src/pulse_engine.cpp",
+            "src/capture.cpp",
             "src/protocol.cpp",
             "src/serial_number.cpp",
             "tests/host/test_firmware.cpp",
+            "tests/host/test_capture.cpp",
             "-o",
             str(executable),
         ]

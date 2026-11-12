@@ -71,6 +71,18 @@ class EngineeringRequestIdSequenceTest {
     }
 
     @Test
+    fun independentEngineeringClientsForOneFixtureShareThePersistedHighWaterMark() {
+        val store = MemoryRequestIdStateStore(nextRequestId = 77L)
+        val firstClient = EngineeringRequestIdSequence(store)
+        val archiveClient = EngineeringRequestIdSequence(store)
+
+        assertEquals(77L, firstClient.allocate())
+        assertEquals(78L, archiveClient.allocate())
+        assertEquals(79L, firstClient.allocate())
+        assertEquals(80L, store.nextRequestId)
+    }
+
+    @Test
     fun failedPersistenceDoesNotReturnOrReuseAnUncommittedRequestId() {
         val store = MemoryRequestIdStateStore(nextRequestId = 41L, persistSucceeds = false)
         val sequence = EngineeringRequestIdSequence(store)

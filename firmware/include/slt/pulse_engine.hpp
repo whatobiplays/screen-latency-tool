@@ -85,6 +85,8 @@ struct Snapshot {
   uint32_t session_generation = 0;
   uint32_t transfer_generation = 0;
   uint32_t completion_tick = 0;
+  bool capture_t0_valid = false;
+  uint64_t capture_t0_tick = 0;
   Status last_command_status = Status::Ok;
   Fault fault = Fault::None;
   uint32_t completion_counter_hz = kCompletionCounterHz;
@@ -104,6 +106,9 @@ class PulseEngine {
   void service(uint32_t now_tick);
   void onTransferComplete(const TransferToken& token, TransferResult result,
                          uint32_t completion_tick);
+  void onTransferComplete(const TransferToken& token, TransferResult result,
+                         uint32_t completion_tick, bool capture_t0_valid,
+                         uint64_t capture_t0_tick);
 
   bool takeAction(Action& action);
   Snapshot snapshot() const;
