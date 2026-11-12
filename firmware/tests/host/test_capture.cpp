@@ -2,6 +2,7 @@
 #include "slt/protocol.hpp"
 #include "slt/usb_endpoint_policy.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cstdlib>
 #include <cstring>
