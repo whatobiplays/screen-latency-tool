@@ -2,7 +2,8 @@ package io.screenlatency.tool.usb
 
 import java.security.MessageDigest
 
-data class EngineeringCaptureArchive(
+/** Holds a validated byte snapshot; callers receive copies of the raw archive. */
+class EngineeringCaptureArchive(
     val generation: Long,
     val nonce: Long,
     val sessionGeneration: Long,
@@ -15,15 +16,20 @@ data class EngineeringCaptureArchive(
     val timeoutMs: Long,
     val maximumServiceDwtCycles: Long,
     val maximumServiceLatencyTicks: Int,
-    val rawBytes: ByteArray,
+    rawBytes: ByteArray,
 ) {
+    private val rawBytesStorage = rawBytes.copyOf()
+
+    val rawBytes: ByteArray
+        get() = rawBytesStorage.copyOf()
+
     fun timestamp(channel: Int, sample: Int): Long {
         require(channel in 0 until EngineeringCaptureArchiveCodec.CHANNEL_COUNT &&
             sample in 0 until EngineeringCaptureArchiveCodec.SAMPLES_PER_CHANNEL)
         val index = EngineeringCaptureArchiveCodec.HEADER_SIZE +
             ((channel * EngineeringCaptureArchiveCodec.SAMPLES_PER_CHANNEL + sample) *
                 EngineeringCaptureArchiveCodec.SAMPLE_SIZE)
-        return EngineeringCaptureArchiveCodec.readU64(rawBytes, index)
+        return EngineeringCaptureArchiveCodec.readU64(rawBytesStorage, index)
     }
 }
 
@@ -142,7 +148,7 @@ object EngineeringCaptureArchiveCodec {
             timeoutMs = timeoutMs,
             maximumServiceDwtCycles = maximumServiceDwtCycles,
             maximumServiceLatencyTicks = maximumServiceLatencyTicks,
-            rawBytes = bytes.copyOf(),
+            rawBytes = bytes,
         )
     }
 

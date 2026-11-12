@@ -80,6 +80,21 @@ class EngineeringCaptureArchiveCodecTest {
     }
 
     @Test
+    fun archiveTimestampsRemainBoundToTheValidatedByteSnapshot() {
+        val bytes = validArchive()
+        val archive = EngineeringCaptureArchiveCodec.decodeArchive(bytes)
+        val expectedTimestamp = 0x0102030405060708L
+
+        bytes[EngineeringCaptureArchiveCodec.HEADER_SIZE] = 0
+        assertEquals(expectedTimestamp, archive.timestamp(0, 0))
+
+        val exposedBytes = archive.rawBytes
+        exposedBytes[EngineeringCaptureArchiveCodec.HEADER_SIZE] = 0
+        assertEquals(expectedTimestamp, archive.timestamp(0, 0))
+        assertEquals(0x08.toByte(), archive.rawBytes[EngineeringCaptureArchiveCodec.HEADER_SIZE])
+    }
+
+    @Test
     fun incompleteArchiveCarriesVerifiedStatusFaultsAndCounts() {
         val bytes = validArchive().also {
             it[39] = EngineeringCaptureArchiveCodec.INCOMPLETE_FLAG.toByte()
