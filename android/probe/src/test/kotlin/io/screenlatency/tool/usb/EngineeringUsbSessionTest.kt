@@ -107,6 +107,35 @@ class EngineeringUsbSessionTest {
     }
 
     @Test
+    fun rejectsCaptureAcknowledgementStatesOtherThanAcknowledgementPending() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+
+        listOf(0, 2, 4, 5).forEach { state ->
+            val beginAck = vector("engineering_capture_begin_ascending_v11").also {
+                it[EngineeringFrameCodec.HEADER_SIZE + 16] = state.toByte()
+            }
+            val (session, connection) = connectedSession(
+                listOf(beginAck),
+                preflightInfo = negotiatedInfo,
+            )
+
+            assertThrows(ProtocolViolation::class.java) {
+                session.runEngineeringCapture(
+                    polarity = 1,
+                    rateStage = 1,
+                    timeoutMs = EngineeringUsbSession.MIN_CAPTURE_TIMEOUT_MS,
+                )
+            }
+            assertEquals(listOf(1L, 2L), connection.requestIds)
+            assertEquals(listOf(0xE001, 0xE003), connection.commands)
+            assertResourcesClosed(connection)
+        }
+    }
+
+    @Test
     fun missingArchiveAfterQuietCaptureWindowIsUnavailableWithoutVendorTrafficDuringAcquisition() {
         val negotiatedInfo = idleEngineeringInfoResponse().also {
             it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
@@ -249,6 +278,50 @@ class EngineeringUsbSessionTest {
         assertEquals(listOf(0xE001, 0xE004, 0xE004), connection.commands)
         assertEquals(4L, EngineeringRequestIdSequence(stateStore).allocate())
         assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun acceptsCaptureReleaseOnlyWithMatchingGenerationAndZeroStateAndReservedBytes() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val (session, connection) = connectedSession(
+            listOf(captureReleaseResponse(generation = 7)),
+            preflightInfo = negotiatedInfo,
+        )
+
+        assertTrue(session.releaseEngineeringCapture(captureReference(generation = 7)))
+        assertEquals(listOf(1L, 2L), connection.requestIds)
+        assertEquals(listOf(0xE001, 0xE004), connection.commands)
+        assertResourcesClosed(connection)
+    }
+
+    @Test
+    fun rejectsCaptureReleaseWithWrongGenerationStateOrReservedBytes() {
+        val negotiatedInfo = idleEngineeringInfoResponse().also {
+            it[5] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+            it[21] = EngineeringFrameCodec.PROTOCOL_MINOR_1_1.toByte()
+        }
+        val malformedResponses = listOf(
+            captureReleaseResponse(generation = 8),
+            captureReleaseResponse(state = 1),
+            captureReleaseResponse(reserved = byteArrayOf(1, 0, 0)),
+            captureReleaseResponse(reserved = byteArrayOf(0, 1, 0)),
+            captureReleaseResponse(reserved = byteArrayOf(0, 0, 1)),
+        )
+
+        malformedResponses.forEach { malformedResponse ->
+            val (session, connection) = connectedSession(
+                listOf(malformedResponse),
+                preflightInfo = negotiatedInfo,
+            )
+
+            assertThrows(ProtocolViolation::class.java) {
+                session.releaseEngineeringCapture(captureReference(generation = 7))
+            }
+            assertResourcesClosed(connection)
+        }
     }
 
     @Test
@@ -766,6 +839,30 @@ class EngineeringUsbSessionTest {
         data.copyInto(payload, EngineeringFrameCodec.ENGINEERING_CAPTURE_READ_METADATA_SIZE)
         return responseFrame(EngineeringFrameCodec.ENGINEERING_CAPTURE_ARCHIVE, payload)
     }
+
+    private fun captureReleaseResponse(
+        generation: Long = 7,
+        state: Int = 0,
+        reserved: ByteArray = ByteArray(3),
+    ): ByteArray {
+        require(reserved.size == 3)
+        val payload = ByteArray(EngineeringFrameCodec.ENGINEERING_CAPTURE_RELEASE_SIZE)
+        putU32(payload, 0, generation)
+        payload[4] = state.toByte()
+        reserved.copyInto(payload, 5)
+        return responseFrame(EngineeringFrameCodec.ENGINEERING_CAPTURE_ARCHIVE, payload)
+    }
+
+    private fun captureReference(generation: Long) = EngineeringCaptureReference(
+        fixtureSerial = "0123456789ABCDEF",
+        nonce = 6,
+        archiveGeneration = generation,
+        sessionGeneration = 1,
+        polarity = 1,
+        rateStage = 1,
+        timeoutMs = 60_000,
+        captureWindowElapsed = true,
+    )
 
     private fun responseFrame(command: Int, payload: ByteArray): ByteArray =
         ByteArray(EngineeringFrameCodec.HEADER_SIZE + payload.size).also { frame ->

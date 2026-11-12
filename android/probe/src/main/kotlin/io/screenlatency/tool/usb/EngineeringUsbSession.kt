@@ -335,7 +335,16 @@ class EngineeringUsbSession internal constructor(
                     reference.archiveGeneration, 0, 0),
                 protocolMinor = EngineeringFrameCodec.PROTOCOL_MINOR_1_1,
             )
-            return exchange(request).status == ProtocolStatus.OK
+            val response = exchange(request)
+            if (response.status != ProtocolStatus.OK) return false
+            if (response.payload.size != EngineeringFrameCodec.ENGINEERING_CAPTURE_RELEASE_SIZE ||
+                readU32(response.payload, 0) != reference.archiveGeneration ||
+                (response.payload[4].toInt() and 0xFF) != 0 ||
+                response.payload.copyOfRange(5, 8).any { it.toInt() != 0 }
+            ) {
+                throw ProtocolViolation("Capture release acknowledgement does not match the archive")
+            }
+            return true
         } finally {
             close()
         }
