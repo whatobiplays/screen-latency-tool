@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import subprocess
 from dataclasses import dataclass
@@ -109,10 +110,22 @@ def validate_budget(budget: MemoryBudget) -> None:
 
 
 def find_nm(firmware_root: Path) -> Path:
-    tool = firmware_root / ".platformio-core/packages/toolchain-gccarmnoneeabi-teensy/bin/arm-none-eabi-nm"
+    configured_core_dir = os.environ.get("PLATFORMIO_CORE_DIR")
+    core_dir = (
+        Path(configured_core_dir)
+        if configured_core_dir
+        else firmware_root / ".platformio-core"
+    )
+    tool = (
+        core_dir
+        / "packages"
+        / "toolchain-gccarmnoneeabi-teensy"
+        / "bin"
+        / "arm-none-eabi-nm"
+    )
     if tool.is_file():
         return tool
-    raise FileNotFoundError(f"could not find checkout-local arm-none-eabi-nm: {tool}")
+    raise FileNotFoundError(f"could not find PlatformIO arm-none-eabi-nm: {tool}")
 
 
 def main() -> int:

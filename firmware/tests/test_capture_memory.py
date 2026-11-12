@@ -2,7 +2,9 @@
 
 from pathlib import Path
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
@@ -11,12 +13,46 @@ from check_capture_memory import (  # noqa: E402
     MemoryBudget,
     Symbol,
     calculate_budget,
+    find_nm,
     parse_symbols,
     validate_budget,
 )
 
 
 class CaptureMemoryBudgetTests(unittest.TestCase):
+    def test_finds_nm_in_configured_platformio_core_dir(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            core_dir = Path(directory)
+            nm = (
+                core_dir
+                / "packages"
+                / "toolchain-gccarmnoneeabi-teensy"
+                / "bin"
+                / "arm-none-eabi-nm"
+            )
+            nm.parent.mkdir(parents=True)
+            nm.touch()
+
+            with patch.dict("os.environ", {"PLATFORMIO_CORE_DIR": str(core_dir)}):
+                self.assertEqual(find_nm(Path("/checkout/firmware")), nm)
+
+    def test_falls_back_to_checkout_local_platformio_core(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            firmware_root = Path(directory) / "firmware"
+            nm = (
+                firmware_root
+                / ".platformio-core"
+                / "packages"
+                / "toolchain-gccarmnoneeabi-teensy"
+                / "bin"
+                / "arm-none-eabi-nm"
+            )
+            nm.parent.mkdir(parents=True)
+            nm.touch()
+
+            with patch.dict("os.environ", {"PLATFORMIO_CORE_DIR": ""}):
+                self.assertEqual(find_nm(firmware_root), nm)
+
     def test_parses_linker_symbols(self) -> None:
         symbols = parse_symbols(
             "20200000 00061b00 B (anonymous namespace)::capture_archive\n"
