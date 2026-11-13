@@ -19,6 +19,8 @@ The instance-level list is hardware/prototype/BOM.csv. Its rows record function/
 
 Gate A supports provisional values by model only: 46.999988 kOhm nominal transimpedance, 1.905 MHz bandwidth, 14.335% step overshoot, 0.801 us 2% settling, 1.399 us recovery after a 40 uA overload, and 5.829 mV RMS output noise through 2 MHz. The 424 MOhm photodiode resistance is an assumption, 20-25 pF input capacitance is an unmeasured planning envelope, real display photocurrent is unknown, and comparator discrimination remains unaccepted.
 
+**Pre-purchase power dependency:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) pauses ordering of every component, instrument and PCB pending the [BENCH-005 feasibility decision](PROTOTYPE-FIRST-POWER-FEASIBILITY.md) and explicit owner approval. Historical prices and evaluation eligibility remain evidence only. `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and all physical-use gates remain.
+
 ## Dated purchasable-item observations
 
 | Stage | Item / MPN or product | Qty | Package or interface | Function | Source and date | Unit / extended USD (qty 1) | Dated stock observation | Lead time / unknown | Confidence and constraints | Compatible alternative |
@@ -330,7 +332,7 @@ BOM.csv retains factual `ACTIVE_VERIFIED_2026-10-31` for OPA320AIDBVR, TLV3501AI
 ## Source-backed electrical gates
 
 1. PJRC states that Teensy 4.1 VIN and VUSB are connected by default, and that external VIN with a USB cable connected can feed power toward the host. The underside pads can be separated for simultaneous external power and USB. See the [product page](https://www.pjrc.com/store/teensy41.html) and [schematic notes](https://www.pjrc.com/teensy/schematic.html).
-2. PJRC warns that reverse polarity or more than 6 V can damage Teensy. The external input needs polarity inspection, current limiting, and reverse-current protection.
+2. Treat reverse polarity and input overvoltage as separate faults. BENCH-005 records 5.5 V operating maximum/6.0 V absolute input maximum for all documented U4 regulators and the stricter 5.5 V absolute limit on MCU USB supply inputs. A broad more-than-6-V warning is not a board operating or fault threshold. The fixed-adapter OVP mismatch remains unresolved.
 3. Teensy GPIO uses 3.3 V logic. Never drive it at 5 V.
 4. TI specifies OPA320 at 1.8 V to 5.5 V, with local bypass capacitance of 0.001 µF to 0.1 µF and a five-pin SOT-23 version. See the [OPA320 datasheet](https://www.ti.com/lit/ds/symlink/opa320.pdf). This supports a 3.3 V investigation; it does not validate the TIA.
 5. TI specifies TLV3501 at 2.7 V to 5.5 V with push-pull output; the exact orderable **TLV3501AIDBVR / SOT-23-6** is now identified. See the [manufacturer TLV3501 documentation](https://www.ti.com/product/TLV3501). Supply it from a verified 3.3 V rail when driving Teensy GPIO, and check VOH/VOL under actual load, output drive limits, startup/power-down states and decoupling. **The assembled connection is still unverified.**

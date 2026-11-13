@@ -19,6 +19,8 @@ Nominal modules: five movable identical sensor PCBs with **SFH 203** (`Q62702P09
 
 The [2026-11-13 procurement clarification](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6848704974) separates component acquisition for evaluation from installed-path qualification. For this one-sensor prototype, the rules below supersede destination-confirmed delivery and completed current/fault coordination as admission conditions for evaluation procurement. Exact fulfillment remains an ordering prerequisite; all assembly, connection and power-use safety requirements remain in force.
 
+The later owner direction in [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) adds a pre-purchase power-feasibility dependency for every component, instrument and PCB. [BENCH-005](../bench/PROTOTYPE-FIRST-POWER-FEASIBILITY.md) separates conditional paper feasibility from physical stage admission and residual internal-board risks. The component-eligibility rules below remain applicable, but cannot bypass that dependency or explicit owner purchase approval. No Stage-B measurement is claimed or automatically required before a defensible conditional paper decision.
+
 Evaluate each exact purchasable MPN in this order:
 
 1. A known obsolete, discontinued, EOL, NRND, or last-time-buy status excludes the part regardless of remaining stock.
