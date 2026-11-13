@@ -4,7 +4,7 @@
 **Status:** Ready for Implementation
 **Readiness note:** Feasibility and prototype implementation are approved; final analog values, PCB design and USB/capture routing require physical characterization before production freeze
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-05 (America/Los_Angeles)\
+**Last Updated:** 2026-11-13 (America/Los_Angeles)\
 **Depends On:** ARCH-001, REF-MET-001, REF-WIRE-001, REF-DATA-001\
 **Supersedes:** The fixture hardware/firmware/mechanics requirements in the legacy spec and checkbox plan\
 **Superseded By:** None
@@ -17,13 +17,15 @@ Nominal modules: five movable identical sensor PCBs with **SFH 203** (`Q62702P09
 
 ## Prototype procurement eligibility
 
+The [2026-11-13 procurement clarification](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6848704974) separates component acquisition for evaluation from installed-path qualification. For this one-sensor prototype, the rules below supersede destination-confirmed delivery and completed current/fault coordination as admission conditions for evaluation procurement. Exact fulfillment remains an ordering prerequisite; all assembly, connection and power-use safety requirements remain in force.
+
 Evaluate each exact purchasable MPN in this order:
 
 1. A known obsolete, discontinued, EOL, NRND, or last-time-buy status excludes the part regardless of remaining stock.
 2. Exact manufacturer lifecycle evidence satisfies only the lifecycle screen. Supplier catalog labels, stock counts, and family-level statements do not establish the lifecycle of an exact orderable code. Do not convert `UNVERIFIED_BEFORE_ORDER` into `ACTIVE_VERIFIED` based on availability.
-3. **One-sensor feasibility exception for unknown lifecycle only:** For any exact orderable MPN, including critical optical, analog, timing, USB, or power functions, conditional eligibility requires (a) confirmed manufacturer/part identity and relevant datasheet/rating/footprint or mating facts, (b) dated verified purchasability of the required quantity in the destination region from the maker or a reputable traceable supplier, supported by live stock or confirmed order acceptance and delivery (a catalog listing alone is insufficient), (c) a documented manufacturer lifecycle/PCN search finding no known disqualifying status, and (d) an explicit component-level technical fit, safety, sourcing, obsolescence, and replacement-risk disposition in BENCH-003. Availability alone never passes all four checks.
-4. A missing `Active` lifecycle declaration is not by itself a procurement HOLD after the prototype-only conditions in rule 3 are satisfied. Keep HOLD for missing sourceability, ratings, compatibility, current/fault coordination, or material identity; Stage-B physical measurements and release remain separate. This exception never qualifies later five-sensor production purchasing; those parts require an independent production lifecycle review.
-5. Eligibility is separate from purchase approval. A conditionally eligible item may proceed to owner purchase review only; it is not authorization to order, substitute, fabricate, assemble, connect, or energize a part.
+3. **One-sensor feasibility exception for unknown lifecycle only:** For any exact orderable MPN, including critical optical, analog, timing, USB, or power functions, conditional eligibility requires (a) confirmed manufacturer/part identity and relevant datasheet/rating/footprint or mating facts, (b) a dated credible exact-item source from the maker or a reputable identifiable supplier, with stock, backorder or other orderability evidence and any fulfillment uncertainty recorded; a catalog name or stock count alone does not establish authenticity or technical fit, (c) a documented manufacturer lifecycle/PCN search finding no known disqualifying status, and (d) an explicit component-level technical fit, safety, sourcing, obsolescence, and replacement-risk disposition in BENCH-003. Availability alone never passes all four checks.
+4. A missing `Active` lifecycle declaration is not by itself a procurement HOLD after the prototype-only conditions in rule 3 are satisfied. Retain PROCUREMENT HOLD for a concrete unresolved identity, authentic-source, rating/fit or other pre-purchase risk for the stated evaluation purpose. Separately retain ASSEMBLY/POWER-USE HOLD for unqualified harnesses, current/fault/thermal coordination, regulator/OVP behavior, VIN/VUSB isolation and USB safety. Procuring an exact component for evaluation does not qualify its installed protection role; Stage-B physical measurements and release remain separate. This exception never qualifies later five-sensor production purchasing; those parts require an independent production lifecycle review.
+5. PROCUREMENT CLEARED FOR EVALUATION permits owner review of an exact basket or subset and quantities only. Keep price/source evidence, fulfillment and OWNER APPROVED as separate states. No exact landed total, destination-specific quote, shipping/tax calculation or unnecessary formal lot/date certificate is required for clearance. Before any authorized order, reconfirm exact seller SKU/variant, quantity, packaging, MOQ/multiple, actual availability or accepted backorder, ship-to feasibility and final terms against the owner's authorization. Clearance does not authorize an order, substitution, fabrication, assembly, connection, energization or qualification; Basket B and PCB fabrication require separate owner decisions.
 
 ## Production lifecycle exclusion
 
