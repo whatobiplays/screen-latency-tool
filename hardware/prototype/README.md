@@ -265,3 +265,24 @@ The thermal analyzer could not estimate component temperatures because the desig
 - **Later issues (#4/#5/#7/#8):** measured full-speed HID IN successful completion, one actual Android renderer-to-optical response, five shared-hardware-timebase input captures, external USB correlation and complete uncertainty characterization. No such measurement is included in Issue #3.
 
 **Current design sources:** [OPA320](https://www.ti.com/lit/ds/symlink/opa320.pdf), [TLV3501](https://www.ti.com/lit/ds/symlink/tlv3501.pdf), [SN74LVC1G17](https://www.ti.com/lit/gpn/sn74lvc1g17), [SFH 203 active manufacturer listing](https://ams-osram.com/products/photodetectors/photodiodes/osram-radial-t1-34-sfh-203), [official SFH 203 datasheet, Version 1.4 (2022-08-10; Q62702P0955)](https://look.ams-osram.com/m/67e1a90044b03ee9/original/SFH-203.pdf) (package drawing and recommended-pad artwork, printed pages 9–10), [official SFH 203 P datasheet, Version 1.5 (2026-03-18; Q62702P0942)](https://look.ams-osram.com/m/52b343f9b18e032b/original/SFH-203-P.pdf), [PJRC power notes](https://www.pjrc.com/store/teensy41.html), [Pololu #5383](https://www.pololu.com/product/5383), [Bourns MF-R050](https://www.digikey.com/en/products/detail/bourns-inc/MF-R050/259965).
+
+
+## Manufacturing and owner hand assembly
+
+### 1. Manufacturing release boundary
+
+The native optical PCB preserves the 50 × 44 mm, two-layer carrier, upright SFH 203, selected components and footprints, placement, routing and absence of mounting holes. Manufacturing preparation must preserve those inputs. R4 remains DNP. Generate provisional Gerber and Excellon files only through the [optical CAM workflow](optical/README.md), using the exact disposable board snapshot saved after zone refill and DRC; retain the source and export hashes with the package. Validation of an in-memory refill does not identify the saved geometry used for export.
+
+Provisional manufacturing files can precede the physical one-sensor characterization in Issue #7. Missing historical Gate A model/provenance inputs remain a verification gap; they do not demonstrate an analog failure. Fabrication approval requires current manufacturing evidence and a defensible physical arrangement. Unresolved boot compression, clamp geometry, contact loads or component/display interference can retain FABRICATION HOLD. Preparing a package grants no permission to upload, order, assemble, connect or energize hardware.
+
+### 2. Package fit and access
+
+Use the [BENCH-002 hand-assembly and unpowered inspection procedure](../../docs/bench/PROTOTYPE-BENCH-GUIDE.md#provisional-soldered-implementation) with the exact parts in [BOM.csv](BOM.csv). Confirm the manufacturer's package revision and terminal markings before soldering. The SFH 203's 5.90 mm maximum flange and 8.5 ± 0.4 mm axial body length are package dimensions, not measured installed clearances. Its nominal axis is `(106.77, 110.5)` in native board coordinates. The proposed 6.0 to 6.2 mm boot bore gives 0.10 to 0.30 mm diametral clearance, or 0.05 to 0.15 mm radial clearance, around that maximum flange before manufacturing and alignment tolerances.
+
+Review the full height envelope. The [Bourns 3296 drawing](https://www.bourns.com/docs/Product-Datasheets/3296.pdf), page 1, separates the 10.03 mm housing dimension from the 1.52 mm screw projection along the installed height direction. Preserve adjustment-tool access. The [JST PH drawing](https://www.jst-mfg.com/product/pdf/eng/ePH.pdf) describes an 8 mm mated top-entry height; the actual cable also needs wire-exit, bend and insertion/removal space. A component can interfere with the display away from the detector axis. No installed height, boot compression, clamp jaw depth, display contact-force limit or underside lead clearance is established by the PCB courtyards.
+
+### 3. Assembly controls
+
+The owner has soldering equipment, solder, flux and ESD tools. Confirm suitable iron/tip access to 0.95 mm-pitch leads, fine tweezers, magnification, stable board support and lead cutters before physical work. An iron can reach the exposed SOT-23 and 0603 joints; hot air is not inherently required. Inspect and clean the low SMD joints before tall parts obstruct access, then preserve access to the underside for through-hole soldering and trimming. Do not add mounting holes or change part locations to fit the holder.
+
+Keep the CABLE-PH04 mapping black=`3V3`, red=`GND`, blue=`EDGE`, gray=`MON`. Label both ends and verify unpowered continuity before any separately released connection. Leave R4 empty, record both board faces and all rework, and complete BENCH-002's unpowered inspection. `INITIAL_CURRENT_LIMIT = UNSET / PENDING REVIEW` remains unchanged. All Stage-B power/USB releases and Stage-C measurements remain separate owner work.

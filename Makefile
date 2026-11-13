@@ -25,7 +25,7 @@ check-markdown:
 	$(NODE) scripts/check-markdown.mjs
 
 check-validation-tests:
-	$(NODE) --test scripts/check-markdown.test.mjs scripts/validation.test.mjs
+	$(NODE) --test scripts/check-markdown.test.mjs scripts/validation.test.mjs scripts/optical-cam.test.mjs
 
 # Requires PlatformIO Core 6.1.18; packages are pinned in firmware/platformio.ini.
 PLATFORMIO ?= pio
