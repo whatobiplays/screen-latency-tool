@@ -4,7 +4,7 @@
 **Status:** Draft\
 **Owner:** Repository maintainers\
 **Last Updated:** 2026-11-12 (America/Los_Angeles)\
-**Date basis:** The procurement refresh in BENCH-003 §14 was checked 2026-11-12 UTC. This document also retains earlier dated component, instrument and fabrication observations. The CABLE-PH04 seller snapshot was captured at 2026-11-05T07:17:28Z; the earlier $2.46 / 3,546 capture remains historical.\
+**Date basis:** The procurement refresh in BENCH-003 §14 was checked through 2026-11-13 UTC. This document also retains earlier dated component, instrument and fabrication observations. The CABLE-PH04 seller snapshot was captured at 2026-11-05T07:17:28Z; the earlier $2.46 / 3,546 capture remains historical.\
 **Depends On:** ARCH-001, REF-MET-001, REF-WIRE-001, SPEC-X-001, PHASE-001, ADR-0002\
 **Supersedes:** None\
 **Superseded By:** None
@@ -13,7 +13,7 @@ Procurement evidence is consolidated in [BENCH-003: Prototype procurement readin
 
 Readiness note: the Issue #38 approval packet is in [BENCH-003 §14](PROTOTYPE-PROCUREMENT-READINESS.md#14-issue-38-owner-decision-packet). Basket A still has seven HOLD lines and no destination-verified delivered total. Basket B remains conditional on measured `R_sensor_max` and pulse/burst bounds. PCB fabrication remains on HOLD. This file records dated prices; it is not a checkout quote or purchase authorization. No purchase, fabrication, assembly, electrical test, optical test, USB test, or timing qualification is reported here.
 
-Observation dates: Most equipment and component rows were first captured on 2026-10-31. The 2026-11-01 historical snapshot recorded 30 `UNVERIFIED_BEFORE_ORDER` manifest-row references across 23 MPNs. A separate 2026-11-04 snapshot added two J2 rows, then the connector selection replaced four earlier lines with five exact MPNs. The current manifest has 44 rows, 34 part identities, 31 purchasable MPNs and 37 populated units; one resistor is DNP and six pad rows are non-purchasable. Its unverified subset has 33 row references across 27 MPNs. Section 14 of BENCH-003 holds the current 24 REVIEW / 7 HOLD screen and 2026-11-12 cost refresh. Prices exclude unverified delivery charges, tax and duties. Stock displays are observations, not reservations. Manufacturer lifecycle, physical fit and installed electrical behavior remain separate evidence gates.
+Observation dates: Most equipment and component rows were first captured on 2026-10-31. The 2026-11-01 historical snapshot recorded 30 `UNVERIFIED_BEFORE_ORDER` manifest-row references across 23 MPNs. A separate 2026-11-04 snapshot added two J2 rows, then the connector selection replaced four earlier lines with five exact MPNs. The current manifest has 44 rows, 34 part identities, 31 purchasable MPNs and 37 populated units; one resistor is DNP and six pad rows are non-purchasable. Its unverified subset has 33 row references across 27 MPNs. Section 14 of BENCH-003 holds the current 24 REVIEW / 7 HOLD screen and supplier refresh through 2026-11-13 UTC. Prices exclude unverified delivery charges, tax and duties. Stock displays are observations, not reservations. Manufacturer lifecycle, physical fit and installed electrical behavior remain separate evidence gates.
 
 The instance-level list is hardware/prototype/BOM.csv. Its rows record function/value, reference, MPN, quantity, unit and extended price, source URL, and a row-specific evidence note. Stock is not a manifest field; uncaptured counts mean unknown. The exact MPN is the default for every row. No substitutions are approved unless an existing sourcing row names an alternative and explains why. Shipping, tax, duties, and multi-vendor checkout costs remain unknown. This document records the later lifecycle check; it does not silently change the labels stored in BOM.csv.
 
@@ -70,7 +70,7 @@ The historical 2026-11-01 snapshot recorded 30 manifest-row references across 23
 | eLabGuy USB-uBM-uBF-V1A | EXT7 | Micro-B inline pass-through breakout | $9.28 / $9.28 | The maker's [pass-through collection](https://elabbay.myshopify.com/collections/camera?page=4) currently lists the exact model **from $9.28**, consistent with the Nov 5 planning input; the product detail identifies this unassembled kit but does not establish the selected variant's price, stock, MOQ, U.S. delivery or landed cost. The MPN stays HOLD for pre-order sourceability. The datasheet identifies the direct pass-through; VCC is open by default, while the future design specifies VCC CLOSED and shield-to-GND OPEN. Keep the breakout inline; no purchase, assembly, or USB connection is authorized. | [eLabGuy datasheet](https://www.elabguy.com/datasheet/USB-uBM-uBF-V1A%20Rev1.1.pdf), [eLabBay product listing](https://elabbay.myshopify.com/products/usb-bm-bf-v1a-micro-usb2-0-type-b-male-to-micro-usb2-0-type-b-female-pass-through-breakout-board), [maker collection](https://elabbay.myshopify.com/collections/camera?page=4), observed 2026-11-06 local |
 | Fluke TL75, model 855705 | EXT8 | Banana-to-probe DMM test leads, 48 in | 39.99 / 39.99 | DigiKey showed $39.99 and 365 in stock on 2026-11-05; Fluke lists the TL75 as a 48-inch lead set with sheathed banana plugs. Confirm owner DMM banana-jack compatibility and whether suitable leads are already owned before purchase. Limit use to disconnected low-voltage continuity checks. Exact lifecycle remains unverified. | [Fluke manufacturer page](https://www.fluke.com/en-us/product/accessories/test-leads/fluke-tl75) and [DigiKey exact SKU](https://www.digikey.com/en/products/detail/fluke-electronics/TL75/1801786), 2026-11-05 |
 
-The generated power/USB schematic and BOM model J2 with two offboard AMASS parts: XT30U-F.G.Y is the female source half at J2, and XT30U-M.G.Y is the male load half at J6. The connector and wiring selections, including the J4/J5 pin maps and the L721A/GST18U05-P1J design assumption, are unchanged. The $12.56 connector and $49.27 PAC-2 accessory amounts are 2026-11-06 planning snapshots. BENCH-003 §14 records the 2026-11-12 supplier refresh: the J2 pair is $0.66980 before VAT and shipping, the eLabGuy selected-variant amount remains unverified, and the component planning subtotal is $138.54 using its $9.28 last-known value. That subtotal includes all seven HOLD lines. The generated $138.89 BOM and $138.94 Strategy A amounts remain 2026-11-06 historical snapshots. L721A/GST18U05-P1J engagement and retention, harness performance, optical fit, and USB use remain unqualified. The two AMASS connectors and eLabGuy stay HOLD. No purchase, physical work, or qualification is reported.
+The generated power/USB schematic and BOM model J2 with two offboard AMASS parts: XT30U-F.G.Y is the female source half at J2, and XT30U-M.G.Y is the male load half at J6. The connector and wiring selections, including the J4/J5 pin maps and the L721A/GST18U05-P1J design assumption, are unchanged. The $12.56 connector and $49.27 PAC-2 accessory amounts are 2026-11-06 planning snapshots. BENCH-003 §14 records the supplier refresh through 2026-11-13 UTC: the J2 pair is $0.66980 before VAT and shipping, the eLabGuy selected-variant amount remains unverified, OPA320AIDBVR is listed at $2.90, and the component planning subtotal is $138.56 using the eLabBay breakout's $9.28 last-known value. That subtotal includes all seven HOLD lines. The generated $138.89 BOM and $138.94 Strategy A amounts remain 2026-11-06 historical snapshots. L721A/GST18U05-P1J engagement and retention, harness performance, optical fit, and USB use remain unqualified. The two AMASS connectors and eLabGuy stay HOLD. No purchase, physical work, or qualification is reported.
 
 Entries above record dated supplier observations. Distributor `Active`, `In stock`, or quantity fields are not manufacturer lifecycle declarations. The 2023V2 specification names the exact `.G.Y` MPNs; the 2026V1 catalog's added `UL` token does not establish equivalence to those selected codes. Neither source declares the exact selected parts Active, NRND, or discontinued. Both J2 rows retain UNVERIFIED_BEFORE_ORDER and HOLD. Other rows keep their own exact-MPN lifecycle status.
 
@@ -162,7 +162,7 @@ These manufacturer/distributor pages were retrieved on **2026-10-31**; stock cou
 
 ## Cost scenarios and purchasing gates
 
-The amounts below are USD planning observations. The current component refresh is dated 2026-11-12; other inputs retain their dates in the tables. Figures are not quotes, reservations, stock commitments, or delivered prices. Shipping, file extras, tax, duties, assembly labor, and unresolved line items are excluded unless a formula names them. Current stock remains volatile.
+The amounts below are USD planning observations. The current component refresh is dated 2026-11-13; other inputs retain their dates in the tables. Figures are not quotes, reservations, stock commitments, or delivered prices. Shipping, file extras, tax, duties, assembly labor, and unresolved line items are excluded unless a formula names them. Current stock remains volatile.
 
 The [owner bench inventory update](https://github.com/whatobiplays/screen-latency-tool/issues/3#issuecomment-6554881813), dated 2026-11-01, confirms a basic digital multimeter and basic soldering equipment. It does not identify their models or establish DMM accuracy, continuity or current ranges, soldering tips, SMT rework capability, accessories, magnification, ESD protection, suitable leads, or a current-limited bench supply. Those details remain unknown. The inventory report does not establish ownership of any other bench item.
 
@@ -174,13 +174,13 @@ The original PR-base connector snapshot dated 2026-10-31 had five older lines to
 
 | Input | Observed amount and date | Scenario use | Source |
 | --- | ---: | --- | --- |
-| Current component planning subtotal | $138.54, mixed dated sources through 2026-11-12; includes seven HOLD lines and the last-known $9.28 eLabGuy price | Updated scenario input; delivered cost is unknown | [BENCH-003 §14](PROTOTYPE-PROCUREMENT-READINESS.md#14-issue-38-owner-decision-packet) |
+| Current component planning subtotal | $138.56, mixed dated sources through 2026-11-13; includes seven HOLD lines, the last-known $9.28 eLabBay price and the current $2.90 OPA320AIDBVR offer | Updated scenario input; delivered cost is unknown | [BENCH-003 §14](PROTOTYPE-PROCUREMENT-READINESS.md#14-issue-38-owner-decision-packet) |
 | Generated BOM snapshot | $138.89, refreshed 2026-11-06 | Historical snapshot in the generated CSV; not the current supplier-price total | [BOM.csv](../../hardware/prototype/BOM.csv) |
 | Historical mandatory components | $79.28, 2026-11-01 | Retained historical reference only | Prior [BOM.csv](../../hardware/prototype/BOM.csv) snapshot |
 | Optional second component set | $14.10, 2026-10-31 | Six-board hypothetical rows only | Adafruit [1230](https://www.adafruit.com/product/1230) at $4.95, Adafruit [589](https://www.adafruit.com/product/589) at $8.50, and onsemi [2N7000](https://www.digikey.com/en/products/detail/onsemi/2N7000/244278) at $0.65 |
 | Deferred DHO814 | $549.00, 2026-11-01 | Labelled DHO what-if rows only | [RIGOL DHO814 listing](https://www.rigolna.com/products/digital-oscilloscopes/dho800/dho812/) |
 
-The optional subtotal remains $4.95 + $8.50 + $0.65 = $14.10. The current component planning subtotal plus this set is $138.54 + $14.10 = $152.64. This arithmetic uses dated list prices and does not establish an orderable basket.
+The optional subtotal remains $4.95 + $8.50 + $0.65 = $14.10. The current component planning subtotal plus this set is $138.56 + $14.10 = $152.66. This arithmetic uses dated list prices and does not establish an orderable basket.
 
 ### PCB fabrication and assembly options
 
@@ -234,11 +234,11 @@ The scenarios separate this hypothetical set into a $65.98 replacement allowance
 
 Owner selection dated 2026-11-02 UTC: Korad KA3005PE+ is `OWNER_SELECTED_MODEL / NOT_PURCHASED / NOT_FIRST_POWER_QUALIFIED`. The planning assumption is that the owner will have or acquire it for Stage B; receipt and purchase remain unconfirmed. On 2026-11-12, the DigiKey U.S. listing showed $134.24 and 44 in stock; its page warns tariffs may apply. The $134.24 allowance remains in the owner-incremental scenario unless the owner confirms prior purchase. It is a list-price observation, not a delivered quote or order authorization. Before first power, review the expected load and component limits, then document an initial current-limit method. Measure startup and load behavior during Stage B; do not require that measurement for Stage-A review. Before use, confirm the exact revision, mains setup, protective earth, output isolation, certification, and leads. The KA3005D and Siglent SPD3303X-E remain historical alternatives in [BENCH-003](PROTOTYPE-PROCUREMENT-READINESS.md); no alternative is selected. The DHO814 remains deferred.
 
-The owner's confirmed DMM removes the hypothetical $17.50 meter from owner-incremental totals. The adjustable current-limited supply remains a prerequisite for first power and is retained in owner-incremental totals; buying it does not qualify its setpoints, protection, wiring, or the protected load. The DHO814 has four analog channels and includes four probes. The extra probe remains optional and the oscilloscope remains deferred. No listing resolves synchronized USB capture.
+The owner's confirmed DMM removes the hypothetical $17.50 meter from owner-incremental totals. The adjustable current-limited supply remains a prerequisite for first power and is retained in owner-incremental totals; buying it does not qualify its setpoints, protection, wiring, or the protected load. The DHO814 has four analog channels and includes four probes. The extra probe remains optional and the oscilloscope remains deferred. Gate 1 requires independently measured correlation of actual successful HID completion against fixture T0/marker timing, with known worst-case delay and non-perturbing probing. The evidence remains NOT_RUN / UNVERIFIED. A dedicated USB analyzer is optional if an independently qualified oscilloscope-based method satisfies the requirement; borrowing or renting equipment is acceptable.
 
 ### Known-cost scenarios
 
-This table preserves the 2026-11-06 scenario snapshot based on the $138.94 Strategy A displayed-price subtotal. The 2026-11-12 component refresh and current comparisons are in BENCH-003 §14. None of these figures is a delivered total.
+This table preserves the 2026-11-06 scenario snapshot based on the $138.94 Strategy A displayed-price subtotal. The 2026-11-13 component refresh and current comparisons are in BENCH-003 §14. None of these figures is a delivered total.
 
 | Scenario | Included purchases | Arithmetic | Known subtotal |
 | --- | --- | --- | ---: |
@@ -254,7 +254,7 @@ This table preserves the 2026-11-06 scenario snapshot based on the $138.94 Strat
 
 #### Historical `KT` purchase sensitivities (superseded by the approved `KM` selection)
 
-The current six-board high case includes three `KM` capacitors at $0.10 each ($0.30 total). With the 2026-11-12 component refresh, its planning subtotal is $1,063.58. The source cases below preserve historical `KT` MOQ comparisons and no longer apply to the selected BOM.
+The current six-board high case includes three `KM` capacitors at $0.10 each ($0.30 total). With the 2026-11-13 component refresh, its planning subtotal is $1,063.60. The source cases below preserve historical `KT` MOQ comparisons and no longer apply to the selected BOM.
 
 | Historical `KT` source case | High-case total | With unallocated $0.26 | Budget comparison before omitted costs |
 | --- | ---: | ---: | --- |
@@ -263,13 +263,13 @@ The current six-board high case includes three `KM` capacitors at $0.10 each ($0
 
 The Future Electronics case remains within the flexible cap only before shipping, tax, tariffs, duties, fabrication, harness, and mechanical costs. The Unikey case remains a price and MOQ observation until U.S. destination delivery is confirmed.
 
-The owner/full comparison also reconciles directly: $467.44 - $65.98 - $17.50 = $383.96 for the owner-incremental first-power base, and $1,063.58 - $65.98 - $17.50 = $980.10 for the owner-incremental six-board hypothetical with DHO814 deferred.
+The owner/full comparison also reconciles directly: $467.46 - $65.98 - $17.50 = $383.98 for the owner-incremental first-power base, and $1,063.60 - $65.98 - $17.50 = $980.12 for the owner-incremental six-board hypothetical with DHO814 deferred.
 
-The $166.88 low basket is a comparison only; it excludes the adjustable supply. **Use the $383.96 owner-incremental first-power base as the current planning scenario**, including the KA3005PE+ allowance. It is not a delivered quote or equipment qualification. These owner-incremental rows exclude the confirmed basic DMM and basic soldering-hardware categories. Fluke TL75 model 855705 is a low-voltage continuity-lead candidate; existing suitable leads and meter banana-jack compatibility are unconfirmed. Magnification, ESD supplies and other unpriced accessories remain outside the totals.
+The $166.90 low basket is a comparison only; it excludes the adjustable supply. **Use the $383.98 owner-incremental first-power base as the current planning scenario**, including the KA3005PE+ allowance. It is not a delivered quote or equipment qualification. These owner-incremental rows exclude the confirmed basic DMM and basic soldering-hardware categories. Fluke TL75 model 855705 is a low-voltage continuity-lead candidate; existing suitable leads and meter banana-jack compatibility are unconfirmed. Magnification, ESD supplies and other unpriced accessories remain outside the totals.
 
 ### Target and ceiling comparisons
 
-The first table preserves 2026-11-06 headroom calculations based on Strategy A at $138.94. The current 2026-11-12 comparisons follow and are cross-referenced in BENCH-003 §14. Both sets exclude shipping, tax, duties, fabrication, harness, mechanics, and other unpriced costs.
+The first table preserves 2026-11-06 headroom calculations based on Strategy A at $138.94. The current 2026-11-13 comparisons follow and are cross-referenced in BENCH-003 §14. Both sets exclude shipping, tax, duties, fabrication, harness, mechanics, and other unpriced costs.
 
 | Scenario | Known subtotal | Remaining to $1,100 | Remaining to $1,300 |
 | --- | ---: | ---: | ---: |
@@ -283,19 +283,21 @@ The first table preserves 2026-11-06 headroom calculations based on Strategy A a
 | Full-purchase base plus deferred DHO814 | $1,016.84 | $1,100 - $1,016.84 = $83.16 | $1,300 - $1,016.84 = $283.16 |
 | Baseline full-purchase high, hypothetical | $1,063.98 | $1,100 - $1,063.98 = $36.02 | $1,300 - $1,063.98 = $236.02 |
 
-The next table applies the 2026-11-12 component planning subtotal of $138.54. The detailed scope and limitations are in BENCH-003 §14; these figures still do not bound the full project cost.
+The next table applies the 2026-11-13 component planning subtotal of $138.56. The detailed scope and limitations are in BENCH-003 §14; these figures still do not bound the full project cost.
 
 | Scenario | Known subtotal | Remaining to $1,100 | Remaining to $1,300 |
 | --- | ---: | ---: | ---: |
-| Low parts basket | $166.88 | $1,100 - $166.88 = $933.12 | $1,300 - $166.88 = $1,133.12 |
-| Low parts basket plus deferred DHO814 | $715.88 | $1,100 - $715.88 = $384.12 | $1,300 - $715.88 = $584.12 |
-| Owner-incremental first-power base | $383.96 | $1,100 - $383.96 = $716.04 | $1,300 - $383.96 = $916.04 |
-| Owner-incremental first-power base plus deferred DHO814 | $932.96 | $1,100 - $932.96 = $167.04 | $1,300 - $932.96 = $367.04 |
-| Owner-incremental six-board hypothetical, DHO814 deferred | $431.10 | $1,100 - $431.10 = $668.90 | $1,300 - $431.10 = $868.90 |
-| Owner-incremental six-board hypothetical plus deferred DHO814 | $980.10 | $1,100 - $980.10 = $119.90 | $1,300 - $980.10 = $319.90 |
-| Full-purchase base, hypothetical | $467.44 | $1,100 - $467.44 = $632.56 | $1,300 - $467.44 = $832.56 |
-| Full-purchase base plus deferred DHO814 | $1,016.44 | $1,100 - $1,016.44 = $83.56 | $1,300 - $1,016.44 = $283.56 |
-| Baseline full-purchase high, hypothetical | $1,063.58 | $1,100 - $1,063.58 = $36.42 | $1,300 - $1,063.58 = $236.42 |
+| Low parts basket | $166.90 | $1,100 - $166.90 = $933.10 | $1,300 - $166.90 = $1,133.10 |
+| Low parts basket plus deferred DHO814 | $715.90 | $1,100 - $715.90 = $384.10 | $1,300 - $715.90 = $584.10 |
+| Owner-incremental first-power base | $383.98 | $1,100 - $383.98 = $716.02 | $1,300 - $383.98 = $916.02 |
+| Owner-incremental first-power base plus deferred DHO814 | $932.98 | $1,100 - $932.98 = $167.02 | $1,300 - $932.98 = $367.02 |
+| Owner-incremental six-board hypothetical, DHO814 deferred | $431.12 | $1,100 - $431.12 = $668.88 | $1,300 - $431.12 = $868.88 |
+| Owner-incremental six-board hypothetical plus deferred DHO814 | $980.12 | $1,100 - $980.12 = $119.88 | $1,300 - $980.12 = $319.88 |
+| Full-purchase base, hypothetical | $467.46 | $1,100 - $467.46 = $632.54 | $1,300 - $467.46 = $832.54 |
+| Full-purchase base plus deferred DHO814 | $1,016.46 | $1,100 - $1,016.46 = $83.54 | $1,300 - $1,016.46 = $283.54 |
+| Baseline full-purchase high, hypothetical | $1,063.60 | $1,100 - $1,063.60 = $36.40 | $1,300 - $1,063.60 = $236.40 |
+
+Stage-A material allocation: The low-parts basket includes the $17.05 board set and $8.87 short-harness example; that harness already contains the single $4.49 Alpha Wire pack. The low-parts basket excludes flux. Owner-incremental scenarios include the $7.95 flux pen within the $82.84 workshop allowance; full-purchase scenarios include it within the $148.82 tool set. The two unfinalized carrier-board candidates total $13.35 and are additional only if selected. Do not add the $29.49 Stage-A allowance again to scenarios that already include these items.
 
 ### Remaining unknowns
 
@@ -303,13 +305,13 @@ The next table applies the 2026-11-12 component planning subtotal of $138.54. Th
 | --- | --- | --- |
 | JLCPCB PCBA variable charges | NOT_ESTIMABLE | The fixed floors do not include components, joints, part count, assembly variables, shipping, or file charges. |
 | Custom optical bracket or boot | NOT_ESTIMABLE | No STEP-based quote exists. The provisional sleeve does not establish a finished mechanical design. |
-| Synchronized USB capture | NOT_ESTIMABLE | No source documents a shared timing interface with the fixture. A protocol analyzer without that interface is not justified. |
+| Mandatory USB T0 correlation | NOT_RUN / UNVERIFIED | SPEC-X-004 Gate 1 requires independent measurement of actual successful HID completion against fixture T0/marker timing, with known worst-case delay and non-perturbing probing. A dedicated analyzer is optional if an independently qualified oscilloscope method meets the requirement; borrowing or renting equipment is acceptable. |
 | Shipping, file extras, tax, and duties | Unknown | Public list prices do not provide a delivered total. |
 | Current-limited bench supply | **Assumed available by Stage B for planning; receipt not confirmed** | KA3005PE+ is the selected first-power planning instrument and its $134.24 allowance remains in owner-incremental totals. Do not hold engineering analysis for acquisition; actual availability, exact-model inspection, CC behavior and wiring must be confirmed before energization. |
 | Owner inventory | Partly confirmed | Basic DMM and basic soldering equipment are owned, but exact models and capabilities are unknown. Confirm whether suitable continuity leads are already owned and whether the DMM accepts banana plugs before buying Fluke TL75 model 855705. Other tools, magnification, ESD supplies and synchronized capture remain unconfirmed; unpriced items cannot be counted as free. |
 | Final electrical and optical acceptance | Not a purchase quote | Assembly does not establish the optical-current, noise, comparator, cable, or T0 gates. |
 
-Total external spend remains unbounded. The $1,063.58 full-purchase high example includes three selected `KM` capacitors at $0.30 and leaves $36.42 to the $1,100 target before omitted costs. The $1,090.19 and $1,229.28 figures are historical `KT` MOQ scenarios, not current alternatives. Omitted charges can exceed the remaining margin.
+Total external spend remains unbounded. The $1,063.60 full-purchase high example includes three selected `KM` capacitors at $0.30 and leaves $36.40 to the $1,100 target before omitted costs. The $1,090.19 and $1,229.28 figures are historical `KT` MOQ scenarios, not current alternatives. Omitted charges can exceed the remaining margin.
 
 The historical scenarios retain dated price inputs and are planning arithmetic, not an orderable basket. The exact R5 MPN has a supplier-available Newark snapshot. The former 100 nF `KT` selection has historical zero-stock evidence; the current `KM` selection has a separate current exact-MPN listing at $0.10 each. Both capacitor codes still require manufacturer lifecycle, engineering, and owner review; the former KT is no longer the selected BOM part.
 
