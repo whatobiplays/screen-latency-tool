@@ -119,7 +119,7 @@ A **3.3 V short behind the Teensy regulator is a distinct fault path**: TI's **3
 
 ### 4.1 Owner adjudication if the existing power path cannot be qualified
 
-Keep the design de-energized while the existing path is assessed. This is the interim safety control; it does not alter the circuit or add design cost. Engineering review and any later qualified equipment still have costs. If paper review supports the existing design, no redesign follows. Physical qualification and first power still require separate owner authorization.
+Keep the complete fixture and every unreleased path de-energized while the existing design is assessed. This interim control does not alter the circuit or add design cost; engineering review and any later qualified equipment still have costs. The separately scoped S1 Teensy-only characterization described in BENCH-002 may proceed only after its own source, wiring, time/energy exposure, fault, and protection case is independently reviewed and authorized. S1 does not release the full J2/fixture path or any later stage. If paper review supports the existing design, no redesign follows. Physical qualification and first power still require separate owner authorization.
 
 The following ranking is a review priority based on documented fault coverage, residual exposure, and qualification scope. Cost remains unknown, and no option is selected.
 
