@@ -625,7 +625,7 @@ Before any future J2 assembly, use the received connector markings to identify e
 
 **Packet snapshot:** 2026-11-12 UTC; OPA320AIDBVR listing rechecked 2026-11-13 UTC. **Decision state:** OWNER DECISION REQUIRED. Issue [#38](https://github.com/whatobiplays/screen-latency-tool/issues/38) remains open. This packet supports three separate owner decisions: Basket A purchases, Basket B instrumentation, and PCB fabrication.
 
-The approved base is d15eee370f07cd32fc48f1489f2a25df83d41a70, with policy revision 142422527de28b8e20dea1158d2f54d020dcdcd5. The current per-MPN evidence and dispositions are maintained in §3. Its mixed-date component-only planning subtotal is **$138.56**. Delivered cost remains unknown.
+The Issue #38 packet was based on d15eee370f07cd32fc48f1489f2a25df83d41a70, the first parent of this task's approved merge baseline e3c9539ac0d9f07e7406dffff97246105e9a10b2. Its pinned policy revision is 142422527de28b8e20dea1158d2f54d020dcdcd5. The current per-MPN evidence and dispositions are maintained in §3. Its mixed-date component-only planning subtotal is **$138.56**. Delivered cost remains unknown.
 
 No supplier confirmed both destination-specific delivery and landed cost for any line. Prices and stock are page observations, not reservations. Shipping, tax, import charges, and some lead times remain unknown. The exact-MPN, technical-fit, and manufacturer-lifecycle findings in §§2–3 still apply. This packet authorizes research and documentation only; no order, physical work, or Stage-B release is authorized. No item is marked OWNER APPROVED for purchase.
 
@@ -697,6 +697,8 @@ The board has no mounting holes or detector body. Optical-axis alignment, enclos
 ### 14.5 Budget exposure and decisions
 
 The $138.56 amount is a mixed-date, component-only planning subtotal for the 31 MPNs and 37 required units in §3. It includes seven HOLD lines, the historical $9.28 eLabBay price, and the $2.90 Mouser OPA320AIDBVR observation. It excludes shipping, tax, duties, fabrication, assembly, and unresolved harness, tool, and inventory costs. It is not a complete Basket A cost, a landed quote, or an owner-approved price.
+
+Adafruit 3878 and USB-uBM-uBF-V1A are each counted once in the 31-MPN component subtotal. Do not add either item again when totaling Basket A.
 
 | Cost area | Current amount or state | Boundary |
 | --- | ---: | --- |
