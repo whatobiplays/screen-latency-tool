@@ -64,7 +64,8 @@ inside the 45 mm board-to-glass space. Check J1 insertion/removal while parked.
 Route the service loop behind the right pillar at global Y≥60 while crossing
 X110–130. Keep its floor at Z≥58 mm; at the maximum admitted glass datum this
 is 20 mm above glass. The modeled carrier saddle head projects 28 mm below
-the board plane, leaving the 30 mm shroud as the closest designed object.
+the board plane. The 30 mm shroud is closest in the nominal parallel pose;
+under tilt an off-axis surface can be closer, as bounded in section 2.
 The proposed centreline to the second saddle uses at most 180 mm of the
 nominal 200 mm CABLE-PH04, leaving 20 mm for the far termination. Check actual
 length, unforced bend, retention and every cable/probe excursion before use.
@@ -117,6 +118,8 @@ A static indicated-gap reading must exceed the derived
 `2.00 +0.15 +4.00 +1.10 +1.00 +2.00 = 10.25 mm`; round upward to **10.3 mm**.
 If a recorded minimum actually exercises all play, tilt, fixture/cable and DUT
 movement terms, the threshold is **4.0 mm** (method uncertainty plus reserve).
+Measure that minimum over every over-glass holder, fastener, cable and probe
+surface, including the shroud.
 Record each exercised term; an undocumented assumption cannot reduce the limit.
 Do not subtract nominal shroud length/manufacturing again from an actual gap.
 
