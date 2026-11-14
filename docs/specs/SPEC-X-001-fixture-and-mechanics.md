@@ -19,7 +19,7 @@ Nominal modules: five movable identical sensor PCBs with **SFH 203** (`Q62702P09
 
 The [2026-11-13 procurement clarification](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6848704974) separates component acquisition for evaluation from installed-path qualification. For this one-sensor prototype, the rules below supersede destination-confirmed delivery and completed current/fault coordination as admission conditions for evaluation procurement. Exact fulfillment remains an ordering prerequisite; all assembly, connection and power-use safety requirements remain in force.
 
-The later owner direction in [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) adds a pre-purchase power-feasibility dependency for every component, instrument and PCB. [BENCH-005](../bench/PROTOTYPE-FIRST-POWER-FEASIBILITY.md) separates conditional paper feasibility from physical stage admission and residual internal-board risks. The component-eligibility rules below remain applicable, but cannot bypass that dependency or explicit owner purchase approval. No Stage-B measurement is claimed or automatically required before a defensible conditional paper decision.
+The Issue #45 owner direction records the original conditional S0/S1 bench-supply paper route and adds a pre-purchase power-feasibility dependency for every component, instrument and PCB. [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns the subsequent coordinated complete-fixture protection investigation before full one-sensor prototype procurement. [BENCH-005](../bench/PROTOTYPE-FIRST-POWER-FEASIBILITY.md) records both decisions, separates paper feasibility from physical stage admission, and preserves residual internal-board risks. The component-eligibility rules below remain applicable, but cannot bypass the power decision or explicit owner purchase approval. No Stage-B measurement is claimed or automatically required before a defensible conditional paper decision.
 
 Evaluate each exact purchasable MPN in this order:
 
@@ -41,7 +41,7 @@ The current bench-supply selection and its first-power status are recorded in BE
 
 ## Electrical/timing architecture
 
-- External regulated 5 V input, locally regulated analog/digital rails, power health/brownout supervision, Android VBUS sense and enforced no 5 V backfeed; USB ground is shared (no isolation requirement v1).
+- External regulated 5 V input, locally regulated analog/digital rails, power health/brownout supervision, Android VBUS sense and enforced no 5 V backfeed; USB ground is shared (no isolation requirement v1). The source and protection topology remains provisional pending Issue #47; this note does not release a physical stage or authorize procurement.
 - Five actual timer capture registers/peripheral paths must share a justified common monotonic tick domain; if Teensy routing cannot satisfy that, introduce dedicated external capture hardware. Interrupt-entry timestamping is not acceptable for publication.
 - `T0` associates the exact measured button-1 HID IN transfer completion with a hardware timer read or capture path characterized against external USB bus evidence. Track queue time only as non-authoritative diagnostic.
 - Resolution ≤10 µs, calibrated five-channel skew ≤25 µs, total quantified uncertainty ≤0.1 ms. Test over 10,000 common edges, cold power cycles, and LED optical stimulus; preserve both uncorrected captures and separately stored correction coefficients.

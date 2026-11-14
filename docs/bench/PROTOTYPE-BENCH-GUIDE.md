@@ -8,7 +8,7 @@
 **Supersedes:** None\
 **Superseded By:** None
 
-**Pre-purchase power decision:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) pauses all component, equipment and PCB procurement pending the [BENCH-005 feasibility assessment](PROTOTYPE-FIRST-POWER-FEASIBILITY.md) and explicit owner approval. Conditional paper feasibility and physical stage release are separate decisions. `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and every Stage-B/C gate remain in force.
+**Pre-purchase power decision:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) records the original conditional bench-only S0/S1 paper route. [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns the current complete-fixture protection investigation in the [BENCH-005 decision record](PROTOTYPE-FIRST-POWER-FEASIBILITY.md#10-issue-47-coordinated-protection-investigation). [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38) owns purchase approval. Conditional paper feasibility and physical stage release remain separate decisions. `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and every Stage-B/C gate remain in force.
 
 Readiness note: The generated schematic and BOM implement the owner-approved Stage-A selections: Switchcraft L721A with a direct, nonlocking Mean Well GST18U05-P1J design assumption; JST B4B-PH-K-S(LF)(SN) with CABLE-PH04 at optical J1; and CAB-14575/CAB-14574 at J4/J5. This records the design choice only. Mean Well does not certify this exact mating pair. Physical fit, retention, contact resistance, support, strain relief, thermal behavior, and fault response remain unverified Stage-B checks. No purchase or physical work is authorized.
 
