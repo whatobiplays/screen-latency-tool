@@ -868,9 +868,24 @@ owner approval; none of these prices is a spending authorization.
 1. Preserve KA3005PE+, proposed acquisition quantity one under the declared
    inventory. DigiKey observed $134.24/36. Actual receipt/manual/revision and
    fitness remain open. One DMM with suitable included leads is also an
-   equipment gap. The existing MM400 versus Fluke 115 candidates remain for
-   separate owner selection and fresh exact-offer/capability review; do not
-   buy both or automatically add Fluke 855705 leads.
+   equipment gap. Prefer a suitable borrowed meter. [Klein's exact MM400
+   page](https://www.kleintools.com/catalog/multimeters/digital-multimeter-auto-ranging-600v)
+   now says it is no longer in production, excluding it from new procurement
+   under SPEC-X-001 rule 1. Its maker-linked MM420 successor is unselected and
+   needs its own owner-reviewed screen; no silent replacement is approved.
+   [Fluke's exact FLUKE-115 / 2538790 offer](https://www.fluke.com/en-us/product/electrical-testing/digital-multimeters/fluke-115)
+   showed $279.99/in stock with compatible leads on 2026-11-14 UTC. Its
+   [maker specification](https://media.fluke.com/ce54d963-3be9-4e70-8a3e-b1060070fdfd_original%20file.pdf)
+   gives 6.000 V/1 mV and ±(0.5% +2 counts): calculated ±27 mV at 5 V,
+   before actual calibration, conditions and lead effects. It is suitable for
+   static DCV/continuity, not transient or fault-energy proof. Manufacturer
+   lifecycle remains UNVERIFIED; a contradictory [distributor discontinuation
+   label](https://www.onlinecomponents.com/en/productdetail/fluke/fluke115-11344217.html)
+   remains unresolved, so unconditional acquisition clearance is not claimed.
+   Choose a suitable loan, screen MM420 separately, or resolve that specific
+   FLUKE-115 conflict before purchase. No premium meter is mandated and no
+   DMM fault-current measurement is assumed. Do not buy duplicate Fluke 855705
+   leads if the admitted meter includes suitable leads.
 2. Borrow suitable voltage/current transient and temperature measurement first.
    Extech TM100 is a concrete temperature-access fallback ($96.99 maker sale
    observation with one bead probe); no quantity-one immediate ship offer is
