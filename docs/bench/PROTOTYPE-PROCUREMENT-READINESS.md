@@ -16,6 +16,8 @@ Supersedes: None
 Superseded By: None
 
 
+**Pre-purchase dependency:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) takes priority over procurement. All components, equipment and PCBs remain on an owner-imposed purchase pause pending the [BENCH-005 power-feasibility decision](PROTOTYPE-FIRST-POWER-FEASIBILITY.md) and subsequent explicit purchase approval. The exact-MPN evaluation clearances below remain component-level evidence. They do not bypass this dependency, authorize Basket A, or release any physical stage.
+
 This note consolidates purchasing evidence for one low-cost, one-sensor Teensy 4.1 prototype bench. It records dated observations and open gates. It does not authorize a purchase or report assembly, energization, USB synchronization, or qualification. The five-channel production fixture remains outside this basket.
 
 The *planned* purchase basis is one routed 50 mm by 44 mm two-layer optical board design and one OSH Park set containing three physical boards: **one to populate** and **two to retain as bare spares**. This is a quantity plan, not evidence that any board has been purchased, received or populated. The proposed bench also uses one Teensy 4.1 and an offboard breadboard power and USB assembly.
@@ -664,6 +666,8 @@ The owner must complete a current record for every row above before exact quote 
 Preserve the selected hardware and safety invariants: Korad KA3005PE+ bench supply; Adafruit 3878 USB-C to Micro-B cable; eLabGuy USB-uBM-uBF-V1A inline breakout; breakout VCC CLOSED and shield-to-GND OPEN; no USB data breadboarding; physical VIN/VUSB separation with future inspection; the one-sensor-only lifecycle exception; and INITIAL_CURRENT_LIMIT=UNSET. These selections do not authorize purchase, wiring, USB connection, energization, fabrication, or testing.
 
 ### 14.2 Basket A: one-sensor prototype and bench items
+
+Do not order this basket while Issue #45 remains unresolved. BENCH-005 separates possible S0/S1-only acquisition decisions from the full protected chain, optical board and USB path. Any limited acquisition considered after owner review requires its own exact scope and authorization; it does not imply approval of the remaining basket.
 
 Current per-MPN source evidence, required and planning billed quantities, order terms, price/stock observations, procurement dispositions and separate use holds appear in §3. The seven original HOLDs are cleared for evaluation procurement only; every physical-use release remains held.
 
