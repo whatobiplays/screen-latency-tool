@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+<style>text{font:16px Arial;fill:#17212b}.line{stroke:#304860;stroke-width:3;fill:none}.dim{stroke:#92400e;stroke-width:2;fill:none}</style>
+<text x="25" y="30">Noncontact side concept — design allocations only; actual device, stops, flex and cable motion require inspection</text>
+<path class="line" d="M80 540V100H920V540 M40 540H120 M880 540H960"/>
+<text x="90" y="85">Independent bridge, proposed 220 mm clear span; feet outside measured chassis/cradle</text>
+<rect x="250" y="240" width="500" height="16" fill="#305c3e"/>
+<text x="280" y="225">50 × 44 × 1.6 PCB, component face toward glass</text>
+<rect x="305" y="256" width="59" height="89" fill="#87919b"/>
+<text x="380" y="310">Upright SFH 203, axis normal to board</text>
+<path class="line" d="M290 256V390H305 M375 256V390H360"/>
+<text x="395" y="380">Opaque shroud carried by stand, not diode leads</text>
+<rect x="210" y="440" width="600" height="12" fill="#84b4ca"/>
+<rect x="225" y="452" width="570" height="35" fill="#d8dce1"/>
+<text x="270" y="515">Display in its own cradle; glass datum z=0</text>
+<path class="dim" d="M170 256V440 M160 256H180 M160 440H180 M820 390V440 M810 390H830 M810 440H830"/>
+<text x="28" y="350">35 mm board</text><text x="28" y="373">front-plane height</text>
+<text x="835" y="410">5 mm nominal</text><text x="835" y="433">tip/glass gap</text>
+<text x="30" y="575">Proposed static indicated minimum 2.10 mm from budget; not a universal gap or a physical pass.</text>
+<text x="30" y="602">Keep all other component/cable projections ≤22 mm allocation; verify access and actual envelopes.</text>
+</svg>

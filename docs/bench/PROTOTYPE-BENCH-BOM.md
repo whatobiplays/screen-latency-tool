@@ -19,7 +19,7 @@ The instance-level list is hardware/prototype/BOM.csv. Its rows record function/
 
 Gate A supports provisional values by model only: 46.999988 kOhm nominal transimpedance, 1.905 MHz bandwidth, 14.335% step overshoot, 0.801 us 2% settling, 1.399 us recovery after a 40 uA overload, and 5.829 mV RMS output noise through 2 MHz. The 424 MOhm photodiode resistance is an assumption, 20-25 pF input capacitance is an unmeasured planning envelope, real display photocurrent is unknown, and comparator discrimination remains unaccepted.
 
-**Pre-purchase power dependency:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) pauses ordering of every component, instrument and PCB pending the [BENCH-005 feasibility decision](PROTOTYPE-FIRST-POWER-FEASIBILITY.md) and explicit owner approval. Historical prices and evaluation eligibility remain evidence only. `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and all physical-use gates remain.
+**Current procurement boundary:** Issue #45 is a resolved historical paper decision. Issue #47 now coordinates the supervised direct-bench proposal; [BENCH-003 §15](PROTOTYPE-PROCUREMENT-READINESS.md#15-supervised-direct-bench-purchase-reference) gives its exact support and source observations. Owner G0 acceptance and specific G1 purchase/fabrication approval are required. Historical prices remain observations; INITIAL_CURRENT_LIMIT=UNSET and physical holds remain until their own evidence.
 
 ## Dated purchasable-item observations
 

@@ -15,6 +15,14 @@ Supersedes: None
 
 Superseded By: None
 
+**Current assembly boundary:** the supervised direct-bench variant in
+[bench-assembly.md](../../hardware/prototype/power-usb/bench-assembly.md)
+retains MF-R050, Pololu 5383 and the exact XT30U pair, with bench feed at
+`5V_IN` and L721A/GST18U05-P1J not fitted. The fixed-adapter calculations below
+remain valid historical comparisons. They do not make unused B/C circuits a
+prerequisite to bench-only release. Component procurement clearance, owner
+purchase approval and measured power admission remain separate.
+
 **Disposition: PAPER-ONLY ANALYSIS / NUMERICAL CURRENT LIMIT UNSET / FIRST-POWER RELEASE NOT DEMONSTRATED.** The generated candidate follows the owner-selected connector set dated 2026-11-05: power/USB J1 is Switchcraft L721A; optical J1 is JST B4B-PH-K-S(LF)(SN) with CABLE-PH04; power/USB J4 and J5 are CAB-14575 and CAB-14574. Earlier Issue #3 comments record the connector investigation and the request for a decision; this selection resolves design adoption. The decision does not establish physical mating, retention, current, or thermal behavior, and it does not authorize purchasing or assembly. This document does not authorize design freeze, fabrication, USB connection, energization, first power, or qualification. Actual input/startup currents, cable and contact temperatures, and VIN/VUSB isolation have not been measured. Issue #45 records the original conditional S0/S1 paper route; Issue #47 owns the current complete-fixture protection comparison. [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38) owns subsequent purchase approval. Issue #3 preserves the earlier design decisions.
 
 The current protection decision and source/branch comparison are in [BENCH-005 §10: Issue #47 coordinated-protection investigation](PROTOTYPE-FIRST-POWER-FEASIBILITY.md#10-issue-47-coordinated-protection-investigation). Issue #45 remains the record for the earlier conditional S0/S1 route. Its external-fault bounds distinguish paper feasibility, future measurements, physical-admission blockers and residual internal-board risks. All procurement remains paused pending an owner decision; earlier evaluation-procurement clearance does not release an order.

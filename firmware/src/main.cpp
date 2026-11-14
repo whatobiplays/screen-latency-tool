@@ -539,6 +539,18 @@ extern "C" void slt_usb_bus_reset(void) {
 }
 
 void setup() {
+#if SLT_BENCH_LED_LOAD
+#if SLT_ENABLE_FLEXPWM1_CAPTURE
+#error "The supervised LED-load image does not qualify the capture profile"
+#endif
+  // A steady, separately inspected 3.3 V load avoids adding periodic LED
+  // stimulus to the optical smoke session. This does not alter HID behavior.
+  digitalWrite(2, LOW);
+  pinMode(3, INPUT);
+  pinMode(4, INPUT);
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
+#endif
   // Teensy startup enables DWT_CYCCNT before calling setup(). The value is
   // diagnostic only; no qualification decision uses this software tick.
   protocol.setFixtureSerial((static_cast<uint64_t>(HW_OCOTP_MAC0) << 32) |

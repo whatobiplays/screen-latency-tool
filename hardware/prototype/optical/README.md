@@ -2,6 +2,14 @@
 
 ## 1. Purpose and release boundary
 
+For the supervised first prototype use the independent
+[noncontact mount and manual display session](bench-mount.md). Its numerical
+clearance limit comes from the configuration's tolerance/movement budget, not
+a universal glass gap. Contact-boot compression/force is not a requirement for
+that variant. Owner fit evidence and exact fabrication authorization remain
+necessary. Preserve the existing optical PCB and the retained fabrication ZIP;
+current assembly instructions supplement its historical review package.
+
 This workflow prepares provisional files for the existing 50 × 44 mm, two-layer,
 nominal 1.6 mm optical evaluation board. It preserves the upright SFH 203,
 selected MPNs, footprints, placements, outline, routing, analog values and absence

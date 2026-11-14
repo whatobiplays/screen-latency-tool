@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500">
+<style>text{font-family:Arial,sans-serif;font-size:16px;fill:#17212b}.box{fill:#eef3f8;stroke:#273b50;stroke-width:2}.wire{fill:none;stroke:#9b2c2c;stroke-width:3}.gnd{fill:none;stroke:#174d68;stroke-width:3}</style>
+<text x="25" y="30">Direct bench variant — construction proposal, owner G0 acceptance and physical release required</text>
+<rect class="box" x="25" y="70" width="160" height="85"/><text x="38" y="100">KA3005PE+</text><text x="38" y="130">VIN source only</text>
+<rect class="box" x="235" y="70" width="160" height="85"/><text x="248" y="100">Supported terminal</text><text x="248" y="130">5V_IN / GND</text>
+<rect class="box" x="440" y="70" width="130" height="85"/><text x="453" y="100">MF-R050</text><text x="453" y="130">Series positive</text>
+<rect class="box" x="610" y="70" width="150" height="85"/><text x="623" y="100">Pololu 5383</text><text x="623" y="130">VIN → VOUT</text>
+<rect class="box" x="805" y="70" width="110" height="85"/><text x="814" y="100">XT30U F/M</text><text x="814" y="130">5V_SAFE</text>
+<rect class="box" x="960" y="70" width="115" height="85"/><text x="972" y="100">Teensy</text><text x="972" y="130">VIN / GND</text>
+<path class="wire" d="M185 95H235 M395 95H440 M570 95H610 M760 95H805 M915 95H960"/>
+<path class="gnd" d="M185 145H210V200H1017V155 M315 155V200 M685 155V200 M860 155V200"/>
+<text x="30" y="235">Soldered FR4 carrier; supported sockets; insulated module underside and all four XT30 solder cups.</text>
+<text x="30" y="263">L721A and GST18U05-P1J NOT FITTED. No parallel input. No breadboard USB data or optical TIA.</text>
+<rect class="box" x="30" y="300" width="430" height="100"/><text x="44" y="328">Android → Adafruit 3878 → eLabGuy → device USB</text><text x="44" y="356">VCC CLOSED; shield-to-GND OPEN</text><text x="44" y="384">VIN/VUSB cut + independent backfeed measurements</text>
+<rect class="box" x="510" y="300" width="560" height="100"/><text x="525" y="328">Teensy 3V3 → optical board / SN74LVC1G17 / approved LED</text><text x="525" y="356">CABLE-PH04: black=3V3, red=GND, blue=EDGE, gray=MON</text><text x="525" y="384">EDGE/MON/buffer Y initially isolated for staged checks</text>
+<text x="30" y="445">INITIAL_CURRENT_LIMIT=UNSET. The drawing does not establish wire ratings, installed fit or source qualification.</text>
+<text x="30" y="475">Record exact carrier pad map, source/return paths and probe-earth connections before owner assembly.</text>
+</svg>

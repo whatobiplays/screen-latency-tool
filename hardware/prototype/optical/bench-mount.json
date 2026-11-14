@@ -1,0 +1,9 @@
+{
+  "units": "mm",
+  "basis": "Engineering design allocations; not physical measurements or a fabrication release",
+  "board": { "width": 50, "height": 44, "thickness": 1.6, "detector_axis_from_left": 6.77, "detector_axis_from_top": 10.5 },
+  "geometry": { "board_front_above_glass": 35, "shroud_projection_from_board": 30, "maximum_component_and_cable_projection": 22 },
+  "allowances": { "height_setting": 0.5, "shroud_manufacturing": 0.3, "setup_repeatability": 0.4, "fixture_approach": 0.5, "cable_approach": 0.5, "gap_measurement_uncertainty": 0.2 },
+  "positive_reserve": 0.5,
+  "required_evidence": ["height and printed dimensions", "ordinary stand/device flex", "supported cable service motion", "setup repeatability", "gap measurement uncertainty", "assembled minimum clearance"]
+}

@@ -634,6 +634,13 @@ Before any future J2 assembly, use the received connector markings to identify e
 
 ## 14. Issue #38 owner decision packet
 
+This section preserves the earlier full-basket planning snapshot. Section 15
+governs the proposed direct-bench subset and current support sourcing. Issue #43
+subsequently confirmed owner hand assembly and produced the external CAM
+package. A PCBA vendor or a contact-boot force test is not required for the
+selected noncontact, owner-soldered prototype. Actual fit/receipt and owner
+purchase/fabrication decisions remain necessary.
+
 **Packet snapshot:** procurement dispositions reassessed 2026-11-13; other observations retain their recorded dates. **Decision state:** OWNER DECISION REQUIRED. Issue [#38](https://github.com/whatobiplays/screen-latency-tool/issues/38) remains open. This packet supports three separate owner decisions: Basket A purchases, Basket B instrumentation, and PCB fabrication.
 
 The current per-MPN evidence and dispositions are maintained in §3. The retained historical component-only planning subtotal is **$138.56**, using the earlier mixed-source connector prices rather than a rollup of the latest offers. Delivered cost remains unknown.
@@ -667,7 +674,7 @@ Preserve the selected hardware and safety invariants: Korad KA3005PE+ bench supp
 
 ### 14.2 Basket A: one-sensor prototype and bench items
 
-Do not order this basket while Issue #45 remains unresolved. BENCH-005 separates possible S0/S1-only acquisition decisions from the full protected chain, optical board and USB path. Any limited acquisition considered after owner review requires its own exact scope and authorization; it does not imply approval of the remaining basket.
+Issue #45 is historical and resolved; it is not an outstanding order blocker. The expanded Issue #47 now coordinates the supervised bench-only variant. Owner acceptance of its concrete G0 package and exact G1 basket authorization remain necessary. Evaluation procurement does not require physical qualification of unused fixed-adapter circuits or a completed source measurement before acquiring the source/test equipment.
 
 Current per-MPN source evidence, required and planning billed quantities, order terms, price/stock observations, procurement dispositions and separate use holds appear in §3. The seven original HOLDs are cleared for evaluation procurement only; every physical-use release remains held.
 
@@ -712,7 +719,7 @@ The candidate one-sensor board is 50 × 44 mm, two layers, 1.6 mm thick. OSH Par
 
 make check-kicad passed on KiCad 10.0.8 before the documentation edits; the board source was not changed. Board SHA-256: 3f7ee13263f27410885c2ea0af3558b2fb27d6718b94dacfc55aec67fd4bbe88. The DRC report hash is 91f6308c2dc269aaef1c1ba778adcc382bc39347be718db80e090e6b2b1eda54; optical ERC is 409d88ed40927949cac2072912b7358c5a94fe6e39c561b7f4275e931c103d08; power ERC is 58e120dc237683c0c2678d42dd1224d061ec48c7a0a522b45602f2713592c211. Five DRC categories were ignored: footprint-filter mismatch, footprint-type mismatch, missing courtyard, track not centered on via, and tuning-profile track geometries. The run retained no report directory, so the raw reports are not available.
 
-No Gerber, drill, placement/CPL or assembly package exists in hardware/prototype. OSH Park's KiCad instructions identify KiCad 9.x as the current native-upload path; compatibility with this KiCad 10.0.8 design is unverified. A Gerber route would need released manufacturing outputs. JLCPCB assembly requires Gerbers, BOM and CPL, and assembles only boards it fabricates. This board mixes SMT and through-hole parts; no PCBA vendor, assembly owner or SMD rework capability is confirmed. No design-specific PCBA quote can be made.
+The Issue #43 optical manufacturing workflow and retained external package now exist; the dated statement that no CAM package existed is superseded. The unchanged fabrication ZIP SHA-256 is 312b53282a2be2014daf101d50c063a38e5aee1a2211ef96162ce579b5dcf86b; review ZIP is 68b0191b1f80bd4f68e2ca10ac0de6509a7f90062baca527365b4447794569b6. Their original source/evidence identity is retained. Current noncontact assembly instructions supplement the historical review ZIP; manufacturing preparation did not release fabrication. OSH Park's KiCad instructions identify KiCad 9.x as the current native-upload path; compatibility with this KiCad 10.0.8 design is unverified. A Gerber route would need released manufacturing outputs. JLCPCB assembly requires Gerbers, BOM and CPL, and assembles only boards it fabricates. This board mixes SMT and through-hole parts; no PCBA vendor, assembly owner or SMD rework capability is confirmed. No design-specific PCBA quote can be made.
 
 The board has no mounting holes or detector body. Optical-axis alignment, enclosure/boot fit, connector clearance, harness support and retention remain unverified. The $17.05 estimate does not establish board readiness, assembly responsibility or owner authorization. **FABRICATION HOLD** remains until the fabrication package, KiCad 10 upload or Gerber route, physical fit, component sourcing, assembly method and owner release are resolved. The three-board quantity remains a candidate only.
 
@@ -758,3 +765,98 @@ The $1,100 preferred and approximately $1,300 flexible figures remain spending g
 | PCB fabrication and assembly | FABRICATION HOLD; one $17.05 public-rate allowance; no released package or assembly plan | Resolve KiCad 10 upload/Gerber route, design fit, component availability, assembly owner/capability, and separate vendor quote. Keep fab and PCBA costs separate. |
 | Owner price ceilings and contingency | PENDING OWNER DECISION | Owner explicitly sets the per-basket and overall ceilings and any contingency. Until then, comparisons do not bound spend. |
 | Power-path design decision | HOLD; F1, Pololu 5383, the actual Teensy regulator revision, startup transients, VIN/VUSB isolation, and 3.3 V short response are unresolved | Review the ranked alternatives in BENCH-004 §4.1. Any protection redesign requires owner adjudication before source changes. |
+
+## 15. Supervised direct-bench purchase reference
+
+This dated proposal supplements the full mandatory-component matrix; it is not
+an order or a completed owner inventory. Keep the original 31 identities/37
+units for reconciliation. In this build L721A, GST18U05-P1J and Adafruit 239
+have purchase quantity zero. Fluke 855705 is an optional instrument shortfall,
+not a mandatory duplicate of owned suitable leads. This leaves 27 core build
+identities/33 units plus conditional DMM leads, before inventory offsets and
+support materials. R4 remains DNP and bare/OEM pads are not purchased.
+
+For each exact line the owner supplies owned, ordered, received and usable
+quantities separately. Purchase quantity is the verified shortfall rounded to
+its seller's packaging/MOQ. Unknown inventory is not zero. The seven original
+lines retain evaluation-only technical clearance and separate power-use holds.
+
+### 15.1 Targeted sourcing observations, 2026-11-13 local / 2026-11-14 UTC
+
+1. OPA320AIDBVR remains exact SOT-23-5; TI's exact record is ACTIVE. Retained
+   Mouser 595-OPA320AIDBVR observation is $2.90/94; the U.S. page timed out in
+   the refresh, so reconfirm actual U.S. fulfillment. Do not replace it with
+   another OPA320 package or interpret TI direct stock as all-channel stock.
+2. Newark 98K7334 freshly lists RC0603FR-07100RL cut tape at $0.101, quantity-one
+   MOQ/multiple, with 280,397 UK units in that snapshot. Do not use full-reel or
+   incoming counts as the selected offer. U.S. delivery remains unverified.
+3. MF-R050 DigiKey observation is $0.47/18,551. Its 4 s maximum trip applies at
+   2.5 A under stated conditions, not arbitrary overload or a 3V3 fault.
+4. Pololu's [BIG Order Form](https://www.pololu.com/catalog/bigorderform) explicitly
+   showed 105 available 5383 at $4.95. This supersedes the inference of absent
+   stock from a backorder-capable product page. Reconfirm quantity/ship date
+   before ordering. No substitute is selected.
+5. Exact Comet 5521133 / XT30U-F.G.Y showed $0.35031 before VAT and 1,078 Sofia;
+   5521134 / XT30U-M.G.Y showed $0.38990 and 204 Sofia. Both showed zero Plovdiv.
+   Seller fulfillment to the owner and incoming-part inspection remain open.
+6. The exact eLabBay USB-uBM-uBF-V1A listing identifies the unassembled inline kit
+   but does not expose a current selected-variant SKU/price, stock, MOQ or ship
+   date. $9.28 remains historical. This is a concrete order-time offer gap, not
+   a reason to revoke otherwise justified evaluation eligibility. The header
+   count/content discrepancy must be checked against the actual kit/drawing.
+
+### 15.2 Exact support proposal
+
+These quantities construct one carrier/harness and a source-only passive load
+set if no suitable inventory exists. Stock/price are dated page observations,
+not reservations or manufacturer lifecycle declarations. All new lines need the
+same prototype-only identity/fit/lifecycle-risk screen as the core basket.
+
+| Exact support item | Gross requirement / proposed purchase | Observed price and source | Construction restriction |
+| --- | --- | --- | --- |
+| Adafruit 1606 | 1 full-size carrier | $10.95, 38 displayed; [maker](https://www.adafruit.com/product/1606) | 157×51 mm, grouped copper; explicit insulated power conductors, no assumed bus ampacity |
+| Samtec SSW-124-01-G-S | 2 sockets | $5.59 each, 68 displayed; [DigiKey 612-SSW-124-01-G-S-ND](https://www.digikey.com/en/products/detail/samtec-inc/SSW-124-01-G-S/1112083) | 24 positions/2.54 mm; confirm received post section and 3.68–6.35 mm insertion requirement |
+| Adafruit 1230 | 1 set; use 1 SOT-23-5 adapter | $4.95, in stock; [maker](https://www.adafruit.com/product/1230) | Verify adapter pads against TI DBV; optical ICs stay on optical PCB |
+| Chip Quik DC0603S-10X | 1 ten-piece pack; use 4 | $4.90, 27 packs; [DigiKey](https://www.digikey.com/en/products/detail/chip-quik-inc/DC0603S-10X/5978235) | Existing 0603 buffer/LED passives only; keep bypass loop short |
+| Samtec TSW-150-07-G-S | 1 strip; cut adapter needs | $4.27; [DigiKey SAM1029-50-ND](https://www.digikey.com/en/products/detail/samtec-inc/TSW-150-07-G-S/1101277) | Not a substitute for Teensy sockets |
+| Pomona 73093-0 and 73093-2 | 1 each | $14.31 each, 769/776 displayed; [black](https://www.digikey.com/en/products/detail/pomona-electronics/73093-0/7431039), [red](https://www.digikey.com/en/products/detail/pomona-electronics/73093-2/7431040) | Owner-terminated retractable-shroud plugs; this differs from the factory-terminated lead preference and requires explicit G0 joint/retention acceptance |
+| Remington 18UL1007STRRED25 / 18UL1007STRBLA25 | 1 spool each only if missing; allocate ≤2 m/color | $17.15 each; [red](https://www.digikey.com/en/products/detail/remington-industries/18UL1007STRRED25/11613023), [black](https://www.digikey.com/en/products/detail/remington-industries/18UL1007STRBLA25/11613617) | 18 AWG stranded, 300 V/105°C insulation; maker shipment approximately 8 days, not immediate DigiKey stock; no assembled ampacity inferred |
+| Adafruit 1311 | 1 set if needed | $15.95; [maker](https://www.adafruit.com/product/1311) | 22 AWG solid internal supported logic links, not moving external harness |
+| WAGO 221-412 | 2 individual splices | $0.62 each; [DigiKey](https://www.digikey.com/en/products/detail/wago-corporation/221-412/13175703) | Each splice joins ONE potential: one positive, one return; never put + and − in the same splice |
+| WAGO 221-500 | 1 holder | $2.16; [maker](https://www.wago.com/us/wire-splicing-connectors/mounting-carrier/p/221-500) | Mount both separate splices on independent base |
+| Alpha F221B1/8 BK100 | 1 four-foot piece if missing | $3.16; [DigiKey A018B-4-ND](https://www.digikey.com/en/products/detail/alpha-wire/F221B1-8-BK100/281671) | Verify 3.18 mm supplied bore clears each actual cup/joint; overlap wire insulation |
+| Panduit TM1S4-C | 4 anchors | $0.47 each; [DigiKey](https://www.digikey.com/en/products/detail/panduit-corp/TM1S4-C/1306588) | Screw-mounted input/XT30/optical strain relief; not adhesive-only |
+| Panduit PLT1M-C | 8 ties | $0.25 each; [DigiKey](https://www.digikey.com/en/products/detail/panduit-corp/PLT1M-C/280033) | Keep service slack; tensile headline is not an assembly pull-out rating |
+| Adafruit 3299 | 1 kit if missing | $16.95; [maker](https://www.adafruit.com/product/3299) | Select actual M2.5 screw/standoff stacks after underside/holder measurement |
+| Yageo SQP10AJB-100R | 1 | $1.22; [DigiKey 10W-100-ND](https://www.digikey.com/en/products/detail/yageo/SQP10AJB-100R/18759) | 100Ω ±5%, 10W; supported guarded S0 load only |
+| Yageo SQP10AJB-10R | 2 | $1.22 each; [DigiKey 10W-10-ND](https://www.digikey.com/en/products/detail/yageo/SQP10AJB-10R/18735) | 10Ω ±5%, 10W; not a current shunt or fast short fixture |
+
+The support observation rollup is $146.17 before inventory offsets, shipping,
+tax and duties. It excludes source, optional temperature access, optical stand,
+PCB and core components. Verify arithmetic/actual cart and quantities before
+owner approval; none of these prices is a spending authorization.
+
+### 15.3 Separately approvable equipment and mechanical access
+
+1. Preserve KA3005PE+, access quantity one. DigiKey observed $134.24/36; only buy
+   a confirmed shortfall. Actual receipt/manual/revision and fitness remain open.
+2. Borrow suitable voltage/current transient and temperature measurement first.
+   Extech TM100 is a concrete temperature-access fallback ($96.99 maker sale
+   observation with one bead probe); no quantity-one immediate ship offer is
+   established. Do not buy a 20-unit distributor break or an extra probe by
+   assuming the included probe is absent. Scope capability follows the actual
+   transient/uncertainty budget, not an automatic 100 MHz purchase.
+3. SmallRig 2164 is an alternative independent arm/clamp candidate, not the
+   dimensioned bridge itself: [B&H](https://www.bhphotovideo.com/c/product/1422139-REG/smallrig_2164_multi_functional_crab_shaped_clamp.html/overview)
+   observed $12.99/in stock. Its short reach, mounting nut/holder, bench clamp,
+   deflection and positive gap require review before selecting it instead of
+   the proposed bridge. The P1S is owned; filament/print authorization are not
+   inferred. No stand option is purchase/print released by this reference.
+4. One OSH Park three-board set retains its exact fabrication ZIP identity;
+   one population/two bare spares. The approximately $17.05 public-rate amount
+   is not a design quote or fabrication release.
+
+The actual owner decision packet and current approvals belong in Issue #38.
+Do not require exact delivered totals or physical tests to clear otherwise
+credible components; do retain the concrete offer, inventory, fit and release
+conditions for the selected build.

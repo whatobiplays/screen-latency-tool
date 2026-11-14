@@ -8,7 +8,7 @@
 **Supersedes:** None\
 **Superseded By:** None
 
-**Pre-purchase power decision:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) records the original conditional bench-only S0/S1 paper route. [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns the current complete-fixture protection investigation in the [BENCH-005 decision record](PROTOTYPE-FIRST-POWER-FEASIBILITY.md#10-issue-47-coordinated-protection-investigation). [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38) owns purchase approval. Conditional paper feasibility and physical stage release remain separate decisions. `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and every Stage-B/C gate remain in force.
+**Supervised one-sensor variant:** [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) now owns procurement through genuine prototype smoke evidence. Use the [direct-bench carrier and G0–G4/S0–S4 procedure](../../hardware/prototype/power-usb/bench-assembly.md) and [noncontact mount/manual display procedure](../../hardware/prototype/optical/bench-mount.md). These govern the proposed bench-only build; the fixed-adapter and contact-boot descriptions below retain their historical alternative scope. Issue #45's closed paper decision is not an unresolved ordering dependency. Issue #38 owns exact purchase/fabrication approval. `INITIAL_CURRENT_LIMIT=UNSET`; physical admission still requires actual evidence and approval.
 
 Readiness note: The generated schematic and BOM implement the owner-approved Stage-A selections: Switchcraft L721A with a direct, nonlocking Mean Well GST18U05-P1J design assumption; JST B4B-PH-K-S(LF)(SN) with CABLE-PH04 at optical J1; and CAB-14575/CAB-14574 at J4/J5. This records the design choice only. Mean Well does not certify this exact mating pair. Physical fit, retention, contact resistance, support, strain relief, thermal behavior, and fault response remain unverified Stage-B checks. No purchase or physical work is authorized.
 
@@ -231,6 +231,13 @@ This procedure applies to the existing 50 × 44 mm, two-layer optical PCB with u
 
 ### Provisional mechanical retention
 
+The contact-boot proposal in this subsection is historical and is not used by
+the owner-selected first-prototype mount. Use the independent noncontact
+[stand/shroud geometry and clearance budget](../../hardware/prototype/optical/bench-mount.md)
+instead. No glass contact, boot compression or contact-force qualification is
+required for that variant; actual stability, positive clearance and optical
+response remain required.
+
 1. The carrier has no mounting holes. An external clamp or bracket must grip reviewed board-edge areas without touching copper, parts or solder joints and without flexing the board. Inspect both faces before choosing jaw depth and width. No edge is qualified as a universal clamp zone. Support cable strain relief from the bracket so insertion, extraction and cable pull do not load J1's joints or the detector leads.
 2. The proposed boot bore is 6.0 to 6.2 mm. Against the SFH 203's 5.90 mm maximum flange, this gives **0.10 to 0.30 mm diametral clearance**, or **0.05 to 0.15 mm radial clearance**, before bore tolerance, print error, misalignment and deformation. The 6.40 mm footprint courtyard is a layout envelope; it does not define boot wall thickness, flange support or clamp clearance. Center the proposed aperture on the nominal axis `(106.77, 110.5)` and verify actual alignment.
 3. The SFH 203 drawing gives an 8.5 ± 0.4 mm axial body length from the package base. Installed lens height also depends on its stand-off above the PCB. The Bourns drawing gives a 10.03 mm housing dimension and a separate 1.52 mm screw projection along the installed height direction, with drawing tolerances. JST describes an 8 mm mated top-entry height, before wire exit and bend clearance. Check every part under the actual display footprint, including adjustment-tool access and vertical connector mating/removal. Do not assume that the lens is the highest point or that these catalogue dimensions establish installed clearance.
@@ -312,6 +319,12 @@ These are open follow-on issues, not results of Issue #3 or this documentation u
 No physical observations are recorded in this guide. Keep raw files unchanged; do not replace missing or failed measurements with a passing checkbox or simulation output.
 
 ## Explicit stop conditions
+
+Apply these within their intended qualification scope. The supervised smoke
+procedure requires safe power, actual Full-Speed/identity/HID/vendor evidence
+and a real optical response, but no synchronized USB T0 trace or five-channel
+qualification. The bus-timing conditions below remain mandatory before those
+timing claims, not as purchasing or manual optical-smoke prerequisites.
 
 Stop the bench and leave the affected connection open if any of these is true:
 

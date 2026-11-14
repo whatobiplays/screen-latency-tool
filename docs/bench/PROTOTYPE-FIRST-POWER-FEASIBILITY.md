@@ -8,7 +8,7 @@
 **Supersedes:** None\
 **Superseded By:** None
 
-**Scope and decision authority:** Sections 1–8 retain Issue #45’s original bench-only S0/S1 paper decision and source analysis. Section 9 preserves its source register and adds P17–P22 for the Issue #47 update. Section 10 records Issue #47’s current complete-fixture protection comparison and pending owner decisions. The original conditional route remains historical; physical admission remains closed. No architecture is selected, and no purchase or physical use is released.
+**Scope and decision authority:** Sections 1–8 retain Issue #45’s historical S0/S1 paper decision; section 9 retains its sources and section 10 the earlier A/B/C comparison and disputes. Section 11 governs the expanded supervised one-sensor proposal. Direct-bench execution planning is approved, while concrete G0 risk acceptance and every physical release still require their own evidence/owner decision. Historical statements about paper-only scope or continued B/C investigation do not limit section 11.
 
 ## 1. Decision and acceptance boundary
 
@@ -398,3 +398,63 @@ Issue #47 retains the narrow accepted S1 procedural exclusions: reversed tempora
 The original Issue #45 conditional paper verdict and its qualifications remain intact. The missing numerical physical exposure envelope remains a real S1 blocker. The archived Cubic v4 objection to the conditional paper verdict remains disputed by the author and the non-authoring Charizard review; Issue #47 does not resolve that dispute. Preserve the reports unchanged: Cubic full v4 SHA-256 3a9a94817b55549360688f08bb25e7413c7b108b8e40bed1bdf3537d0c3d7ae3 and Charizard full review v4 SHA-256 bf018f3f9a71ea76e7b7a64ede428bb7685ab5e829846373d421f567220a3022. The [Issue #45 post-merge adjudication](https://github.com/whatobiplays/screen-latency-tool/issues/45#issuecomment-6868762284) records the owner’s S1 decision and links the [PR #46 review discussion](https://github.com/whatobiplays/screen-latency-tool/pull/46#issuecomment-6868609880). Full review files remain in the owner-held Issue #45 archive and are not stored in this repository.
 
 No candidate simulation is physical qualification. The ngspice compatibility probe stopped before transient analysis, so no active-protector simulation result is available. Any later model must identify the exact MPN/package, manufacturer model revision, circuit and testbench assumptions, source/capacitance corners and simulator version. Thermal and EMC conclusions require the actual designed PCB and applicable models. The unchanged physical state is INITIAL_CURRENT_LIMIT=UNSET; S0–S4 NOT_RUN/UNVERIFIED; FABRICATION HOLD; all procurement, fabrication, soldering, connection and energization holds remain in force.
+
+## 11. Supervised one-sensor bench release
+
+The expanded Issue #47 coordinates the selected one-sensor build through owner
+assembly and genuine smoke observations. The owner-selected noncontact mount
+and manual optical/USB session separation preserve the existing optical PCB.
+The concrete electrical proposal is KA3005PE+ → supported terminal/carrier →
+MF-R050 → Pololu 5383 → exact XT30U pair → Teensy VIN. The barrel jack and fixed
+adapter are not fitted. The source remains the sole operating VIN supply;
+Android VBUS remains isolated sensing, with a physically verified VIN/VUSB cut.
+
+The [construction and admission procedure](../../hardware/prototype/power-usb/bench-assembly.md)
+defines the physical carrier/harness, source-backed limits, proposed screens,
+measurement capability and G0–G4/S0–S4 dependency order. The
+[noncontact mount record](../../hardware/prototype/optical/bench-mount.md)
+defines geometry, a numerical tolerance/movement budget and the manual-pattern
+session. Its allocation arithmetic is analysis, not measured fit. No universal
+2 mm gap, scope bandwidth or thermal threshold is imposed.
+
+### 11.1 Decision and fault scope
+
+Owner G0 acceptance must cover the concrete assembly, supported/insulated
+connections, source envelope, narrow procedural exclusions and residual
+component-damage risks. The record does not imply that G0 has been accepted.
+De-energized inspection and no-live-rewiring control reversed temporary leads,
+wrong/adjacent header connections and preventable cross-rail assembly faults.
+Normal-operation displaced wires, sustained shorts, unsafe local heating,
+powered-off injection and host backfeed still require a defensible control.
+If that control is missing, stop for a specific amendment, not a blanket waiver.
+
+B/C remain deferred alternatives for a bench-only release. Their old incomplete
+envelopes and failed simulation probes stay recorded. The GST18U05-P1J OVP
+failure is unchanged. MF-R050 still cannot be credited with clearing every 3V3
+fault and Pololu 5383 adds no forward OVP/CC. Do not substitute another module
+without an exact owner-reviewed amendment; Pololu 5382 is only a named fallback
+candidate if sourceability of 5383 is insufficient.
+
+### 11.2 Evidence and release boundaries
+
+Use the [commissioning record template](../../hardware/prototype/power-usb/commissioning.template.json)
+for actual configurations, raw files/hashes, approvals, numerical settings and
+observations. Missing receipt, instrument identity, source response and fit
+measurements remain unknown. INITIAL_CURRENT_LIMIT remains UNSET until actual
+source qualification and independent setting review. Source-only S0 approval
+never releases a DUT by itself.
+
+Exact evaluation procurement can be considered before physical characterization;
+Issue #38 remains the exact basket/fabrication authority. The independent mount
+removes contact-force/compression as first-prototype requirements. Source-bound
+CAD/CAM plus justified design fit may support fabrication approval while
+post-assembly verified fit stays held. The earlier contact-boot hold is not a
+requirement to reopen that rejected arrangement.
+
+USB smoke uses the existing foreground probe, genuine Full-Speed/identity,
+real HID press/release and vendor exchange, with rediscovery between operations.
+The separate manual-pattern session uses actual display light and SFH 203/TIA/
+EDGE observations. HID does not have to cause the display transition. Neither
+session establishes calibrated latency, five-channel capture, bus T0 or Issue #7
+optical calibration. Actual issue/PAC progress and owner decisions belong in
+Issue #47 and PR #48; this record contains durable rationale and controls.
