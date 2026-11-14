@@ -809,8 +809,8 @@ lines retain evaluation-only technical clearance and separate power-use holds.
 
 These quantities construct one carrier/harness and a source-only passive load
 set if no suitable inventory exists. Stock/price are dated page observations,
-not reservations or manufacturer lifecycle declarations. All new lines need the
-same prototype-only identity/fit/lifecycle-risk screen as the core basket.
+not reservations or manufacturer lifecycle declarations. Section 15.4 records
+the prototype-only identity/fit/lifecycle-risk disposition for these exact codes.
 
 | Exact support item | Gross requirement / proposed purchase | Observed price and source | Construction restriction |
 | --- | --- | --- | --- |
@@ -860,3 +860,67 @@ The actual owner decision packet and current approvals belong in Issue #38.
 Do not require exact delivered totals or physical tests to clear otherwise
 credible components; do retain the concrete offer, inventory, fit and release
 conditions for the selected build.
+
+### 15.4 Support-part evaluation eligibility and replacement risks
+
+The 2026-11-14 UTC screen applies SPEC-X-001 prototype eligibility rule 3 to
+the exact support codes below. Each is **PROCUREMENT CLEARED FOR EVALUATION**
+for its stated purpose under the unknown-lifecycle exception. This includes
+conditional equipment candidates, not their selection or purchase approval.
+Manufacturer lifecycle remains **UNVERIFIED** for every code in this table.
+No known obsolete, discontinued, EOL, NRND or last-time-buy status was found in
+the bounded evidence reviewed. This is not an Active declaration or proof that
+all notices are absent.
+
+Four grouped manufacturer-domain searches used these exact codes with PCN,
+PDN, discontinued, obsolete, NRND, last-time-buy and end-of-life terms:
+(1) Adafruit/Chip Quik, (2) Samtec, (3) Pomona/Remington/Alpha/Panduit and
+(4) WAGO/Yageo/SmallRig/FLIR/SRA. All returned no results. Indexed coverage and
+grouped-query limits restrict that negative evidence; no complete archive crawl
+was performed. Maker identity/application references below and the dated exact
+offers in §§15.1–15.3 supply the remaining eligibility basis. Stock and supplier
+Active labels do not establish manufacturer lifecycle.
+
+The exact search strings were:
+
+```text
+(site:adafruit.com OR site:chipquik.com) ("1606" OR "1230" OR "1311" OR "3299" OR "DC0603S-10X" OR "DC0603S") (PCN OR PDN OR discontinued OR obsolete OR NRND OR "last time buy" OR "end of life")
+site:samtec.com ("SSW-124-01-G-S" OR "TSW-150-07-G-S") (PCN OR PDN OR discontinued OR obsolete OR NRND OR "last time buy" OR "end of life")
+(site:pomonaelectronics.com OR site:remingtonindustries.com OR site:alphawire.com OR site:panduit.com) ("73093-0" OR "73093-2" OR "18UL1007STRRED25" OR "18UL1007STRBLA25" OR "F221B1/8 BK100" OR "TM1S4-C" OR "PLT1M-C") (PCN OR PDN OR discontinued OR obsolete OR NRND OR "last time buy" OR "end of life")
+(site:wago.com OR site:yageogroup.com OR site:smallrig.com OR site:flir.com OR site:sra-solder.com) ("221-412" OR "221-500" OR "SQP10AJB-100R" OR "SQP10AJB-10R" OR "2164" OR "TM100" OR "KA3005PE+") (PCN OR PDN OR discontinued OR obsolete OR NRND OR "last time buy" OR "end of life")
+```
+
+| Exact code | Technical fit, safety, sourcing and replacement-risk disposition |
+| --- | --- |
+| Adafruit 1606 | [Maker CAD](https://github.com/adafruit/Adafruit-Perma-Proto-PCB/blob/master/adafruit%20permaproto%20fullbreadboard.brd) supports the carrier geometry. Use an explicit grouped-copper map; no bus ampacity is assumed. Generic carrier function limits replacement burden, but another board needs a new hole/copper map. |
+| SSW-124-01-G-S ×2 | [Samtec drawing](https://suddendocs.samtec.com/catalog_english/ssw_th.pdf) and exact offer support 24×2.54 mm sockets and mating-post requirements. Received Teensy post length/seating remains unverified. A replacement must preserve pitch, row spacing, insertion depth and post compatibility; no finished assembly current rating is inferred. |
+| Adafruit 1230 | [Maker](https://www.adafruit.com/product/1230) supports SOT-23-5/-6 adapters. Use only for the buffer, with verified DBV pin map and local bypass. The optical high-impedance junction stays on its PCB. A replacement needs an exact pad/pin and decoupling review. |
+| DC0603S-10X | [Chip Quik DC0603S drawing](https://www.chipquik.com/datasheets/DC0603S.pdf) and exact ten-piece offer support four offboard 0603 adapters. Keep bypass paths short. A replacement needs matching pad geometry and pack-quantity reconciliation. |
+| TSW-150-07-G-S | [Samtec](https://www.samtec.com/products/tsw-150-07-g-s) and exact offer identify the strip. Cut for the adapters; it does not replace Teensy sockets. A replacement must preserve plating, tail style, pitch and installed clearances. |
+| Pomona 73093-0 / 73093-2 | [Maker drawing](https://www.pomonaelectronics.com/sites/default/files/d73093_001.pdf) supports 18 AWG and sheathed/unsheathed 4 mm jacks; dated exact offers exist for both. KORAD seating and completed-lead retention/current remain unverified. G0 must accept owner termination; replacements need compatible retractable shrouds and documented wire attachment. |
+| 18UL1007STRRED25 / 18UL1007STRBLA25 | [Remington family sheet](https://www.remingtonindustries.com/content/UL1007%20Hook%20Up%20Wire%20Data%20Sheet.pdf) and exact maker-fulfilled offers support 18 AWG stranded wire. Approximately eight-day shipment is an observation. Plan with the larger 2.032 mm OD where sources differ from 1.85 mm, then inspect receipt. Replacements need strand, OD, insulation, length and termination review. |
+| Adafruit 1311 | [Maker](https://www.adafruit.com/product/1311) identifies 22 AWG solid, 300 V/80°C wire. Use supported internal links only, not a moving external harness. Generic wire replacement still needs construction, insulation and termination checks. |
+| WAGO 221-412 ×2 / 221-500 | Maker [splice](https://www.wago.com/us/wire-splicing-connectors/compact-splicing-connector/p/221-412) and [holder](https://www.wago.com/us/wire-splicing-connectors/mounting-carrier/p/221-500) identify the assembly. Each splice is one internally common potential; keep positive and return separate. Installed retention/thermal performance remains unverified. Replacements need conductor acceptance, pole isolation and supported mounting review. |
+| F221B1/8 BK100 | [Exact authorized offer](https://www.digikey.com/en/products/detail/alpha-wire/F221B1-8-BK100/281671) supplies 3.18/1.57 mm supplied/recovered ID and material data; no separate maker lifecycle declaration was retained. Inspect cup/joint coverage and overlap. Replacement size/material must cover and recover around the actual joint. |
+| TM1S4-C / PLT1M-C | [Panduit catalog](https://www.panduit.com/content/dam/panduit/en/products/media/3/63/263/7263/110117263.pdf) and exact offers support miniature tie/mount compatibility. Installed strain relief is not established by tensile headlines. Replacement material, mounting and tie width need review. |
+| Adafruit 3299 | [Maker kit](https://www.adafruit.com/product/3299) identifies M2.5 nylon hardware. Choose actual lengths from the assembly stack; no universal screw fit is claimed. Generic replacements still need thread, insulation, clearance and retention checks. |
+| SQP10AJB-100R / SQP10AJB-10R | [Yageo SQP specification](https://yageogroup.com/content/datasheet/asset/file/yageo-sqp_nsp_datasheet) and exact offers support the resistance/tolerance/power class. Use as supported passive S0 loads, with derating and hot-surface controls. These are not shunts, fast-step fixtures or a 150 W load bank. Replacements need impedance, pulse, power and thermal review for the actual test. |
+| KA3005PE+ | [Exact SRA offer](https://sra-solder.com/korad-ka3005e-precision-variable-adjustable-30v-5a-150w-dc-linear-power-supply-digital-regulated-lab-grade-with-wattage-display-1) identifies the selected model despite its historical URL slug. Receipt/manual/revision and CC/OVP/OCP/energy behavior remain unverified. Acquisition is eligible; another supply requires an owner architecture amendment and capability review. |
+| SmallRig 2164, optional | [Maker instructions](https://static.smallrig.com/mall/img/public/vemmium2cbq-1747622120901_.pdf) and exact B&H offer support an arm/clamp candidate. It is not the completed bridge/mount. Reach, holder/nut, deflection, cable loading and positive gap remain unverified; any replacement changes that mechanical envelope. |
+| Extech TM100, optional | [FLIR exact model](https://www.flir.com/products/TM100/) supports temperature capability and the included probe. Maker stock/ship date is unverified; the distributor's 20-unit nonstock break is not a quantity-one offer. Borrow suitable equipment first. A replacement needs accuracy, probe attachment and electrical-isolation review. |
+
+Unknown lifecycle creates availability/obsolescence and future replacement risk,
+accepted here only for one-sensor evaluation under the stated exception. Recheck
+known exclusions and exact seller SKU, packaging/MOQ, accepted availability,
+ship-to feasibility and terms before an authorized order. Any replacement still
+needs owner approval and its own technical review; production lifecycle review
+remains separate. Inventory uncertainty and owner authorization are unchanged.
+
+Phoenix 1729128 remains unselected. Its [maker dimensions](https://www.phoenixcontact.com/en-us/products/printed-circuit-board-terminal-mkdsn-15-2-508-1729128)
+specify 1.3 mm PCB holes versus the 1606 carrier's 1.2 mm. It is not a drop-in
+carrier terminal; this does not block the selected WAGO construction.
+
+Evaluation clearance does not release the installed harness, source/fault/thermal
+envelope, regulator/branch protection, VIN/VUSB isolation, USB behavior, mechanical
+fit or physical stages. Those ASSEMBLY/POWER-USE and fabrication holds require
+their own evidence and approvals.
