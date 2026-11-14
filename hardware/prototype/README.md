@@ -1,8 +1,20 @@
 # Issue 3 prototype electronics — engineering draft
 
+## Supervised bench variant
+
+The owner-selected one-sensor architecture uses the
+[direct-bench carrier and admission procedure](power-usb/bench-assembly.md),
+[noncontact mount/clearance budget](optical/bench-mount.md) and separate manual
+display/USB sessions. The fixed-adapter and contact-boot discussions below retain
+their historical scope. The [2026-11-14 G0 decision](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712)
+accepts the architecture and bounded risk model, including solderless Pomona
+source leads. Purchase, fabrication and physical-stage authority remain
+separate. INITIAL_CURRENT_LIMIT is
+UNSET. Optical PCB/schematic, values and BOM MPNs are preserved.
+
 **Scope:** one provisional soldered optical sensor and a separately prototyped Teensy 4.1 external-power / USB-presence interface. This is an **editable design proposal**, not a production PCB, qualified electronics assembly, or permission to buy/fabricate/energize hardware. See [Issue #3](https://github.com/whatobiplays/screen-latency-tool/issues/3), [SPEC-X-001](../../docs/specs/SPEC-X-001-fixture-and-mechanics.md), [PHASE-001](../../docs/phases/PHASE-001-hardware-android-feasibility.md) and [ADR-0002](../../docs/adr/0002-prove-hardware-timing-before-contract-freeze.md).
 
-The current pre-purchase power assessment is [BENCH-005](../../docs/bench/PROTOTYPE-FIRST-POWER-FEASIBILITY.md), under [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45). All component, equipment and PCB orders are paused pending the feasibility decision and explicit owner approval. Source connectivity and evaluation eligibility do not release power, USB, assembly or fabrication. `INITIAL_CURRENT_LIMIT=UNSET` and every Stage-B/C hold remain.
+The power decision is recorded in [BENCH-005](../../docs/bench/PROTOTYPE-FIRST-POWER-FEASIBILITY.md): Issue #45's limited paper assessment is historical, and the owner has accepted the selected one-sensor architecture at G0. Exact G1 component/equipment and PCB authorizations remain under [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38). Evaluation eligibility releases no power, USB, assembly or fabrication. `INITIAL_CURRENT_LIMIT=UNSET` and every unqualified Stage-B/C hold remain.
 
 ## Deliverable boundaries
 

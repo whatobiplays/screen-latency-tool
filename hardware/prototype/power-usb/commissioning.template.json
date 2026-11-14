@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "record_status": "NOT_RUN",
+  "operator": null,
+  "observed_at_utc": null,
+  "source_revision": null,
+  "configuration": {
+    "supply_model_serial_revision": null,
+    "supply_manual_sha256": null,
+    "teensy_board_and_regulator_package": null,
+    "firmware_sha256": null,
+    "android_model_os_apk_sha256": null,
+    "carrier_pad_map_and_harness_identity": null,
+    "component_and_wire_ratings": [],
+    "instruments_probes_ranges_calibration": [],
+    "measurement_uncertainty_and_bandwidth_basis": null,
+    "ambient_and_operating_conditions": null
+  },
+  "authorizations": {
+    "G0": {
+      "status": "ARCHITECTURE_AND_BOUNDED_RISK_ACCEPTED",
+      "decision_url": "https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712",
+      "reviewed_candidate": "814d5a1311a6072cbb05333ad215dc7b17781cdd",
+      "scope": "Documented direct-bench configuration only; no physical-stage authorization",
+      "as_built_configuration_matches_approved_scope": null
+    },
+    "G1": null, "G2": null, "S0": null, "G3": null, "G4": null
+  },
+  "initial_current_limit": "UNSET / PENDING REVIEW",
+  "reviewed_stage_envelopes": [],
+  "stage_results": [
+    { "stage": "S0", "status": "NOT_RUN", "observations": [], "artifacts_sha256": [], "stop_or_deviation": null },
+    { "stage": "S1", "status": "NOT_RUN", "observations": [], "artifacts_sha256": [], "stop_or_deviation": null },
+    { "stage": "S2", "status": "NOT_RUN", "observations": [], "artifacts_sha256": [], "stop_or_deviation": null },
+    { "stage": "S3a", "status": "NOT_RUN", "observations": [], "artifacts_sha256": [], "stop_or_deviation": null },
+    { "stage": "S3b", "status": "NOT_RUN", "observations": [], "artifacts_sha256": [], "stop_or_deviation": null },
+    { "stage": "S4a", "status": "NOT_RUN", "observations": [], "artifacts_sha256": [], "stop_or_deviation": null },
+    { "stage": "S4b", "status": "NOT_RUN", "observations": [], "artifacts_sha256": [], "stop_or_deviation": null }
+  ],
+  "noncontact_fit": {
+    "design_budget_revision": null,
+    "validated_allowances_mm": null,
+    "exercised_movement_terms": [],
+    "minimum_indicated_gap_mm": null,
+    "measurement_uncertainty_mm": null,
+    "unexercised_approach_mm": null,
+    "accepted_positive_reserve_mm": null,
+    "observed_lower_bound_mm": null,
+    "evidence_sha256": []
+  },
+  "optical_session": {
+    "status": "NOT_RUN",
+    "pattern_page_sha256": null,
+    "pattern_script_sha256": null,
+    "browser_url_and_version": null,
+    "orientation_refresh_brightness_and_filters": null,
+    "mount_patch_and_ambient_conditions": null,
+    "measurement_sequence_and_nonconcurrent_limits": null,
+    "raw_tia_threshold_edge_acquisitions": [],
+    "constant_pattern_ambient_controls": [],
+    "diagnostic_request_log": null,
+    "invalid_segments_and_failures": [],
+    "hid_causes_display_transition": "NOT_REQUIRED; Issue #6"
+  },
+  "usb_session": {
+    "status": "NOT_RUN",
+    "physical_smoke_record": null,
+    "speed_and_identity_evidence": [],
+    "real_hid_press_release_and_vendor_evidence": [],
+    "rediscovery_between_operations": null,
+    "request_id_restart_authorization_if_needed": null
+  }
+}

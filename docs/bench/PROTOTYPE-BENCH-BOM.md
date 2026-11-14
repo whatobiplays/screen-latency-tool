@@ -3,8 +3,8 @@
 **Document ID:** BENCH-001\
 **Status:** Draft\
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-13 (America/Los_Angeles)\
-**Date basis:** The procurement refresh in BENCH-003 §14 was checked through 2026-11-13 UTC. This document also retains earlier dated component, instrument and fabrication observations. The CABLE-PH04 seller snapshot was captured at 2026-11-05T07:17:28Z; the earlier $2.46 / 3,546 capture remains historical.\
+**Last Updated:** 2026-11-14 (America/Los_Angeles)\
+**Date basis:** BENCH-003 §16 contains the 2026-11-14 direct-bench offer/quantity proposal. This document also retains earlier dated component, instrument and fabrication observations. The CABLE-PH04 seller snapshot was captured at 2026-11-05T07:17:28Z; the earlier $2.46 / 3,546 capture remains historical.\
 **Depends On:** ARCH-001, REF-MET-001, REF-WIRE-001, SPEC-X-001, PHASE-001, ADR-0002\
 **Supersedes:** None\
 **Superseded By:** None
@@ -19,7 +19,7 @@ The instance-level list is hardware/prototype/BOM.csv. Its rows record function/
 
 Gate A supports provisional values by model only: 46.999988 kOhm nominal transimpedance, 1.905 MHz bandwidth, 14.335% step overshoot, 0.801 us 2% settling, 1.399 us recovery after a 40 uA overload, and 5.829 mV RMS output noise through 2 MHz. The 424 MOhm photodiode resistance is an assumption, 20-25 pF input capacitance is an unmeasured planning envelope, real display photocurrent is unknown, and comparator discrimination remains unaccepted.
 
-**Pre-purchase power dependency:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) pauses ordering of every component, instrument and PCB pending the [BENCH-005 feasibility decision](PROTOTYPE-FIRST-POWER-FEASIBILITY.md) and explicit owner approval. Historical prices and evaluation eligibility remain evidence only. `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and all physical-use gates remain.
+**Current procurement boundary:** Issue #45 is a resolved historical paper decision. The owner [selected the direct-bench architecture and bounded risks at G0](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712); [BENCH-003 §15](PROTOTYPE-PROCUREMENT-READINESS.md#15-supervised-direct-bench-purchase-reference) gives its exact support and source observations. The owner's 2026-11-13 inventory supersedes the older basic-DMM scenario: no prototype electronics, PSU or test instruments are owned; soldering equipment, flux, solder, ESD tools and the P1S are available. Specific G1 purchase/fabrication approval remains required. Historical prices remain observations; INITIAL_CURRENT_LIMIT=UNSET and physical holds remain until their own evidence.
 
 ## Dated purchasable-item observations
 
@@ -166,9 +166,9 @@ These manufacturer/distributor pages were retrieved on **2026-10-31**; stock cou
 
 The amounts below are USD planning observations. The current component refresh is dated 2026-11-13; other inputs retain their dates in the tables. Figures are not quotes, reservations, stock commitments, or delivered prices. Shipping, file extras, tax, duties, assembly labor, and unresolved line items are excluded unless a formula names them. Current stock remains volatile.
 
-The [owner bench inventory update](https://github.com/whatobiplays/screen-latency-tool/issues/3#issuecomment-6554881813), dated 2026-11-01, confirms a basic digital multimeter and basic soldering equipment. It does not identify their models or establish DMM accuracy, continuity or current ranges, soldering tips, SMT rework capability, accessories, magnification, ESD protection, suitable leads, or a current-limited bench supply. Those details remain unknown. The inventory report does not establish ownership of any other bench item.
+The [2026-11-01 inventory update](https://github.com/whatobiplays/screen-latency-tool/issues/3#issuecomment-6554881813) supplied the historical basic-DMM/soldering assumptions used in these scenarios. The later 2026-11-13 inventory in BENCH-003 §15 supersedes them. Preserve the arithmetic, but do not use these offsets or consumable allowances for current orders.
 
-Full-purchase comparisons remain below as hypothetical replacements. The owner-incremental scenarios treat the confirmed basic DMM and basic soldering-hardware category as zero new spend. They keep the separately listed solder, flux, hand tools, heat gun, bench supply, and all other items unless ownership is specifically established. The $65.98 soldering-hardware allowance in the hypothetical set is a comparison value for an iron and its power supply, not a valuation of the owner's unlisted equipment.
+Full-purchase comparisons remain below as historical hypothetical replacements. Their owner-incremental rows removed the then-assumed DMM/soldering hardware and retained solder, flux and other tools. Current acquisition must instead include DMM access and exclude confirmed-owned solder/flux/ESD supplies. The $65.98 historical iron/power allowance is not a valuation of the owner's equipment.
 
 The original PR-base connector snapshot dated 2026-10-31 had five older lines totaling $3.10: optical TSW-104 ($0.38), Adafruit 368 ($2.00), J2 TSW-102 ($0.21), J4 TSW-103 ($0.30), and J5 TSW-102 ($0.21). After J2 changed to the XT30U pair, the 2026-11-04 intermediate snapshot contained four remaining lines totaling $2.84: TSW-104 ($0.38), Adafruit 368 ($2.00), TSW-103 ($0.27), and TSW-102 ($0.19). The $80.30 generated BOM and $80.35 Strategy A starting totals already include that intermediate four-line connector set and the XT30U J2 pair. The five selected connector lines total $12.56. PAC-2's inline USB breakout and Fluke TL75 candidate add $49.27; replacing the former 5030/592 stack ($3.90) with Adafruit 3878 ($3.50) removes $0.40. Therefore `$80.30 - $2.84 + $12.56 + $49.27 - $0.40 = $138.89` for the generated BOM and `$80.35 - $2.84 + $12.56 + $49.27 - $0.40 = $138.94` for Strategy A. Historical mandatory snapshots were $79.24 on 2026-10-31 and $79.28 on 2026-11-01. Totals exclude shipping, tax, duties, fabrication, remaining harness materials, owner tools, and unpriced accessories; they are not checkout quotes.
 
@@ -221,7 +221,7 @@ The $8.87 harness example buys the full four-foot Alpha Wire pack. A custom brac
 | Heat gun | $42.49 | [DigiKey EC-MINI](https://www.digikey.com/en/products/detail/master-appliance-co/EC-MINI/13629006) |
 | Listed tool set subtotal | $148.82 | $25.99 + $39.99 + $9.25 + $7.95 + $7.25 + $3.95 + $11.95 + $42.49 |
 
-The scenarios separate this hypothetical set into a $65.98 replacement allowance for the confirmed basic soldering-hardware category and $82.84 for the listed items whose ownership is not established. The $65.98 is Pinecil $25.99 + PinePower $39.99. The $82.84 is solder $9.25 + flux $7.95 + flush cutters $7.25 + tweezers $3.95 + wire strippers $11.95 + heat gun $42.49. These line prices describe the hypothetical set, not the owner's actual tools.
+The historical scenarios split this hypothetical set into $65.98 for iron/power and $82.84 for other tools/consumables. The $65.98 is Pinecil $25.99 + PinePower $39.99. The $82.84 is solder $9.25 + flux $7.95 + flush cutters $7.25 + tweezers $3.95 + wire strippers $11.95 + heat gun $42.49. This is not the current shortfall: solder/flux are owned and a heat gun is not mandatory for initial hand assembly.
 
 ### Measurement equipment and first-power input
 
@@ -236,11 +236,11 @@ The scenarios separate this hypothetical set into a $65.98 replacement allowance
 
 Owner selection dated 2026-11-02 UTC: Korad KA3005PE+ is `OWNER_SELECTED_MODEL / NOT_PURCHASED / NOT_FIRST_POWER_QUALIFIED`. The planning assumption is that the owner will have or acquire it for Stage B; receipt and purchase remain unconfirmed. On 2026-11-12, the DigiKey U.S. listing showed $134.24 and 44 in stock; its page warns tariffs may apply. The $134.24 allowance remains in the owner-incremental scenario unless the owner confirms prior purchase. It is a list-price observation, not a delivered quote or order authorization. Before first power, review the expected load and component limits, then document an initial current-limit method. Measure startup and load behavior during Stage B; do not require that measurement for Stage-A review. Before use, confirm the exact revision, mains setup, protective earth, output isolation, certification, and leads. The KA3005D and Siglent SPD3303X-E remain historical alternatives in [BENCH-003](PROTOTYPE-PROCUREMENT-READINESS.md); no alternative is selected. The DHO814 remains deferred.
 
-The owner's confirmed DMM removes the hypothetical $17.50 meter from owner-incremental totals. The adjustable current-limited supply remains a prerequisite for first power and is retained in owner-incremental totals; buying it does not qualify its setpoints, protection, wiring, or the protected load. The DHO814 has four analog channels and includes four probes. The extra probe remains optional and the oscilloscope remains deferred. Gate 1 requires independently measured correlation of actual successful HID completion against fixture T0/marker timing, with known worst-case delay and non-perturbing probing. The evidence remains NOT_RUN / UNVERIFIED. A dedicated USB analyzer is optional if an independently qualified oscilloscope-based method satisfies the requirement; borrowing or renting equipment is acceptable.
+The historical owner-incremental totals removed a $17.50 meter using the earlier DMM snapshot. That offset is superseded: the 2026-11-13 owner inventory requires DMM acquisition or suitable borrowed access. The adjustable current-limited supply remains a prerequisite for first power; buying it does not qualify its setpoints, protection, wiring or protected load. DHO814 remains a deferred timing-instrument candidate, not an automatic purchase. Later Gate 1 requires independently measured correlation of actual successful HID completion against fixture T0/marker timing, with known worst-case delay and non-perturbing probing. That evidence remains NOT_RUN / UNVERIFIED and is not required for the independent-session prototype smoke test. Borrowing or renting suitable equipment is acceptable.
 
 ### Known-cost scenarios
 
-This table preserves the 2026-11-06 scenario snapshot based on the $138.94 Strategy A displayed-price subtotal. The 2026-11-13 component refresh and current comparisons are in BENCH-003 §14. None of these figures is a delivered total.
+This table preserves the 2026-11-06 scenario snapshot based on the $138.94 Strategy A displayed-price subtotal. BENCH-003 §14 retains a later historical comparison; §15 governs the current direct-bench quantities and corrected inventory. None of these historical totals is the current purchase budget or a delivered total.
 
 | Scenario | Included purchases | Arithmetic | Known subtotal |
 | --- | --- | --- | ---: |
@@ -256,7 +256,7 @@ This table preserves the 2026-11-06 scenario snapshot based on the $138.94 Strat
 
 #### Historical `KT` purchase sensitivities (superseded by the approved `KM` selection)
 
-The current six-board high case includes three `KM` capacitors at $0.10 each ($0.30 total). With the 2026-11-13 component refresh, its planning subtotal is $1,063.60. The source cases below preserve historical `KT` MOQ comparisons and no longer apply to the selected BOM.
+The historical six-board high case includes three `KM` capacitors at $0.10 each ($0.30 total). With the retained 2026-11-13 component refresh, its planning subtotal is $1,063.60. The source cases below preserve historical `KT` MOQ comparisons and no longer apply to the selected BOM.
 
 | Historical `KT` source case | High-case total | With unallocated $0.26 | Budget comparison before omitted costs |
 | --- | ---: | ---: | --- |
@@ -267,11 +267,11 @@ The Future Electronics case remains within the flexible cap only before shipping
 
 The owner/full comparison also reconciles directly: $467.46 - $65.98 - $17.50 = $383.98 for the owner-incremental first-power base, and $1,063.60 - $65.98 - $17.50 = $980.12 for the owner-incremental six-board hypothetical with DHO814 deferred.
 
-The $166.90 low basket is a comparison only; it excludes the adjustable supply. **Use the $383.98 owner-incremental first-power base as the current planning scenario**, including the KA3005PE+ allowance. It is not a delivered quote or equipment qualification. These owner-incremental rows exclude the confirmed basic DMM and basic soldering-hardware categories. Fluke TL75 model 855705 is a low-voltage continuity-lead candidate; existing suitable leads and meter banana-jack compatibility are unconfirmed. Magnification, ESD supplies and other unpriced accessories remain outside the totals.
+The $166.90 and $383.98 baskets are historical comparisons only. Do not use $383.98 as the current purchase budget: it excludes a DMM on an obsolete ownership assumption and includes solder/flux now confirmed owned. Current direct-bench quantities and instrument gaps are in BENCH-003 §15. Fluke TL75 model 855705 remains conditional on the chosen DMM's included leads and compatibility; do not add duplicate leads automatically. Existing iron/tip and unresolved assembly accessory capabilities need review; the owner's ESD, solder and flux ownership is established.
 
 ### Target and ceiling comparisons
 
-The first table preserves 2026-11-06 headroom calculations based on Strategy A at $138.94. The current 2026-11-13 comparisons follow and are cross-referenced in BENCH-003 §14. Both sets exclude shipping, tax, duties, fabrication, harness, mechanics, and other unpriced costs.
+The tables preserve historical headroom calculations based on Strategy A at $138.94 and the later $138.56 comparison in BENCH-003 §14. They do not apply the current inventory/direct-bench subset and must not be used as its purchase budget. Both sets omit delivered and other unresolved costs.
 
 | Scenario | Known subtotal | Remaining to $1,100 | Remaining to $1,300 |
 | --- | ---: | ---: | ---: |
@@ -348,15 +348,15 @@ The owner-selected Android DUT is the **AYANEO Pocket AIR Mini**. Owner ADB obse
 - `ro.product.model=GT78-VN`
 - `ro.build.fingerprint=ARBOR/GT78-VN/GT78-VN:11/RP1A.200720.011/mp1V95182:user/release-keys`
 
-`GT78-VN` is not unique to AYANEO; ARBOR uses the same model designation for another product. The owner-selected Adafruit 3878 cable and eLabGuy inline breakout define the Stage-A USB topology to the Teensy Micro-B device port. Both are cleared for evaluation procurement only under BENCH-003. The breakout's selected-variant price, quantity/MOQ, stock and delivery remain unverified and must be checked when ordering; the Nov 5 $9.28 value is historical. Its ASSEMBLY/POWER-USE HOLD remains. The USB host/device and VCC topology must be confirmed before any separate Stage-B connection.
+`GT78-VN` is not unique to AYANEO; ARBOR uses the same model designation for another product. The owner-selected Adafruit 3878 cable and eLabGuy inline breakout define the Stage-A USB topology to the Teensy Micro-B device port. Both are cleared for evaluation procurement only under BENCH-003. The exact bare-kit offer, price, stock and minimum quantity are now identified in [BENCH-003 §16.2](PROTOTYPE-PROCUREMENT-READINESS.md#162-support-packages-and-fulfillment-conditions); address-level fulfillment, final charges and delivery still need order-time confirmation. Its ASSEMBLY/POWER-USE HOLD remains. The USB host/device and VCC topology must be confirmed before any separate Stage-B connection.
 
 The oscilloscope/analyzer is measurement equipment, not evidence that T0 passed. The DHO814 has four 100 MHz analog channels (up to 312.5 MSa/s with all four active per [RIGOL datasheet](https://www.rigol.com/dam/global/downloads/brochures/en/data-sheet/oscilloscopes/DHO800_DataSheet_EN.pdf)). A proposed **scope-only** experiment probes D+ and D- plus a fixture hardware marker on a short, safe tap; save original analog traces, demonstrate a specific Full-Speed IN/DATA/ACK waveform and independently validate manual packet interpretation. This can put bus and fixture marker on the same instrument clock, but does not guarantee adequate signal fidelity or exact T0 characterization. The Beagle USB 12 has **no external I/O sync**; it can provide diagnostic packet decoding only. If scope evidence is insufficient, borrow/rent a verified synchronized USB analyzer; never infer T0 from enqueue or firmware interrupt time.
 
 ## Owner inventory and remaining blockers
 
-The Calibrite Display Pro HL and Bambu P1S are recorded as owner-owned. On 2026-11-01, the owner also confirmed a basic DMM and basic soldering equipment; their exact models and capabilities remain unspecified. **For future bench planning only**, the owner subsequently directed us to assume the selected KA3005PE+ will be available by Stage B; actual purchase/receipt is still unconfirmed. Fluke TL75 model 855705 is now listed as a low-voltage continuity-lead candidate. Check whether suitable leads are already owned and confirm the DMM accepts its banana plugs before purchase. SMT rework capability, flux, soldering consumables and accessories, magnification, and ESD supplies remain unconfirmed. No other unknown inventory is treated as available. The owner selected the AYANEO Pocket AIR Mini as the target DUT; physical USB compatibility remains unverified.
+The Calibrite Display Pro HL and Bambu P1S are recorded as owner-owned. The owner's 2026-11-13 inventory supersedes the earlier basic-DMM snapshot: no prototype electronics, PSU or test instruments are owned. Soldering equipment, flux, solder and ESD tools are available; no rework equipment is owned. Review exact iron/tip, magnification and other accessory capabilities without duplicating confirmed supplies. KA3005PE+ remains selected but unpurchased/unqualified. A new DMM with suitable included leads can avoid a separate Fluke 855705 purchase. The owner selected the AYANEO Pocket AIR Mini as the target DUT; physical USB compatibility remains unverified.
 
-The dated parts list and scenario estimates are not order-ready procurement or quotes. PCB option selection, PCBA variable charges, the custom optical boot, harness construction, itemized owner tools and accessories, Android compatibility, external USB synchronization, delivered costs, and manufacturer lifecycle confirmation remain unresolved. No physical work or qualification is reported here.
+The dated parts list and historical scenarios are not order-ready quotes. G0 design/risk selection is accepted. The remaining first-build decisions concern exact G1 component/equipment quantities, the independent noncontact mount's design-stage fit and separate PCB authorization, followed by the physical gates in BENCH-003 §15 and Issue #47. PCBA charges, contact-boot force, external T0 synchronization and production lifecycle qualification do not block this independent-session smoke release. Exact fulfillment, source/fault/thermal bounds, VIN/VUSB isolation, safe assembly and genuine optical/USB observations remain required. No physical work or qualification is reported here.
 
 ## Technical source links
 
