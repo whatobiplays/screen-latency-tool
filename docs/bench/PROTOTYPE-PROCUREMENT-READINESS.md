@@ -265,11 +265,11 @@ Before **any separately authorized powered stage**, review the specific connecte
 
 The RIGOL DHO814 remains deferred. The approved Adafruit 3878 cable and unassembled eLabGuy inline module do not establish Android USB host mode, VBUS behavior, enumeration, or synchronized capture. The Beagle USB 12 remains excluded because its listed interface cannot independently correlate fixture time with USB ACK.
 
-## 7. Owner inventory and cost scenarios
+## 7. Historical owner inventory and cost scenarios
 
-The owner has confirmed ownership of a basic digital multimeter and basic soldering equipment. Exact models, precision, soldering tips, SMT rework capability, accessories, and magnification remain unspecified. The owner has also confirmed that an adjustable, current-limited bench supply is absent.
+These scenarios used the earlier basic-DMM/soldering snapshot and absent bench supply. The owner's 2026-11-13 inventory in §15 supersedes it: no electronics or instruments are owned; soldering equipment, flux, solder and ESD tools are available. Do not apply the historical offsets/consumable allowances to current orders.
 
-The owner has not confirmed flux, tweezers, cutters, a heat gun, magnification, ESD equipment, specialized probes, or suitable test leads. No unconfirmed item is treated as owned. The full-purchase rows are hypothetical comparisons. Owner-incremental rows remove only the confirmed basic DMM and soldering-equipment categories. This section preserves the 2026-11-06 scenario snapshot based on the $138.94 Strategy A subtotal; the refreshed 2026-11-12 comparison is in §14. These are not delivered totals. Selected J1/J4/J5 connector parts are priced in the current manifest; harness qualification and input-jack mechanical integration remain open.
+This section preserves the 2026-11-06 arithmetic based on the $138.94 Strategy A subtotal; §14 retains a later historical comparison. Their owner-incremental rows remove the old DMM/soldering categories and retain then-unconfirmed tools/consumables. They are not current baskets or delivered totals. Current accessory capability, exact quantity, supported harness and physical-use decisions follow §15.
 
 | Scenario | Arithmetic | Known subtotal | Remainder from $1,100 target | Remainder from approximately $1,300 ceiling |
 | --- | ---: | ---: | ---: | ---: |
@@ -649,6 +649,9 @@ No supplier confirmed both destination-specific delivery and landed cost for any
 
 ### 14.1 Owner inventory and procurement scope
 
+The snapshot below is historical. The owner's later 2026-11-13 clarification in
+§15 supersedes its DMM and component ownership assumptions for current orders.
+
 The latest owner inventory record located is the [Issue #3 inventory comment](https://github.com/whatobiplays/screen-latency-tool/issues/3#issuecomment-6554881813), dated 2026-11-01. It reports a basic digital multimeter and basic soldering equipment. It does not give model numbers, accuracy, ranges, lead or jack compatibility, soldering tips, magnification, ESD protection, or SMT rework capability. The KA3005PE+ is a selected Stage-B supply under an owner planning assumption; purchase and receipt remain unconfirmed. No later itemized inventory update was located through 2026-11-07.
 
 | Item class | Owner-confirmed ownership qty | Ordered qty | Physically received qty | Available/usable qty | Exact model / MPN / revision | Condition and applicable capability |
@@ -723,13 +726,21 @@ The Issue #43 optical manufacturing workflow and retained external package now e
 
 The board has no mounting holes or detector body. Optical-axis alignment, enclosure/boot fit, connector clearance, harness support and retention remain unverified. The $17.05 estimate does not establish board readiness, assembly responsibility or owner authorization. **FABRICATION HOLD** remains until the fabrication package, KiCad 10 upload or Gerber route, physical fit, component sourcing, assembly method and owner release are resolved. The three-board quantity remains a candidate only.
 
-### 14.5 Budget exposure and decisions
+### 14.5 Historical budget exposure and decisions
+
+These retained scenarios predate the corrected owner inventory and direct-bench
+subset in §15. Do not use $383.98 or its $82.84 tools/consumables allowance as
+the current purchase budget: that allowance includes now-confirmed owned solder
+and flux, and the older DMM offset is also superseded. Keep the historical
+arithmetic for provenance; current quantities exclude duplicate owned supplies
+and include the actual instrument shortfalls. The §15 component/support amounts
+still exclude unresolved instruments, mount and delivered charges.
 
 The retained $138.56 amount is a historical mixed-date, component-only planning subtotal for the 31 MPNs and 37 required units in §3, before owner-confirmed inventory offsets. It is not an order quantity; quote only the exact shortfall after the owner completes the inventory record. It includes the seven originally held lines, the historical $9.28 eLabBay price, and the $2.90 Mouser OPA320AIDBVR observation. It excludes shipping, tax, duties, fabrication, assembly, and unresolved harness, tool, and inventory costs. It is not a complete Basket A cost, a landed quote, or an owner-approved price.
 
 Adafruit 3878 and USB-uBM-uBF-V1A are each counted once in the 31-MPN component subtotal. Do not add either item again when totaling Basket A.
 
-| Cost area | Current amount or state | Boundary |
+| Cost area | Historical amount or state | Boundary |
 | --- | ---: | --- |
 | Retained 31-MPN component subtotal | $138.56 | Historical mixed-date component-only planning amount; not the latest-offer rollup or delivered cost. If inventory confirms suitable DMM leads are already owned, do not buy Fluke 855705 and reduce the plan by its $39.99 observation. |
 | Complete Basket A delivered cost | NOT_ESTIMABLE | Inventory, destination delivery, exact XT30 harness materials and fit, and several required support costs remain unresolved. |
@@ -738,7 +749,7 @@ Adafruit 3878 and USB-uBM-uBF-V1A are each counted once in the 31-MPN component 
 | PCB fabrication | $17.05 planning allowance for one three-board set | Separate from the component subtotal. No design-specific quote, released manufacturing package, or fabrication approval. |
 | PCB assembly | NOT_ESTIMABLE | No released outputs, selected vendor, assembly owner, capability evidence, or quote. |
 | Harness | $8.87 generic historical example; selected XT30 harness NOT_ESTIMABLE | The example includes one $4.49 heatshrink pack but is not a qualified XT30 harness. Wire, insulation fit, strain relief, solder work, and fault suitability remain unresolved. |
-| Tools and consumables | $82.84 hypothetical allowance | The only inventory evidence is the dated 2026-11-01 report of basic DMM and soldering categories; exact quantities and capabilities remain UNKNOWN. The allowance includes solder, flux, cutters, tweezers, wire strippers, and a heat gun; it does not price the required XT30 wire or strain relief. |
+| Tools and consumables | $82.84 historical hypothetical allowance | Based on the then-used 2026-11-01 inventory; superseded by §15. Includes solder, flux, cutters, tweezers, wire strippers and a heat gun; not a current shortfall basket and does not price the selected XT30 wire/strain relief. |
 | Freight, tax, duties, and delivery | NOT_ESTIMABLE | No destination-verified delivered total exists. Duties or tariffs may apply to supplier offers. |
 | Contingency | PENDING OWNER DECISION | No percentage or dollar reserve is approved. Do not bury it in another line. |
 
@@ -769,16 +780,31 @@ The $1,100 preferred and approximately $1,300 flexible figures remain spending g
 ## 15. Supervised direct-bench purchase reference
 
 This dated proposal supplements the full mandatory-component matrix; it is not
-an order or a completed owner inventory. Keep the original 31 identities/37
-units for reconciliation. In this build L721A, GST18U05-P1J and Adafruit 239
-have purchase quantity zero. Fluke 855705 is an optional instrument shortfall,
-not a mandatory duplicate of owned suitable leads. This leaves 27 core build
-identities/33 units plus conditional DMM leads, before inventory offsets and
-support materials. R4 remains DNP and bare/OEM pads are not purchased.
+an order. The owner explicitly reported [no prototype electronics or test
+instruments](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6850478344)
+and [confirmed hand assembly](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6850640477)
+on 2026-11-13: no Teensy, PSU, components or DMM is owned. Available categories
+are soldering equipment, flux, solder and ESD tools; no rework equipment is
+owned. The P1S is also owned. This supersedes the older basic-DMM snapshot.
+Do not buy duplicate confirmed consumables or require a hot-air station for
+the initial hand-soldered board. Exact iron/tip, magnification, tweezers, cutters,
+strippers and measuring capability still need reconciliation; only ask whether
+the declared inventory has changed, not for the same ownership decision again.
 
-For each exact line the owner supplies owned, ordered, received and usable
-quantities separately. Purchase quantity is the verified shortfall rounded to
-its seller's packaging/MOQ. Unknown inventory is not zero. The seven original
+Keep the original 31 identities/37
+units for reconciliation. In this build L721A, GST18U05-P1J and Adafruit 239
+have purchase quantity zero. Fluke 855705 has proposed checkout quantity zero
+if the separately selected new DMM includes suitable leads; otherwise review
+the exact lead/meter pairing. This leaves 27 core build identities/33 minimum
+units to acquire under the stated zero-electronics inventory, plus support
+materials and instruments. R4 remains DNP and bare/OEM pads are not purchased.
+
+Use zero owned/received for the declared electronics/instrument categories at
+that snapshot; no order is inferred. Keep ordered and usable quantities separate
+and update only from subsequent evidence. Proposed purchase quantity is the
+minimum requirement rounded to the exact seller's packaging/MOQ, subject to
+any later reported acquisition and explicit owner approval. Unknown accessory
+inventory is not zero. The seven original
 lines retain evaluation-only technical clearance and separate power-use holds.
 
 ### 15.1 Targeted sourcing observations, 2026-11-13 local / 2026-11-14 UTC
@@ -808,7 +834,8 @@ lines retain evaluation-only technical clearance and separate power-use holds.
 ### 15.2 Exact support proposal
 
 These quantities construct one carrier/harness and a source-only passive load
-set if no suitable inventory exists. Stock/price are dated page observations,
+set. The declared electronics inventory has no offsets; reconcile support wire,
+hardware and consumables separately. Stock/price are dated page observations,
 not reservations or manufacturer lifecycle declarations. Section 15.4 records
 the prototype-only identity/fit/lifecycle-risk disposition for these exact codes.
 
@@ -838,8 +865,12 @@ owner approval; none of these prices is a spending authorization.
 
 ### 15.3 Separately approvable equipment and mechanical access
 
-1. Preserve KA3005PE+, access quantity one. DigiKey observed $134.24/36; only buy
-   a confirmed shortfall. Actual receipt/manual/revision and fitness remain open.
+1. Preserve KA3005PE+, proposed acquisition quantity one under the declared
+   inventory. DigiKey observed $134.24/36. Actual receipt/manual/revision and
+   fitness remain open. One DMM with suitable included leads is also an
+   equipment gap. The existing MM400 versus Fluke 115 candidates remain for
+   separate owner selection and fresh exact-offer/capability review; do not
+   buy both or automatically add Fluke 855705 leads.
 2. Borrow suitable voltage/current transient and temperature measurement first.
    Extech TM100 is a concrete temperature-access fallback ($96.99 maker sale
    observation with one bead probe); no quantity-one immediate ship offer is
@@ -914,7 +945,8 @@ accepted here only for one-sensor evaluation under the stated exception. Recheck
 known exclusions and exact seller SKU, packaging/MOQ, accepted availability,
 ship-to feasibility and terms before an authorized order. Any replacement still
 needs owner approval and its own technical review; production lifecycle review
-remains separate. Inventory uncertainty and owner authorization are unchanged.
+remains separate. Use the owner-declared inventory in §15; exact accessory
+capability, subsequent acquisitions and owner authorization remain separate.
 
 Phoenix 1729128 remains unselected. Its [maker dimensions](https://www.phoenixcontact.com/en-us/products/printed-circuit-board-terminal-mkdsn-15-2-508-1729128)
 specify 1.3 mm PCB holes versus the 1606 carrier's 1.2 mm. It is not a drop-in
