@@ -36,8 +36,7 @@ orientation, layer adhesion and bed clearance before an owner-authorized print.
 Print the parameterized spacers/shims for the actual measured board and glass
 datum. Fixed brackets, captive stops and shims carry the height load; friction
 in a slotted adjustment alone is insufficient. Secure both feet to the bench.
-The proposed CM20 clamp is conditional on actual bench thickness/reach; bare
-PETG friction is not a substitute. Hardware packages are in
+CM20 ×2 is [approved for purchase](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558); actual throat/bearing/jaw access and stable installation remain G2 checks. Do not block purchase on another reach measurement. Bare PETG friction is not a substitute. Hardware packages are in
 [BENCH-003](../../../docs/bench/PROTOTYPE-PROCUREMENT-READINESS.md).
 
 Fit the received hardware within the modeled head Ø12 ×5 mm, washer OD13
@@ -169,8 +168,7 @@ Public nominal Pocket AIR Mini dimensions (165.9 ×82.5 ×18.7 mm; grip27.6 mm)
 and the 4.2-inch 4:3 display make this arrangement plausible. They do not
 establish the owned case/cradle, active offsets, glass datum or stiffness.
 The 190 ×100 mm admitted cradle and independent adjustable stand are the
-bounded design-stage fit case. Record actual owned geometry before clamp
-purchase/fixture setting as applicable; a mismatch changes the fixture, not
+bounded design-stage fit case. Reuse the [owner-reported setup inputs](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6877424264) before fixture setting; a mismatch changes the fixture, not
 the protected PCB. For angular admission, compare the combined departure in two orthogonal side
 views against the 30 mm shroud axis and glass reference: 6° corresponds to
 3.15 mm lateral departure over 30 mm. An indicated bound ≤4° with supported

@@ -9,7 +9,7 @@ The supply and assembled path still require qualification. Purchase, assembly,
 source-only qualification and staged energization have separate approvals in
 [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) and
 [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38).
-`INITIAL_CURRENT_LIMIT=UNSET`. No physical result is recorded here.
+The [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558) authorize purchases and the specified PCB checkout only. CM20 installation fit remains at G2; routine checkout charges require no new approval. `INITIAL_CURRENT_LIMIT=UNSET`. No physical result is recorded here.
 
 The native schematic retains its adapter symbols for reference. In this bench
 variant, L721A and GST18U05-P1J are not fitted or connected. The bench positive

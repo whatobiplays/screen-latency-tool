@@ -7,7 +7,7 @@ the selected analog values and owner hand assembly. The independent noncontact
 holder/shroud is defined in [bench-mount.md](bench-mount.md). This reference
 supports a separate owner fabrication decision through
 [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38);
-it grants no upload, order, print or assembly authority.
+the linked G1 approval now authorizes the exact unchanged archive upload/order after hash and preview checks. Printing the stand and owner assembly remain separate gates.
 
 | Protected input | SHA-256 |
 | --- | --- |
@@ -26,8 +26,8 @@ evidence can therefore be reused, with their disclosed ignored categories.
 Proposed service: one OSH Park standard two-layer set, nominal 1.6 mm/1 oz,
 ENIG, purple soldermask, one populated board and two bare spares. The
 [published service](https://docs.oshpark.com/services/two-layer/) bills $5/in²
-for three copies: 2,200 mm² gives about $17.05 before order-time terms. This is
-an estimate, not an uploaded design quote or shipping commitment. Use Gerbers,
+for three copies: 2,200 mm² gives about $17.05 before order-time terms. This historical calculation is
+an estimate; the actual upload/preflight is retained in the [order reference](../procurement/README.md). Use Gerbers,
 not an assumed KiCad-10 native upload path. No PCBA service is proposed.
 
 ## 2. Native geometry and process comparison
@@ -91,8 +91,7 @@ change is needed to use those procedural controls for the supervised prototype.
 
 Fabrication review combines this source-bound CAD/CAM comparison with the
 chosen noncontact mount's design-stage geometry, aperture, access and tolerance
-case. The owner must separately authorize the exact PCB service/package and
-accept the stated evaluation yield/legend risks. No contact-boot compression,
+case. The [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558) authorize the specified standard three-board service and accept the stated evaluation yield/legend risks. Actual archive identity and upload/layer/drill preview still precede checkout. No contact-boot compression,
 glass force, calibrated optical response or not-yet-fabricated-board test is a
 prerequisite to preparing that decision.
 

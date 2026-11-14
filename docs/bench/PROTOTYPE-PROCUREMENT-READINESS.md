@@ -16,13 +16,15 @@ Supersedes: None
 Superseded By: None
 
 
-**Pre-purchase dependency:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) takes priority over procurement. All components, equipment and PCBs remain on an owner-imposed purchase pause pending the [BENCH-005 power-feasibility decision](PROTOTYPE-FIRST-POWER-FEASIBILITY.md) and subsequent explicit purchase approval. The exact-MPN evaluation clearances below remain component-level evidence. They do not bypass this dependency, authorize Basket A, or release any physical stage.
+**Current purchasing authority:** The [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558) authorize the exact one-sensor basket in §16, including 132 core purchase units, KA3005PE+, MM420, DHO804, CM20 ×2 and the specified three-board OSH Park set. Section 17 governs execution. The $1,067.01 merchandise basis is accepted; routine shipping, taxes, duties, FX and seller fees require no forecast, ceiling or further approval. CM20 installation checks occur at G2 and do not block purchase. Exact identity/quantity/fulfillment and the actual PCB preview remain order preflights. No physical-stage authority follows.
 
-This note consolidates purchasing evidence for one low-cost, one-sensor Teensy 4.1 prototype bench. It records dated observations and open gates. It does not authorize a purchase or report assembly, energization, USB synchronization, or qualification. The five-channel production fixture remains outside this basket.
+**Historical status scope:** Sections 1–14 preserve earlier procurement matrices, pauses and budget comparisons. Their Issue #45 purchase pause, NOT APPROVED labels and price-ceiling conditions are superseded for the approved subset; technical ratings, excluded parts and physical-use restrictions remain applicable. Sections 15–16 retain the dated basket/source basis, with current authority and superseded conditions identified below. No completed order or receipt is inferred from approval.
+
+This note consolidates the exact purchasing reference and dated source evidence for one low-cost, one-sensor Teensy 4.1 prototype bench. Specific purchase authority comes from the linked owner decisions. It reports no assembly, energization, USB synchronization or physical qualification. The five-channel production fixture remains outside this basket.
 
 The *planned* purchase basis is one routed 50 mm by 44 mm two-layer optical board design and one OSH Park set containing three physical boards: **one to populate** and **two to retain as bare spares**. This is a quantity plan, not evidence that any board has been purchased, received or populated. The proposed bench also uses one Teensy 4.1 and an offboard breadboard power and USB assembly.
 
-The generated manifest has **44 modeled rows and 34 unique MPN-field values**. The purchasing matrix in §3 contains **31 purchasable manufacturer/order codes for 37 required units**. DNP R4 and six non-purchasable pad rows are excluded from that count. The 2026-11-06 generated BOM is **$138.89** and Strategy A is **$138.94**. The retained mixed-date, component-only historical planning subtotal is **$138.56**. It is a planning estimate, not a current supplier quote, delivered cost, or complete Basket A total. The subtotal includes the eLabBay breakout's $9.28 price observed on Nov 5; its current selected-variant price and stock are not displayed. It also includes the $2.90 Mouser OPA320AIDBVR observation. Section 3 holds the current per-MPN dispositions. No line has destination-verified delivery, no item is OWNER APPROVED for purchase, and no owner price ceiling is set. Shipping, tax, duties, fabrication, assembly, and other omitted costs remain unknown.
+The generated manifest has **44 modeled rows and 34 unique MPN-field values**. The purchasing matrix in §3 contains **31 purchasable manufacturer/order codes for 37 required units**. DNP R4 and six non-purchasable pad rows are excluded from that count. The 2026-11-06 generated BOM is **$138.89** and Strategy A is **$138.94**. The retained mixed-date, component-only historical planning subtotal is **$138.56**. It is a planning estimate, not a current supplier quote, delivered cost, or complete Basket A total. The subtotal includes the eLabBay breakout's $9.28 price observed on Nov 5; its current selected-variant price and stock are not displayed. It also includes the $2.90 Mouser OPA320AIDBVR observation. Section 3 holds the current per-MPN dispositions. At that historical snapshot no line had destination-verified delivery or owner purchase approval. Current approval is stated above; no routine-charge ceiling gate remains. Shipping, tax, duties, fabrication, assembly, and other omitted costs remain unknown.
 
 The updated Strategy A source snapshot is **$138.94**: $138.20 in non-J2 lines plus the $0.74021 exact-MPN J2 pair (rounded at presentation). Strategy B and the generated BOM total **$138.89**: $138.15 in non-J2 lines plus the same J2 pair, rounded to $0.74 in BOM.csv. These 2026-11-06 totals combine dated supplier observations. Section 14 updates the J2, R5, TLV3501, OPA320AIDBVR and other supplier snapshots; its $138.56 historical component planning subtotal includes the seven originally held lines, retains $9.28 for the eLabBay breakout as a historical planning value, and uses Mouser's current $2.90 OPA320AIDBVR offer. Delivery, tax, duty, fabrication/PCBA, complete harnesses, mechanics and equipment remain outside that subtotal.
 
@@ -781,8 +783,7 @@ The $1,100 preferred and approximately $1,300 flexible figures remain spending g
 
 The [2026-11-14 G0 decision](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712)
 selects this architecture and its bounded risk model, including owner-terminated
-Pomona source leads. G1 component/equipment and optical PCB authorization remain
-separate; no order, print, assembly or physical stage follows from G0.
+Pomona source leads. The separate [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558) now authorize the exact component/equipment basket and PCB checkout. G0 alone grants no purchase or physical-stage authority.
 
 This dated proposal supplements the full mandatory-component matrix; it is not
 an order. The owner explicitly reported [no prototype electronics or test
@@ -861,7 +862,7 @@ the prototype-only identity/fit/lifecycle-risk disposition for these exact codes
 | Panduit TM1S4-C | 4 anchors | $0.47 each; [DigiKey](https://www.digikey.com/en/products/detail/panduit-corp/TM1S4-C/1306588) | Screw-mounted input/XT30/optical strain relief; not adhesive-only |
 | Panduit PLT1M-C | 8 ties | $0.25 each; [DigiKey](https://www.digikey.com/en/products/detail/panduit-corp/PLT1M-C/280033) | Keep service slack; tensile headline is not an assembly pull-out rating |
 | Adafruit 3299 | 1 kit if missing | $16.95; [maker](https://www.adafruit.com/product/3299) | Select actual M2.5 screw/standoff stacks after underside/holder measurement |
-| Yageo SQP10AJB-100R | 1 | $1.22; [DigiKey 10W-100-ND](https://www.digikey.com/en/products/detail/yageo/SQP10AJB-100R/18759) | 100Ω ±5%, 10W; supported guarded S0 load only |
+| Yageo SQP10AJB-100R | 1 | $1.22; [DigiKey 100W-10-ND](https://www.digikey.com/en/products/detail/yageo/SQP10AJB-100R/18759) | 100Ω ±5%, 10W; supported guarded S0 load only |
 | Yageo SQP10AJB-10R | 2 | $1.22 each; [DigiKey 10W-10-ND](https://www.digikey.com/en/products/detail/yageo/SQP10AJB-10R/18735) | 10Ω ±5%, 10W; not a current shunt or fast short fixture |
 
 The support observation rollup is $146.17 before inventory offsets, shipping,
@@ -997,7 +998,7 @@ still require 33 installed units. The proposed checkout quantities total 132:
 only the ten inexpensive 0603 identities receive loose spares, 10 per identity
 except 25 of R5 at its displayed price tier. The extra 99 units are spares,
 not additional populated prototypes. ICs, boards and cables remain quantity one.
-The owner may instead approve the explicit 33-unit minimum.
+The 33-unit minimum is retained as a historical comparison. Current approved checkout quantities are the 132-unit proposal; do not reduce or multiply them without an owner amendment.
 
 Use cut tape and the stated small-quantity package; do not add reel-service
 fees or substitute a full reel. USD values are observations and planning
@@ -1069,9 +1070,7 @@ checks supply these order-time distinctions:
 4. Comet 5521133/5521134 retain exact AMASS .G.Y identities and displayed
    Sofia stock 1,078/204. [Terms §3.2](https://store.comet.bg/en/Terms/)
    permit shipments abroad, but US-specific acceptance and order multiple
-   remain unverified. USD values are informational under §1.6. Approve this
-   pair only subject to actual destination, currency/VAT, quantity and freight
-   confirmation; no US quote or date has been invented.
+   remain unverified. USD values are informational under §1.6. The exact pair is purchase-approved; verify destination fulfillment and the quantity/multiple. Routine checkout charges are accepted and require no new gate. No dispatch date is inferred.
 5. The previously missing eLab offer is resolved: bare-kit variant
    **45425432579**, seller SKU **USB-uBM-uBF-V1A-1**, $9.28 USD,
    available quantity 80, min/increment one. The [public product data](https://elabbay.myshopify.com/products/usb-bm-bf-v1a-micro-usb2-0-type-b-male-to-micro-usb2-0-type-b-female-pass-through-breakout-board.js)
@@ -1091,12 +1090,11 @@ decision; it does not authorize a connector/kit substitution.
 |---|---|---:|---|---|
 | KA3005PE+ | 1 | $134.24 | [DigiKey 2260-KA3005PE+-ND](https://www.digikey.com/en/products/detail/sra-soldering-products/KA3005PE/21293129) | F: 31; box MOQ 1; 0–30 V/0–5 A capability, not allowed settings; independent heavy-item shipping |
 | MM420 | 1 | $73.01 | [DigiKey 1742-MM420-ND](https://www.digikey.com/en/products/detail/klein-tools-inc/MM420/16649068) | F: 708; one meter; included lead pair, one thermocouple/adapter, two AAA; explicit new owner-selection proposal |
-| DHO804 | 1 access unit; purchase 1 unless suitable loan arranged | $459.00 | [RIGOL North America](https://www.rigolna.com/products/digital-oscilloscopes/dho800/) | F: In Stock/Add to Cart, count absent; four PVP3150 passive probes included; country power adapter, ground cable; borrow-first credit only after actual arrangement |
+| DHO804 | 1; purchase approved | $459.00 | [RIGOL North America](https://www.rigolna.com/products/digital-oscilloscopes/dho800/) | F: In Stock/Add to Cart, count absent; four PVP3150 passive probes included; country power adapter, ground cable; owner-approved purchase; no loan credit |
 
-Purchased equipment totals **$666.25**. A suitable arranged scope loan may
-replace the DHO804 purchase; no loan is currently arranged or credited.
-MM420 and DHO804 are explicit new owner-review proposals. Neither is adopted
-by this reference. MM400 remains excluded; FLUKE-115 and DHO814 remain
+Purchased equipment totals **$666.25**. G1 approves MM420 ×1 and DHO804 ×1.
+The earlier scope-loan option is superseded for this order; omitting the scope
+would require a new owner amendment. MM400 remains excluded; FLUKE-115 and DHO814 remain
 unselected alternatives. Do not add a TM100, duplicate thermocouple, separate
 Fluke 855705 leads, four extra scope probes, a generator or five-channel
 capture equipment to this first-build basket.
@@ -1217,15 +1215,13 @@ OAR5R050FLF offers are not purchase alternatives.
 | Selected support packages | 146.17 |
 | KA3005PE+ | 134.24 |
 | MM420 with leads and thermocouple | 73.01 |
-| DHO804 with four probes, if purchased | 459.00 |
+| DHO804 with four probes, purchase approved | 459.00 |
 | Source-only fixture proposals | 36.80 |
 | Electronics/equipment subtotal | **923.64** |
 
-A qualified arranged scope loan reduces that subtotal to $464.64 plus actual
-loan/rental terms. Choosing minimum core quantities instead reduces the full
-purchase proposal by about $2.11. Mechanical materials/printing, optical PCB,
+The earlier loan/minimum-quantity comparisons are historical alternatives. Current approved orders include DHO804 ×1 and the 132-unit core proposal; no loan credit or reduced core quantities apply. Mechanical materials/printing, optical PCB,
 unresolved assembly accessories, freight, tax and duties are separate.
-Do not describe $923.64 as a delivered total or a spending authorization.
+The dated subtotal is not a delivered total; the linked G1 decision and final amendment provide the exact-basket purchasing authority.
 
 The optical fabrication decision uses the [unchanged source/CAM and DFM
 reference](../../hardware/prototype/optical/fabrication-review.md) plus the
@@ -1240,7 +1236,7 @@ The [dimensioned construction](../../hardware/prototype/optical/bench-mount.md)
 and portable [CAD source](../../hardware/prototype/optical/bench-mount.scad)
 retain the protected optical PCB. The proposed stand has a 220 mm clear span,
 45 mm board plane and 15 mm nominal glass gap; the wider flare, retained
-carrier and positive stops require G1 review. Conditional analysis yields an
+carrier and positive stops are the approved purchasing reference; printing and physical installation remain separately gated. Conditional analysis yields an
 6.45 mm lower bound under the U=2 mm method proposal and a derived 10.3 mm
 static indicated-gap threshold. Actual printed fit, uncertainty, alignment,
 opacity and movement remain unobserved physical prerequisites.
@@ -1253,7 +1249,7 @@ opacity and movement remain unobserved physical prerequisites.
 | [Everbilt 836731](https://www.homedepot.com/b/Hardware-Fasteners/Everbilt/M6/30-mm/N-5yc1vZc255Z402Z1z0sg03Z1z0sg0s), M6-1.0 ×30 mm zinc pan-head machine screw | 3 two-piece packs: 4 installed +2 spare | 5.85 |
 | [Everbilt 860728](https://www.homedepot.com/b/Hardware-Fasteners-Nuts/M6/N-5yc1vZc2elZ1z1bxmo), M6 zinc nut | 5 five-piece packs: 20 installed +5 spare | 19.85 |
 | [Everbilt 802448](https://www.homedepot.com/b/Hardware-Fasteners-Washers/M6/Flat-Washer/N-5yc1vZc276Z1z0ztdtZ1z1bxmo), M6 zinc flat washer | 8 five-piece packs: 36 installed +4 spare | 23.76 |
-| [BESSEY CM20](https://www.homedepot.com/p/205512965), 2-inch C-clamp | 2; conditional on actual bench opening/reach | 10.18 |
+| [BESSEY CM20](https://www.homedepot.com/p/205512965), 2-inch C-clamp | 2; purchase approved; installation fit at G2 | 10.18 |
 
 Mechanical merchandise is **$126.32** on the promotional filament basis or
 **$138.32** at its regular price. No old partially threaded hex-bolt identity
@@ -1275,19 +1271,11 @@ transferred to it or used to substitute them. The search is not a complete
 recall/archive audit or an Active declaration. Record actual received identities
 and reject incompatible or damaged hardware before use.
 
-With the proposed 2 mm total protective pads, CM20's 50.8 mm opening admits
-bench thickness at most 36.8 mm plus the 12 mm foot; its 38.1 mm throat must
-reach the chosen foot position. If those dimensions are unknown, leave only
-the $10.18 clamp line conditional. A failed fit needs an exact reviewed larger
-clamp/attachment; do not assume friction or silently substitute hardware.
-Actual case/cradle width/depth and glass datum must fit the construction
-bounds before setup. These owned-object measurements do not require an optical
-PCB and do not block preparation of its unchanged-CAM decision.
+The initial CM20 proposal required bench opening/reach confirmation before purchase. The owner superseded that condition in the [final G1 amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558): buy the exact CM20 ×2 without more clamp measurements. Retain its 50.8 mm opening, 38.1 mm throat, bearing/jaw access and secure installation as unverified G2 checks. The reported 25.4 mm bench plus the proposed 12 mm foot and 2 mm total pads gives a nominal 39.4 mm stack. Do not request the reported bench/device dimensions again. Unsafe received fit stops installation and requires review; it does not retroactively withhold the authorized purchase.
 
 The quoted electronics plus mechanical merchandise is **$1,049.96**, before
 the approximately **$17.05** three-board OSH Park set: combined planning amount
-**$1,067.01**. Regular filament adds $12; an actually arranged qualified scope
-loan subtracts $459. This is not a complete delivered-project quote or a
+**$1,067.01**. The regular-filament and loan comparisons describe earlier options, not a new checkout gate or an automatic change to the approved basket. This is not a complete delivered-project quote or a
 spending ceiling. Source-only hot-load guard/support completion and unresolved
 assembly/dimensional tools remain excluded. Borrow suitable calipers/feeler or
 alignment tools if existing equipment cannot establish the documented retainer,
@@ -1297,14 +1285,25 @@ The separate optical fabrication choice is one standard OSH Park two-layer,
 nominal 1.6 mm/1 oz/ENIG three-board set, no PCBA, from the retained eight-file
 ZIP. The [fabrication reference](../../hardware/prototype/optical/fabrication-review.md)
 records its exact source/ZIP identities, drill and edge process comparison,
-J1 worst-case fit/yield risk and possible near-edge legend clipping. Owner
-acceptance of those evaluation risks and actual layer/drill/outline preview
-checks are required before an authorized order. Fit, temperature, source,
+J1 worst-case fit/yield risk and possible near-edge legend clipping. The owner has accepted those evaluation risks. Actual layer/drill/outline preview checks remain required before checkout. Fit, temperature, source,
 backfeed, assembly and optical qualification are not granted by fabrication.
 
-G1 should separately select the equipment/core-spare proposal, exact conditional
-seller baskets, mechanical design/materials and PCB service/package. A decision
-to buy or fabricate does not authorize printing the stand, assembly, flashing,
-source operation, connection or energization unless expressly included by the
-owner at the applicable gate. Keep every unqualified physical hold and
-INITIAL_CURRENT_LIMIT=UNSET.
+G1 selection and purchasing authority are recorded in the [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558). The original delivered-price/cap requirement and CM20 pre-purchase fit condition are superseded; their historical records remain intact. No approval to print the stand, assemble, flash, operate a source, connect or energize follows. Keep every unqualified physical hold and INITIAL_CURRENT_LIMIT=UNSET.
+
+## 17. Approved purchasing execution
+
+### 17.1 Authority and fixed quantities
+
+Use the exact [seller order manifests](../../hardware/prototype/procurement/README.md) derived from the approved packet. Keep 27 core identities /132 purchased core units, the selected support packages, source-only fixture components, KA3005PE+ ×1, MM420 ×1, DHO804 ×1, PETG ×2 one-kilogram spools, exact M6 packages, CM20 ×2 and one three-board OSH Park set. Adafruit 1606 totals two boards across its DUT-carrier and source-only-fixture roles. The two bare PCB spares receive no extra component population.
+
+The $1,067.01 merchandise subtotal is accepted purchase authority for these goods. Routine shipping, taxes, duties, FX and seller fees are not another approval or calculation gate. Record actual seller confirmations and charges after an order. Do not silently change goods, variants, quantities, seller packages or fabrication service; isolate an unavailable exact line while continuing independent orders.
+
+### 17.2 Checkout and receipt record
+
+For each seller, verify exact SKU/MPN, package and quantity, current availability or expressly accepted lead time, destination fulfillment and variant contents. Use only the actual completed-order confirmation to mark ORDERED; cart preparation, approval and payment screens are not orders. Keep private addresses/payment details out of repository and public records. Owner login/payment action may be required by the available ordering interface.
+
+Record seller, confirmation identifier/date, exact items/quantities, actual charges and tracking when available in Issue #38, linked from Issue #47/PR #48. Separate ordered, shipped, received and usable states. Receipt inspection checks markings, revision, package contents and damage before G2. Purchases do not clear assembly, installation, source, thermal, USB or optical holds.
+
+### 17.3 Optical fabrication preflight
+
+Use the retained unchanged eight-file Issue #43 fabrication archive with SHA-256 `312b53282a2be2014daf101d50c063a38e5aee1a2211ef96162ce579b5dcf86b`. Require the actual OSH Park upload/preview to match the 50 ×44 mm, two-layer outline, both copper/mask/silkscreen layers and drill/through-hole data. Select one standard three-board set, nominal 1.6 mm/1 oz/ENIG, no PCBA or extra sets. The owner has accepted the disclosed evaluation-only J1 tolerance and possible legend clipping; received fit/continuity inspection remains mandatory. An incorrect preview stops that line, without redesigning the board or blocking unrelated purchases.
