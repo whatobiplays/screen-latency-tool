@@ -6,8 +6,8 @@ Status: Draft
 
 Owner: Repository maintainers
 
-Last Updated: 2026-11-13 (America/Los_Angeles)
-Source date basis: Sections 3 and 14 contain the current procurement dispositions, including the seven-part reassessment on 2026-11-13. Other sections preserve dated historical observations. Prices and stock retain their individual observation dates; no stock is reserved.
+Last Updated: 2026-11-14 (America/Los_Angeles)
+Source date basis: Section 3 contains the core procurement dispositions; §16 gives the 2026-11-14 direct-bench quantity/equipment proposal and fresh offer updates. Sections 14–15 also preserve dated earlier observations. Prices and stock retain their individual dates; no stock is reserved.
 
 Depends On: ARCH-001, SPEC-X-001, PHASE-001, ADR-0002, BENCH-001, BENCH-002
 
@@ -677,7 +677,7 @@ Preserve the selected hardware and safety invariants: Korad KA3005PE+ bench supp
 
 ### 14.2 Basket A: one-sensor prototype and bench items
 
-Issue #45 is historical and resolved; it is not an outstanding order blocker. The expanded Issue #47 now coordinates the supervised bench-only variant. Owner acceptance of its concrete G0 package and exact G1 basket authorization remain necessary. Evaluation procurement does not require physical qualification of unused fixed-adapter circuits or a completed source measurement before acquiring the source/test equipment.
+Issue #45 is historical and resolved; it is not an outstanding order blocker. The owner selected the supervised bench-only architecture at G0; exact G1 basket authorization remains necessary. Evaluation procurement does not require physical qualification of unused fixed-adapter circuits or a completed source measurement before acquiring the source/test equipment.
 
 Current per-MPN source evidence, required and planning billed quantities, order terms, price/stock observations, procurement dispositions and separate use holds appear in §3. The seven original HOLDs are cleared for evaluation procurement only; every physical-use release remains held.
 
@@ -779,6 +779,11 @@ The $1,100 preferred and approximately $1,300 flexible figures remain spending g
 
 ## 15. Supervised direct-bench purchase reference
 
+The [2026-11-14 G0 decision](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712)
+selects this architecture and its bounded risk model, including owner-terminated
+Pomona source leads. G1 component/equipment and optical PCB authorization remain
+separate; no order, print, assembly or physical stage follows from G0.
+
 This dated proposal supplements the full mandatory-component matrix; it is not
 an order. The owner explicitly reported [no prototype electronics or test
 instruments](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6850478344)
@@ -826,10 +831,11 @@ lines retain evaluation-only technical clearance and separate power-use holds.
    5521134 / XT30U-M.G.Y showed $0.38990 and 204 Sofia. Both showed zero Plovdiv.
    Seller fulfillment to the owner and incoming-part inspection remain open.
 6. The exact eLabBay USB-uBM-uBF-V1A listing identifies the unassembled inline kit
-   but does not expose a current selected-variant SKU/price, stock, MOQ or ship
-   date. $9.28 remains historical. This is a concrete order-time offer gap, not
-   a reason to revoke otherwise justified evaluation eligibility. The header
-   count/content discrepancy must be checked against the actual kit/drawing.
+   but the earlier page view did not expose its selected-variant offer. The
+   2026-11-14 public-data check in §16.2 resolves variant 45425432579,
+   SKU USB-uBM-uBF-V1A-1, $9.28 USD, 80 available and quantity-one terms.
+   Country-level US shipping is shown; actual address/freight/date remain
+   order-time checks. Inspect the header-content discrepancy on receipt.
 
 ### 15.2 Exact support proposal
 
@@ -846,12 +852,12 @@ the prototype-only identity/fit/lifecycle-risk disposition for these exact codes
 | Adafruit 1230 | 1 set; use 1 SOT-23-5 adapter | $4.95, in stock; [maker](https://www.adafruit.com/product/1230) | Verify adapter pads against TI DBV; optical ICs stay on optical PCB |
 | Chip Quik DC0603S-10X | 1 ten-piece pack; use 4 | $4.90, 27 packs; [DigiKey](https://www.digikey.com/en/products/detail/chip-quik-inc/DC0603S-10X/5978235) | Existing 0603 buffer/LED passives only; keep bypass loop short |
 | Samtec TSW-150-07-G-S | 1 strip; cut adapter needs | $4.27; [DigiKey SAM1029-50-ND](https://www.digikey.com/en/products/detail/samtec-inc/TSW-150-07-G-S/1101277) | Not a substitute for Teensy sockets |
-| Pomona 73093-0 and 73093-2 | 1 each | $14.31 each, 769/776 displayed; [black](https://www.digikey.com/en/products/detail/pomona-electronics/73093-0/7431039), [red](https://www.digikey.com/en/products/detail/pomona-electronics/73093-2/7431040) | Owner-terminated retractable-shroud plugs; this differs from the factory-terminated lead preference and requires explicit G0 joint/retention acceptance |
+| Pomona 73093-0 and 73093-2 | 1 each | $14.31 each, 769/776 displayed; [black](https://www.digikey.com/en/products/detail/pomona-electronics/73093-0/7431039), [red](https://www.digikey.com/en/products/detail/pomona-electronics/73093-2/7431040) | G0 accepts the owner-terminated exception. Solderless push tab, 18–22 AWG, 4–6 mm strip; inspect secure retention and unpowered polarity/continuity. No solder-cup method; actual lead current/thermal use remains held. |
 | Remington 18UL1007STRRED25 / 18UL1007STRBLA25 | 1 spool each only if missing; allocate ≤2 m/color | $17.15 each; [red](https://www.digikey.com/en/products/detail/remington-industries/18UL1007STRRED25/11613023), [black](https://www.digikey.com/en/products/detail/remington-industries/18UL1007STRBLA25/11613617) | 18 AWG stranded, 300 V/105°C insulation; maker shipment approximately 8 days, not immediate DigiKey stock; no assembled ampacity inferred |
 | Adafruit 1311 | 1 set if needed | $15.95; [maker](https://www.adafruit.com/product/1311) | 22 AWG solid internal supported logic links, not moving external harness |
 | WAGO 221-412 | 2 individual splices | $0.62 each; [DigiKey](https://www.digikey.com/en/products/detail/wago-corporation/221-412/13175703) | Each splice joins ONE potential: one positive, one return; never put + and − in the same splice |
 | WAGO 221-500 | 1 holder | $2.16; [maker](https://www.wago.com/us/wire-splicing-connectors/mounting-carrier/p/221-500) | Mount both separate splices on independent base |
-| Alpha F221B1/8 BK100 | 1 four-foot piece if missing | $3.16; [DigiKey A018B-4-ND](https://www.digikey.com/en/products/detail/alpha-wire/F221B1-8-BK100/281671) | Verify 3.18 mm supplied bore clears each actual cup/joint; overlap wire insulation |
+| Alpha F221B1/8 BK100 | 1 four-foot piece if missing | $3.16; [DigiKey A018B-4-ND](https://www.digikey.com/en/products/detail/alpha-wire/F221B1-8-BK100/281671) | Verify 3.18 mm supplied bore clears each actual XT30 cup/joint; overlap wire insulation. This is not a Pomona solder-cup sleeve. |
 | Panduit TM1S4-C | 4 anchors | $0.47 each; [DigiKey](https://www.digikey.com/en/products/detail/panduit-corp/TM1S4-C/1306588) | Screw-mounted input/XT30/optical strain relief; not adhesive-only |
 | Panduit PLT1M-C | 8 ties | $0.25 each; [DigiKey](https://www.digikey.com/en/products/detail/panduit-corp/PLT1M-C/280033) | Keep service slack; tensile headline is not an assembly pull-out rating |
 | Adafruit 3299 | 1 kit if missing | $16.95; [maker](https://www.adafruit.com/product/3299) | Select actual M2.5 screw/standoff stacks after underside/holder measurement |
@@ -871,8 +877,9 @@ owner approval; none of these prices is a spending authorization.
    equipment gap. Prefer a suitable borrowed meter. [Klein's exact MM400
    page](https://www.kleintools.com/catalog/multimeters/digital-multimeter-auto-ranging-600v)
    now says it is no longer in production, excluding it from new procurement
-   under SPEC-X-001 rule 1. Its maker-linked MM420 successor is unselected and
-   needs its own owner-reviewed screen; no silent replacement is approved.
+   under SPEC-X-001 rule 1. Its maker-linked MM420 successor is explicitly
+   screened and proposed in §16; owner model/purchase selection is still
+   required. No silent replacement is approved.
    [Fluke's exact FLUKE-115 / 2538790 offer](https://www.fluke.com/en-us/product/electrical-testing/digital-multimeters/fluke-115)
    showed $279.99/in stock with compatible leads on 2026-11-14 UTC. Its
    [maker specification](https://media.fluke.com/ce54d963-3be9-4e70-8a3e-b1060070fdfd_original%20file.pdf)
@@ -882,8 +889,9 @@ owner approval; none of these prices is a spending authorization.
    lifecycle remains UNVERIFIED; a contradictory [distributor discontinuation
    label](https://www.onlinecomponents.com/en/productdetail/fluke/fluke115-11344217.html)
    remains unresolved, so unconditional acquisition clearance is not claimed.
-   Choose a suitable loan, screen MM420 separately, or resolve that specific
-   FLUKE-115 conflict before purchase. No premium meter is mandated and no
+   The current low-cost proposal is MM420 with included temperature access;
+   FLUKE-115 remains an unselected alternative whose specific conflict would
+   need resolution before purchase. No premium meter is mandated and no
    DMM fault-current measurement is assumed. Do not buy duplicate Fluke 855705
    leads if the admitted meter includes suitable leads.
 2. Borrow suitable voltage/current transient and temperature measurement first.
@@ -943,7 +951,7 @@ site:samtec.com ("SSW-124-01-G-S" OR "TSW-150-07-G-S") (PCN OR PDN OR discontinu
 | Adafruit 1230 | [Maker](https://www.adafruit.com/product/1230) supports SOT-23-5/-6 adapters. Use only for the buffer, with verified DBV pin map and local bypass. The optical high-impedance junction stays on its PCB. A replacement needs an exact pad/pin and decoupling review. |
 | DC0603S-10X | [Chip Quik DC0603S drawing](https://www.chipquik.com/datasheets/DC0603S.pdf) and exact ten-piece offer support four offboard 0603 adapters. Keep bypass paths short. A replacement needs matching pad geometry and pack-quantity reconciliation. |
 | TSW-150-07-G-S | [Samtec](https://www.samtec.com/products/tsw-150-07-g-s) and exact offer identify the strip. Cut for the adapters; it does not replace Teensy sockets. A replacement must preserve plating, tail style, pitch and installed clearances. |
-| Pomona 73093-0 / 73093-2 | [Maker drawing](https://www.pomonaelectronics.com/sites/default/files/d73093_001.pdf) supports 18 AWG and sheathed/unsheathed 4 mm jacks; dated exact offers exist for both. KORAD seating and completed-lead retention/current remain unverified. G0 must accept owner termination; replacements need compatible retractable shrouds and documented wire attachment. |
+| Pomona 73093-0 / 73093-2 | [Maker drawing](https://www.pomonaelectronics.com/sites/default/files/d73093_001.pdf) specifies solderless push-tab attachment, 18–22 AWG, 4–6 mm strip and sheathed/unsheathed 4 mm jack mating. G0 accepts owner termination. KORAD seating and completed-lead retention/current remain unverified; replacements need compatible retractable shrouds and documented wire attachment. |
 | 18UL1007STRRED25 / 18UL1007STRBLA25 | [Remington family sheet](https://www.remingtonindustries.com/content/UL1007%20Hook%20Up%20Wire%20Data%20Sheet.pdf) and exact maker-fulfilled offers support 18 AWG stranded wire. Approximately eight-day shipment is an observation. Plan with the larger 2.032 mm OD where sources differ from 1.85 mm, then inspect receipt. Replacements need strand, OD, insulation, length and termination review. |
 | Adafruit 1311 | [Maker](https://www.adafruit.com/product/1311) identifies 22 AWG solid, 300 V/80°C wire. Use supported internal links only, not a moving external harness. Generic wire replacement still needs construction, insulation and termination checks. |
 | WAGO 221-412 ×2 / 221-500 | Maker [splice](https://www.wago.com/us/wire-splicing-connectors/compact-splicing-connector/p/221-412) and [holder](https://www.wago.com/us/wire-splicing-connectors/mounting-carrier/p/221-500) identify the assembly. Each splice is one internally common potential; keep positive and return separate. Installed retention/thermal performance remains unverified. Replacements need conductor acceptance, pole isolation and supported mounting review. |
@@ -971,3 +979,332 @@ Evaluation clearance does not release the installed harness, source/fault/therma
 envelope, regulator/branch protection, VIN/VUSB isolation, USB behavior, mechanical
 fit or physical stages. Those ASSEMBLY/POWER-USE and fabrication holds require
 their own evidence and approvals.
+
+## 16. Direct-bench order quantities and measurement equipment
+
+These are the 2026-11-14 evaluation purchase proposals for the G0-selected
+architecture. Issue #38 owns model/quantity selection, spending authorization
+and order-time conditions. The tables define a concrete basket; they do not
+record an order, physical qualification or permission to operate equipment.
+The design BOM is unchanged.
+
+### 16.1 Core quantities and seller offers
+
+F means the exact offer was refreshed on 2026-11-14 UTC. R means retained
+2026-11-13/14 source evidence remains applicable. Neither is a reservation.
+The owner-declared electronics inventory offset is zero. The 27 identities
+still require 33 installed units. The proposed checkout quantities total 132:
+only the ten inexpensive 0603 identities receive loose spares, 10 per identity
+except 25 of R5 at its displayed price tier. The extra 99 units are spares,
+not additional populated prototypes. ICs, boards and cables remain quantity one.
+The owner may instead approve the explicit 33-unit minimum.
+
+Use cut tape and the stated small-quantity package; do not add reel-service
+fees or substitute a full reel. USD values are observations and planning
+equivalents; Comet's USD display is informational.
+
+| Exact core MPN | Gross | Purchase | Exact selected seller / source | Observed unit × purchase = extension | Offer qualification |
+|---|---:|---:|---|---:|---|
+| OPA320AIDBVR | 1 | 1 | [Mouser 595-OPA320AIDBVR](https://www.mouser.com/en/ProductDetail/Texas-Instruments/OPA320AIDBVR?qs=g5raLcSarObYYXG7KaVGxQ%3D%3D) | $2.90 × 1 = $2.90000 | F: 94; cut tape, MOQ/multiple 1 |
+| TLV3501AIDBVR | 1 | 1 | [DigiKey 296-35977-1-ND](https://www.digikey.com/en/products/detail/texas-instruments/TLV3501AIDBVR/4135047) | $4.64 × 1 = $4.64000 | R: 24,618 shown |
+| Q62702P0955 | 1 | 1 | [DigiKey 475-SFH203-ND](https://www.digikey.com/en/products/detail/ams-osram-usa-inc/SFH-203/2205881) | $0.84 × 1 = $0.84000 | R: 1,940 shown |
+| RC0603FR-0718KL | 1 | 10 | [DigiKey 311-18.0KHRCT-ND](https://www.digikey.com/en/products/detail/yageo/RC0603FR-0718KL/726989) | $0.030 × 10 = $0.30000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| ERJ-3EKF1002V | 1 | 10 | [DigiKey P10.0KHCT-ND](https://www.digikey.com/en/products/detail/panasonic-industry/ERJ-3EKF1002V/198102) | $0.039 × 10 = $0.39000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| RC0603FR-0747KL | 2 | 10 | [DigiKey 311-47.0KHRCT-ND](https://www.digikey.com/en/products/detail/yageo/RC0603FR-0747KL/727253) | $0.028 × 10 = $0.28000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| RC0603FR-07100RL | 1 | 25 | [Newark 98K7334](https://www.newark.com/yageo/rc0603fr-07100rl/res-100r-1-0-1w-0603-thick-film/dp/98K7334) | $0.012 × 25 = $0.30000 | F: cut tape; 280,397 UK; 25 × $0.012 |
+| RC0603FR-071KL | 3 | 10 | [DigiKey 311-1.00KHRCT-ND](https://www.digikey.com/en/products/detail/yageo/RC0603FR-071KL/726843) | $0.030 × 10 = $0.30000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| RC0603FR-071ML | 1 | 10 | [DigiKey 311-1.00MHRCT-ND](https://www.digikey.com/en/products/detail/yageo/RC0603FR-071ML/729791) | $0.028 × 10 = $0.28000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| CL10A105KP8NNNC | 2 | 10 | [DigiKey 1276-1182-1-ND](https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A105KP8NNNC/3886840) | $0.039 × 10 = $0.39000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| CC0603CRNPO9BN2R2 | 1 | 10 | [DigiKey 311-1739-1-ND](https://www.digikey.com/en/products/detail/yageo/CC0603CRNPO9BN2R2/5195641) | $0.054 × 10 = $0.54000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| KGM15BR71H104KM | 3 | 10 | [DigiKey 478-KGM15BR71H104KMCT-ND](https://www.digikey.com/en/products/detail/kyocera-avx/KGM15BR71H104KM/6797442) | $0.048 × 10 = $0.48000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| CL10A225KP8NNNC | 1 | 10 | [DigiKey 1276-1085-1-ND](https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A225KP8NNNC/3886743) | $0.051 × 10 = $0.51000 | F: cut tape; MOQ/multiple 1; explicit spares |
+| 3296W-1-103LF | 1 | 1 | [DigiKey 3296W-103LF-ND](https://www.digikey.com/en/products/detail/bourns-inc/3296W-1-103LF/1088045) | $2.53 × 1 = $2.53000 | R: 28,397 shown |
+| B4B-PH-K-S(LF)(SN) | 1 | 1 | [TME symbol B4B-PH-K-S](https://www.tme.com/us/en-us/details/b4b-ph-k/raster-signal-connectors-2-00mm/jst/b4b-ph-k-s-lf-sn/) | $0.24 × 1 = $0.24000 | R: 42,795 shown |
+| SN74LVC1G17DBVRG4 | 1 | 1 | [DigiKey 296-37652-1-ND](https://www.digikey.com/en/products/detail/texas-instruments/SN74LVC1G17DBVRG4/4833886) | $0.71 × 1 = $0.71000 | R: 1,995 shown |
+| CAB-14575 | 1 | 1 | [DigiKey 1568-14575-ND](https://www.digikey.com/en/products/detail/sparkfun-electronics/14575/8543395) | $1.95 × 1 = $1.95000 | R: 651 shown |
+| CAB-14574 | 1 | 1 | [DigiKey 1568-14574-ND](https://www.digikey.com/en/products/detail/sparkfun-electronics/14574/8543394) | $1.38 × 1 = $1.38000 | R: 1,182 shown |
+| CABLE-PH04 | 1 | 1 | [DigiKey 175-CABLE-PH04-ND](https://www.digikey.com/en/products/detail/analog-devices-inc-maxim-integrated/CABLE-PH04/9381900) | $2.71 × 1 = $2.71000 | R: 2,234 shown |
+| WP7113ID | 1 | 1 | [DigiKey 754-1264-ND](https://www.digikey.com/en/products/detail/kingbright/WP7113ID/1747663) | $0.21 × 1 = $0.21000 | R: 96,469 shown |
+| DEV-20360 | 1 | 1 | [SparkFun DEV-20360](https://www.sparkfun.com/teensy-4-1-without-ethernet-headers.html) | $33.60 × 1 = $33.60000 | R: listed in stock, count not shown |
+| Adafruit 3878 | 1 | 1 | [Adafruit product 3878](https://www.adafruit.com/product/3878) | $3.50 × 1 = $3.50000 | R: shown in stock, count not displayed |
+| MF-R050 | 1 | 1 | [DigiKey MF-R050-ND](https://www.digikey.com/en/products/detail/bourns-inc/MF-R050/259965) | $0.47 × 1 = $0.47000 | F: 18,580; qty-one offer |
+| 5383 | 1 | 1 | [Pololu item 5383](https://www.pololu.com/product/5383) | $4.95 × 1 = $4.95000 | F: 105 on maker BIG order form |
+| XT30U-F.G.Y | 1 | 1 | [Comet order code 5521133](https://store.comet.bg/en/Catalogue/Product/5521133/) | $0.35031 × 1 = $0.35031 | F: 1,078 Sofia; US conditional; multiple unknown |
+| XT30U-M.G.Y | 1 | 1 | [Comet order code 5521134](https://store.comet.bg/en/Catalogue/Product/5521134/) | $0.38990 × 1 = $0.38990 | F: 204 Sofia; US conditional; multiple unknown |
+| USB-uBM-uBF-V1A | 1 | 1 | [eLabBay bare kit, variant 45425432579](https://elabbay.myshopify.com/products/usb-bm-bf-v1a-micro-usb2-0-type-b-male-to-micro-usb2-0-type-b-female-pass-through-breakout-board?variant=45425432579) | $9.28 × 1 = $9.28000 | F: bare kit SKU USB-uBM-uBF-V1A-1; 80; min/increment 1 |
+
+The proposed core extension is $74.42021, displayed as **$74.42**. The
+33-unit minimum at the retained quantity-one inputs is $72.31; the spare
+proposal adds about $2.11. Actual line rounding, FX and final terms can differ.
+
+### 16.2 Support packages and fulfillment conditions
+
+Buy the exact quantities in §15.2: one 1606 carrier; two SSW-124 sockets; one
+Adafruit 1230 set; one DC0603S-10X ten-piece pack; one 50-pin TSW strip; one
+73093 plug of each selected color; one spool of each selected Remington wire;
+one Adafruit 1311 set; two separate 221-412 splices in one 221-500 holder; one
+four-foot heatshrink piece; four TM1S4-C anchors; eight PLT1M-C ties; one
+Adafruit 3299 M2.5 kit; one 100 Ω and two 10 Ω SQP load resistors.
+The package subtotal is **$146.17** before any later exact accessory credit.
+Do not repurchase confirmed-owned solder, flux or ESD supplies.
+
+The [manufacturer-authored WAGO 221-500 sheet](https://www1.futureelectronics.com/doc/WAGO/WAGO_221-500en_GG.pdf),
+dated 2024-10-03, shows separate connectors retained in one carrier. One holder
+therefore accommodates the two independently supported potentials; the
+5-conductor compatibility label alone was not used to infer that fact.
+Its overall envelope is 77.6 ×17.5 ×32 mm. The optional 222-505 strain-relief
+plate is not included or silently purchased. Verify the exact flat mounting,
+screw/underside clearance and actual retention before assembly release.
+
+The seven original technical clearances remain evaluation-only. Fresh offer
+checks supply these order-time distinctions:
+
+1. OPA320AIDBVR is the exact Mouser 595-OPA320AIDBVR US cut-tape offer,
+   $2.90/94 displayed, min/multiple one. Incoming stock is excluded.
+2. Newark 98K7334 is the exact R5 cut-tape line. Its 280,397 displayed units
+   are UK stock; the US offer indicates UK-to-US fulfillment. A 4–6-day page
+   estimate is not the owner's dispatch or delivery date.
+3. DigiKey MF-R050-ND displayed 18,580 at $0.47; Pololu's maker BIG form
+   displayed 105 of item 5383 at $4.95. No substitute protector is needed.
+4. Comet 5521133/5521134 retain exact AMASS .G.Y identities and displayed
+   Sofia stock 1,078/204. [Terms §3.2](https://store.comet.bg/en/Terms/)
+   permit shipments abroad, but US-specific acceptance and order multiple
+   remain unverified. USD values are informational under §1.6. Approve this
+   pair only subject to actual destination, currency/VAT, quantity and freight
+   confirmation; no US quote or date has been invented.
+5. The previously missing eLab offer is resolved: bare-kit variant
+   **45425432579**, seller SKU **USB-uBM-uBF-V1A-1**, $9.28 USD,
+   available quantity 80, min/increment one. The [public product data](https://elabbay.myshopify.com/products/usb-bm-bf-v1a-micro-usb2-0-type-b-male-to-micro-usb2-0-type-b-female-pass-through-breakout-board.js)
+   identify the variant; [store metadata](https://elabbay.myshopify.com/meta.json)
+   include US among shipping countries. This does not establish address-level
+   serviceability, freight or delivery. Select the bare kit, not a higher-priced
+   soldered variant, and retain the header-content receipt inspection.
+
+At an authorized order, reconfirm exact seller, SKU/variant, packaging/MOQ,
+available or expressly accepted backorder quantity, actual ship-to terms and
+final charges. A known destination refusal requires another exact-source
+decision; it does not authorize a connector/kit substitution.
+
+### 16.3 Concrete equipment proposal
+
+| Exact equipment | Proposed quantity | Observed merchandise | Offer | Capability / inclusion |
+|---|---|---:|---|---|
+| KA3005PE+ | 1 | $134.24 | [DigiKey 2260-KA3005PE+-ND](https://www.digikey.com/en/products/detail/sra-soldering-products/KA3005PE/21293129) | F: 31; box MOQ 1; 0–30 V/0–5 A capability, not allowed settings; independent heavy-item shipping |
+| MM420 | 1 | $73.01 | [DigiKey 1742-MM420-ND](https://www.digikey.com/en/products/detail/klein-tools-inc/MM420/16649068) | F: 708; one meter; included lead pair, one thermocouple/adapter, two AAA; explicit new owner-selection proposal |
+| DHO804 | 1 access unit; purchase 1 unless suitable loan arranged | $459.00 | [RIGOL North America](https://www.rigolna.com/products/digital-oscilloscopes/dho800/) | F: In Stock/Add to Cart, count absent; four PVP3150 passive probes included; country power adapter, ground cable; borrow-first credit only after actual arrangement |
+
+Purchased equipment totals **$666.25**. A suitable arranged scope loan may
+replace the DHO804 purchase; no loan is currently arranged or credited.
+MM420 and DHO804 are explicit new owner-review proposals. Neither is adopted
+by this reference. MM400 remains excluded; FLUKE-115 and DHO814 remain
+unselected alternatives. Do not add a TM100, duplicate thermocouple, separate
+Fluke 855705 leads, four extra scope probes, a generator or five-channel
+capture equipment to this first-build basket.
+
+The [MM420 maker page](https://www.kleintools.com/catalog/multimeters/digital-multimeter-auto-ranging-600v-0)
+and [manual](https://data.kleintools.com/sites/all/product_assets/documents/instructions/klein/MM420%20Instructions_web.pdf)
+support the included lead pair, thermocouple/adapter and AAA batteries.
+Its DCV limits give calculated ±21.5 mV at 3.3 V on the 4 V range and ±75 mV
+at 5 V on the 40 V range, before actual conditions/connection effects.
+Temperature resolution is 1°C; its stated accuracy gives ±3.54°C at 45°C
+before contact/lag error. Two separate temperature readings can have a much
+larger worst-case difference error. Do not treat a marginal 10°C rise as
+precisely resolved. Use guard bands derived from the actual ratings and
+conditions. The bead contacts nonconductive cases or insulation only; no
+electrically isolated live-node probe capability is claimed.
+
+The [DHO800 maker specification](https://www.rigol.com/dam/global/downloads/brochures/en/data-sheet/oscilloscopes/DHO800_DataSheet_EN.pdf)
+gives DHO804 four channels/70 MHz with four PVP3150 passive probes.
+At four-channel operation, use **312.5 MSa/s and 5 Mpts**, not the one-channel
+headline. A 70 MHz single-pole rise-time estimate is about 5 ns and the sample
+interval is 3.2 ns; these describe potential measurement capability, not proof
+that every relevant peak is captured. Final S0 must declare actual probe mode,
+bandwidth, trigger, acquisition depth, shortest relevant event and uncertainty.
+Unresolved faster peaks need an independent bound or suitable borrowed access.
+No universal 100 MHz purchase requirement or bus-T0 qualification is introduced.
+
+One scope can watch voltage/current nodes while the DMM measures temperature.
+The actual regional scope package and source mains cord/manual/output leads
+remain receipt checks. The selected KA3005PE+ offer must not be replaced by a
+historical SRA page now labeled KA3005D. Manufacturer features and factory
+calibration paperwork do not establish the received source's CV/CC/OVP/OCP
+response, earth arrangement or safe settings.
+
+### 16.4 Bounded-load source-only fixture parts
+
+These are evaluation parts for initial source characterization, separate from
+the DUT architecture. They are not a bolted-short fixture or an executable S0
+protocol. The additional 1606 board is separate from the carrier in §15.2.
+
+| Exact proposal | Purchase | Extension | Exact offer | Rating / sourcing fact |
+|---|---|---:|---|---|
+| NKK S1A | 1 switch | $11.13 | [Offer](https://www.digikey.com/en/products/detail/nkk-switches/S1A/1049381) | Factory stock 1,034, not DigiKey shelf stock; panel SPST ON/OFF; 20 A at 30 VDC resistive; mounting hardware contents not individually verified; PCN below |
+| Bourns PWR221T-30-R100F | 1 shunt | $10.36 | [Offer](https://www.digikey.com/en/products/detail/bourns-inc/pwr221t-30-r100f/2360929) | 217 shown; 0.100 Ω ±1%; 2.25 W free air in exact datasheet; 30 W requires 25°C case cooling; ≤0.1 µH; two-terminal component with separate local sense wires |
+| Yageo SQP10AJB-1R | 2 resistors | $4.36 | [Offer](https://www.digikey.com/en/products/detail/yageo/SQP10AJB-1R/18711) | 1,354 shown; $2.18 each; 1 Ω ±5%, 10 W each; wire in SERIES as fixed bounded load |
+| Adafruit 1606 | 1 additional fixture board | $10.95 | [Offer](https://www.adafruit.com/product/1606) | Separate source-only fixture support; not the populated carrier; one additional board explicitly counted |
+
+Subtotal **$36.80**. For the proposed low-side measurement, source positive
+feeds a fixed load and the switch, then the 0.100 Ω shunt to source negative.
+No DUT, USB, host, source data cable or other return is connected. All scope
+grounds go to source negative below the shunt, after verifying the actual
+source/earth arrangement. Sense wires attach separately at each shunt terminal.
+Never move this arrangement into a USB-connected stage where a return can
+bypass the shunt.
+
+PWR221T-30-R100F is a two-terminal resistor, not a calibrated four-terminal
+shunt. Its [maker sheet](https://www.bourns.com/docs/Product-Datasheets/PWR221T-30.pdf)
+allows 2.25 W in free air; 30 W requires the specified case cooling.
+Separate force/sense wiring cannot remove internal lead/contact uncertainty.
+The specified inductance can make L/R as large as 1 µs, so V/R alone does not
+establish sub-microsecond current. Actual resistance, probe response and
+inductive uncertainty must be bounded before those traces support admission.
+
+A proposed fixed branch uses the two 1 Ω ±5% resistors in series with that
+shunt. With no bypass and at most 6 V, the cold resistance bound is
+1.9+0.099=1.999 Ω and current is at most about 3.002 A. This is an analytical
+hardware-envelope proposal, not a source setting or observation. The intended
+load/temperature/time envelope, guarded resistor support, switch panel and
+every terminal's insulation/retention still need the approved S0 procedure.
+Do not assume a nylon/FR4 support is safe merely from a resistor's wattage.
+Source peak, cutoff, capacitance/energy and near-short response remain
+unqualified; further rated test access may be required after initial captures.
+Keep INITIAL_CURRENT_LIMIT=UNSET.
+
+### 16.5 New-line evaluation eligibility and replacement risks
+
+Under SPEC-X-001 rule 3, the following exact new codes are **PROCUREMENT CLEARED
+FOR EVALUATION** for the stated initial measurement purposes. Manufacturer
+lifecycle remains UNVERIFIED. Exact maker specifications, credible dated offers
+and the bounded notice search support this prototype-only exception.
+No known disqualifying product status was found; this is not a comprehensive
+notice-archive audit or an Active declaration.
+
+| Exact code | Technical/source/obsolescence and replacement-risk disposition |
+| --- | --- |
+| MM420 | Current Klein page/manual and exact DigiKey offer establish identity, accessories and static DCV/temperature fit. It succeeds the excluded MM400 but needs explicit owner selection. Future replacement must preserve actual voltage/temperature uncertainty, lead/probe safety and included quantities. No source-fault current measurement through its current jack is admitted. |
+| DHO804 | Exact RIGOL table and US maker offer establish four-channel power-characterization capability and included probes. Replacement needs actual simultaneous sample/depth, probe loading, grounding and uncertainty review; later T0/five-path capability is not inferred. Loan access must identify its actual model and condition. |
+| S1A | NKK's [CN-0431](https://www.nkkswitches.com/pdf/CN0431_S_Toggles_SW_Rockers.pdf) changes materials/plating/marking beginning November 2026 with unchanged stated dimensions/specifications. This is not discontinuation. Record actual markings/revision; preserve DC resistive ratings and supported panel/guard mounting if replacing it. Factory stock is not distributor shelf stock. |
+| PWR221T-30-R100F | The actual [N2558REV notice](https://bourns.com/docs/technical-documents/product-change-notifications/bourns_n2558_thick_film_resistors_networks_encapsulation_glaze_pcn.pdf), revised 2025-09-09, explicitly lists this code. Lead-free glaze deliveries begin 2025-10-06/date code 2540; maker reports no form/fit/function change. The EOL reference concerns the old glaze, not this resistor. Record receipt date code; preserve resistance/tolerance, free-air/pulse/inductance and force/sense limits in any replacement. No 30 W free-air or calibrated four-terminal claim. |
+| SQP10AJB-1R | The [maker-authored SQP/NSP specification](https://www.mouser.com/datasheet/2/447/YAGEO_SQP_NSP_datasheet_2024v4-3461271.pdf) and exact offer support the 1 Ω ±5%/10 W value code. New value is explicitly screened, not inherited solely from the 10 Ω/100 Ω lines. Replacement requires resistance/power/thermal/pulse and fixed-series-load review. |
+
+The final parent follow-up applied explicit domain filters to these four
+queries. All returned empty results. That is limited negative discovery
+evidence, not proof of absent notices or an Active declaration. The separate
+known NKK/Bourns notices remain applicable despite those empty results.
+
+```text
+Domains: kleintools.com
+"MM420" (obsolete OR discontinued OR NRND OR "last time buy" OR PCN OR PDN)
+Domains: rigolna.com, rigol.com
+"DHO804" (obsolete OR discontinued OR NRND OR "last time buy" OR PCN OR PDN)
+Domains: nkkswitches.com
+"S1A" (obsolete OR discontinued OR NRND OR "last time buy" OR PCN OR PDN)
+Domains: bourns.com, yageo.com, yageogroup.com
+("PWR221T-30-R100F" OR "SQP10AJB-1R") (obsolete OR discontinued OR NRND OR "last time buy" OR PCN OR PDN)
+```
+
+The maker notice indices and actual NKK/Bourns notices were considered alongside
+those queries. The Bourns exact-code applicability was resolved by reading the
+actual PDF, not assuming series inclusion. Retained support dispositions stay
+in §15.4. Excluded obsolete shunt LVR05R0500FE12 and uneconomic MOQ-150
+OAR5R050FLF offers are not purchase alternatives.
+
+### 16.6 Merchandise rollup and authority
+
+| Element | Observed USD planning amount |
+| --- | ---: |
+| Core, 132-unit spare proposal | 74.42 |
+| Selected support packages | 146.17 |
+| KA3005PE+ | 134.24 |
+| MM420 with leads and thermocouple | 73.01 |
+| DHO804 with four probes, if purchased | 459.00 |
+| Source-only fixture proposals | 36.80 |
+| Electronics/equipment subtotal | **923.64** |
+
+A qualified arranged scope loan reduces that subtotal to $464.64 plus actual
+loan/rental terms. Choosing minimum core quantities instead reduces the full
+purchase proposal by about $2.11. Mechanical materials/printing, optical PCB,
+unresolved assembly accessories, freight, tax and duties are separate.
+Do not describe $923.64 as a delivered total or a spending authorization.
+
+The optical fabrication decision uses the [unchanged source/CAM and DFM
+reference](../../hardware/prototype/optical/fabrication-review.md) plus the
+chosen noncontact geometry. Issue #38 carries separately approvable exact
+electronics/equipment, mechanical and optical PCB packets. G0 does not authorize
+any of those purchases, prints or subsequent assembly/power work.
+
+
+### 16.7 Noncontact mount materials and separate fabrication choice
+
+The [dimensioned construction](../../hardware/prototype/optical/bench-mount.md)
+and portable [CAD source](../../hardware/prototype/optical/bench-mount.scad)
+retain the protected optical PCB. The proposed stand has a 220 mm clear span,
+45 mm board plane and 15 mm nominal glass gap; the wider flare, retained
+carrier and positive stops require G1 review. Conditional analysis yields an
+6.45 mm lower bound under the U=2 mm method proposal and a derived 10.3 mm
+static indicated-gap threshold. Actual printed fit, uncertainty, alignment,
+opacity and movement remain unobserved physical prerequisites.
+
+| Exact mechanical item | Purchase package / quantity | Observed USD extension |
+| --- | --- | ---: |
+| [Prusament PETG Jet Black 1 kg](https://www.prusa3d.com/product/prusament-petg-jet-black-1kg/), product ID F17558 / IDS3449 | 2 ordinary unfilled spools; 2 kg budget includes supports/reprints, not a sliced-mass claim | 2 ×23.99 promotional =47.98; regular 2 ×29.99 =59.98 |
+| [Everbilt 836781](https://www.homedepot.com/b/Hardware-Fasteners-Screws/M6/Pan-Head/40-mm/N-5yc1vZc2b0Z1z0sfz0Z1z0sg0sZ1z18taj), M6-1.0 ×40 mm zinc pan-head machine screw | 6 two-piece packs: 10 installed +2 spare | 11.70 |
+| [Everbilt 836761](https://www.homedepot.com/p/321071665), M6-1.0 ×35 mm zinc pan-head machine screw | 4 two-piece packs: 6 installed +2 spare | 7.00 |
+| [Everbilt 836731](https://www.homedepot.com/b/Hardware-Fasteners/Everbilt/M6/30-mm/N-5yc1vZc255Z402Z1z0sg03Z1z0sg0s), M6-1.0 ×30 mm zinc pan-head machine screw | 3 two-piece packs: 4 installed +2 spare | 5.85 |
+| [Everbilt 860728](https://www.homedepot.com/b/Hardware-Fasteners-Nuts/M6/N-5yc1vZc2elZ1z1bxmo), M6 zinc nut | 5 five-piece packs: 20 installed +5 spare | 19.85 |
+| [Everbilt 802448](https://www.homedepot.com/b/Hardware-Fasteners-Washers/M6/Flat-Washer/N-5yc1vZc276Z1z0ztdtZ1z1bxmo), M6 zinc flat washer | 8 five-piece packs: 36 installed +4 spare | 23.76 |
+| [BESSEY CM20](https://www.homedepot.com/p/205512965), 2-inch C-clamp | 2; conditional on actual bench opening/reach | 10.18 |
+
+Mechanical merchandise is **$126.32** on the promotional filament basis or
+**$138.32** at its regular price. No old partially threaded hex-bolt identity
+is retained. Actual hardware must fit the modeled head/washer/nut envelopes;
+exact finish, full thread, packages and availability are order-time checks.
+Prusa displayed in-stock filament with 4–7 business-day preparation; the public
+hardware listings are not a location-specific inventory or delivery quote.
+All amounts exclude destination charges and print electricity/labour.
+
+These exact mechanical codes are evaluation-eligible under SPEC-X-001's
+one-sensor exception, with formal manufacturer lifecycle UNVERIFIED. Current
+maker/house-brand offers and the dimensioned load/fit case support acquisition;
+replacement requires the same material, thread, head/washer/nut and clamp-fit
+review. The bounded 2026-11-14 maker-domain notice search covered the five
+Everbilt codes, CM20 and Prusament PETG Jet Black. It surfaced discontinued
+Prusa 1 kg **refill** IDF9648/IDS1306 and 2 kg IDF10067/IDS1464 products;
+neither is the selected F17558/IDS3449 1 kg spool. Their status must not be
+transferred to it or used to substitute them. The search is not a complete
+recall/archive audit or an Active declaration. Record actual received identities
+and reject incompatible or damaged hardware before use.
+
+With the proposed 2 mm total protective pads, CM20's 50.8 mm opening admits
+bench thickness at most 36.8 mm plus the 12 mm foot; its 38.1 mm throat must
+reach the chosen foot position. If those dimensions are unknown, leave only
+the $10.18 clamp line conditional. A failed fit needs an exact reviewed larger
+clamp/attachment; do not assume friction or silently substitute hardware.
+Actual case/cradle width/depth and glass datum must fit the construction
+bounds before setup. These owned-object measurements do not require an optical
+PCB and do not block preparation of its unchanged-CAM decision.
+
+The quoted electronics plus mechanical merchandise is **$1,049.96**, before
+the approximately **$17.05** three-board OSH Park set: combined planning amount
+**$1,067.01**. Regular filament adds $12; an actually arranged qualified scope
+loan subtracts $459. This is not a complete delivered-project quote or a
+spending ceiling. Source-only hot-load guard/support completion and unresolved
+assembly/dimensional tools remain excluded. Borrow suitable calipers/feeler or
+alignment tools if existing equipment cannot establish the documented retainer,
+datum and angle checks; no new precision-tool purchase is automatically required.
+
+The separate optical fabrication choice is one standard OSH Park two-layer,
+nominal 1.6 mm/1 oz/ENIG three-board set, no PCBA, from the retained eight-file
+ZIP. The [fabrication reference](../../hardware/prototype/optical/fabrication-review.md)
+records its exact source/ZIP identities, drill and edge process comparison,
+J1 worst-case fit/yield risk and possible near-edge legend clipping. Owner
+acceptance of those evaluation risks and actual layer/drill/outline preview
+checks are required before an authorized order. Fit, temperature, source,
+backfeed, assembly and optical qualification are not granted by fabrication.
+
+G1 should separately select the equipment/core-spare proposal, exact conditional
+seller baskets, mechanical design/materials and PCB service/package. A decision
+to buy or fabricate does not authorize printing the stand, assembly, flashing,
+source operation, connection or energization unless expressly included by the
+owner at the applicable gate. Keep every unqualified physical hold and
+INITIAL_CURRENT_LIMIT=UNSET.

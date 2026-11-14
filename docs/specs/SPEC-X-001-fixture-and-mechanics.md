@@ -4,7 +4,7 @@
 **Status:** Ready for Implementation
 **Readiness note:** Feasibility and prototype implementation are approved; final analog values, PCB design and USB/capture routing require physical characterization before production freeze
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-13 (America/Los_Angeles)\
+**Last Updated:** 2026-11-14 (America/Los_Angeles)\
 **Depends On:** ARCH-001, REF-MET-001, REF-WIRE-001, REF-DATA-001\
 **Supersedes:** The fixture hardware/firmware/mechanics requirements in the legacy spec and checkbox plan\
 **Superseded By:** None
@@ -19,7 +19,7 @@ Nominal modules: five movable identical sensor PCBs with **SFH 203** (`Q62702P09
 
 The [2026-11-13 procurement clarification](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6848704974) separates component acquisition for evaluation from installed-path qualification. For this one-sensor prototype, the rules below supersede destination-confirmed delivery and completed current/fault coordination as admission conditions for evaluation procurement. Exact fulfillment remains an ordering prerequisite; all assembly, connection and power-use safety requirements remain in force.
 
-Issue #45 retains the historical conditional S0/S1 paper decision. The expanded [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns the complete supervised one-sensor release, with the KA3005PE+ direct-bench proposal, a noncontact independent mount and separate USB/manual optical smoke sessions. [BENCH-005](../bench/PROTOTYPE-FIRST-POWER-FEASIBILITY.md) preserves the earlier evidence and current risk decision. Exact evaluation procurement may precede physical tests under the rules below; owner G0 acceptance and exact purchase/fabrication authorization remain separate. Source qualification, reviewed numerical settings and staged owner observations are required before physical power-use release. Unused fixed-adapter circuits do not have to qualify for a bench-only release.
+Issue #45 retains the historical conditional S0/S1 paper decision. The expanded [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns the complete supervised one-sensor release. The owner [selected the KA3005PE+ direct-bench architecture and bounded risk model at G0](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712), with a noncontact independent mount and separate USB/manual optical smoke sessions. [BENCH-005](../bench/PROTOTYPE-FIRST-POWER-FEASIBILITY.md) preserves the earlier evidence and decision rationale. Exact evaluation procurement may precede physical tests under the rules below; purchase/fabrication authorization remains separate from G0. Source qualification, reviewed numerical settings and staged owner observations are required before physical power-use release. Unused fixed-adapter circuits do not have to qualify for this bench-only release.
 
 Evaluate each exact purchasable MPN in this order:
 
@@ -41,7 +41,7 @@ The current bench-supply selection and its first-power status are recorded in BE
 
 ## Electrical/timing architecture
 
-- External regulated 5 V input, locally regulated analog/digital rails, power health/brownout supervision, Android VBUS sense and enforced no 5 V backfeed; USB ground is shared (no isolation requirement v1). The supervised one-sensor proposal uses only a qualified current-limited KA3005PE+ through MF-R050, Pololu 5383 and the selected XT30U pair. Its [carrier and admission procedure](../../hardware/prototype/power-usb/bench-assembly.md) requires owner acceptance and physical evidence. Preserve the fixed-adapter alternatives as deferred, not qualified.
+- External regulated 5 V input, locally regulated analog/digital rails, power health/brownout supervision, Android VBUS sense and enforced no 5 V backfeed; USB ground is shared (no isolation requirement v1). The G0-selected one-sensor architecture uses the current-limited KA3005PE+ through MF-R050, Pololu 5383 and the selected XT30U pair. The actual source and [carrier/harness](../../hardware/prototype/power-usb/bench-assembly.md) still require physical qualification and separate release. Fixed-adapter alternatives remain deferred and unqualified.
 - Five actual timer capture registers/peripheral paths must share a justified common monotonic tick domain; if Teensy routing cannot satisfy that, introduce dedicated external capture hardware. Interrupt-entry timestamping is not acceptable for publication.
 - `T0` associates the exact measured button-1 HID IN transfer completion with a hardware timer read or capture path characterized against external USB bus evidence. Track queue time only as non-authoritative diagnostic.
 - Resolution ≤10 µs, calibrated five-channel skew ≤25 µs, total quantified uncertainty ≤0.1 ms. Test over 10,000 common edges, cold power cycles, and LED optical stimulus; preserve both uncorrected captures and separately stored correction coefficients.

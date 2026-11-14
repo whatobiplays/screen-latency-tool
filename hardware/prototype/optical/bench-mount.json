@@ -1,9 +1,62 @@
 {
   "units": "mm",
-  "basis": "Engineering design allocations; not physical measurements or a fabrication release",
-  "board": { "width": 50, "height": 44, "thickness": 1.6, "detector_axis_from_left": 6.77, "detector_axis_from_top": 10.5 },
-  "geometry": { "board_front_above_glass": 35, "shroud_projection_from_board": 30, "maximum_component_and_cable_projection": 22 },
-  "allowances": { "height_setting": 0.5, "shroud_manufacturing": 0.3, "setup_repeatability": 0.4, "fixture_approach": 0.5, "cable_approach": 0.5, "gap_measurement_uncertainty": 0.2 },
-  "positive_reserve": 0.5,
-  "required_evidence": ["height and printed dimensions", "ordinary stand/device flex", "supported cable service motion", "setup repeatability", "gap measurement uncertainty", "assembled minimum clearance"]
+  "basis": "Configuration-specific design analysis for the independent PETG bridge; no physical measurements or fabrication authority",
+  "board": {
+    "width": 50,
+    "height": 44,
+    "thickness": 1.6,
+    "detector_axis_from_left": 6.77,
+    "detector_axis_from_top": 10.5
+  },
+  "geometry": {
+    "board_front_above_glass": 45,
+    "shroud_projection_from_board": 30,
+    "maximum_component_and_cable_projection": 28
+  },
+  "allowances": {
+    "height_setting": 0,
+    "shroud_manufacturing": 0.3,
+    "setup_repeatability": 4.15,
+    "fixture_approach": 1.1,
+    "cable_approach": 0,
+    "dut_approach": 1,
+    "gap_measurement_uncertainty": 2
+  },
+  "allowance_basis": {
+    "height_setting": "Included in the combined datum/setting/measurement uncertainty; do not count twice",
+    "setup_repeatability": "0.15 mm retainer play plus 4.0 mm whole-fixture angular approach; carrier plane <=3 degrees, combined optical-axis error <=6 degrees",
+    "fixture_approach": "1.0053 mm analytical structure/joint approach rounded upward; E=500 N/mm2 is an assumption",
+    "cable_approach": "Cable force already included in the structural load case; no separate credit for unsupported cables",
+    "dut_approach": "Maximum permitted upward device/cradle movement; must be established on the actual setup",
+    "gap_measurement_uncertainty": "Proposed 2 mm combined method bound, subject to demonstrated alignment and repeatability",
+    "other_projection": "28 mm bounds the modeled carrier saddle head and supported service loop; shroud remains closest at 30 mm"
+  },
+  "positive_reserve": 2,
+  "required_evidence": [
+    "actual device/cradle and bench envelopes",
+    "printed dimensions and positive stops",
+    "ordinary stand and device movement",
+    "supported cable service motion",
+    "retainer play and axis alignment",
+    "actual gap-method uncertainty and repeatability",
+    "assembled minimum clearance"
+  ],
+  "angular_screen": {
+    "carrier_plane_to_glass_degrees_max": 3,
+    "combined_optical_axis_degrees_max": 6,
+    "swept_glass_xy_bounds_mm": {
+      "x": [
+        -95,
+        95
+      ],
+      "y": [
+        -50,
+        50
+      ]
+    },
+    "over_glass_nonshroud_radius_mm_max": 110,
+    "over_glass_nonshroud_projection_mm_max": 28,
+    "shroud_tip_radius_mm": 19,
+    "angular_approach_allocation_mm": 4
+  }
 }

@@ -3,12 +3,12 @@
 **Document ID:** BENCH-005\
 **Status:** Draft for owner design review\
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-13 (America/Los_Angeles)\
+**Last Updated:** 2026-11-14 (America/Los_Angeles)\
 **Depends On:** ARCH-001, SPEC-X-001, BENCH-001, BENCH-002, BENCH-003, BENCH-004\
 **Supersedes:** None\
 **Superseded By:** None
 
-**Scope and decision authority:** Sections 1–8 retain Issue #45’s historical S0/S1 paper decision; section 9 retains its sources and section 10 the earlier A/B/C comparison and disputes. Section 11 governs the expanded supervised one-sensor proposal. Direct-bench execution planning is approved, while concrete G0 risk acceptance and every physical release still require their own evidence/owner decision. Historical statements about paper-only scope or continued B/C investigation do not limit section 11.
+**Scope and decision authority:** Sections 1–8 retain Issue #45's historical S0/S1 paper decision; section 9 retains its sources and section 10 the earlier A/B/C comparison and disputes. Section 11 records the owner-selected supervised one-sensor architecture and bounded G0 risk decision. Physical releases still require their own evidence and owner authorization. Historical paper-only scope and continued B/C investigation statements do not limit section 11.
 
 ## 1. Decision and acceptance boundary
 
@@ -404,7 +404,7 @@ No candidate simulation is physical qualification. The ngspice compatibility pro
 The expanded Issue #47 coordinates the selected one-sensor build through owner
 assembly and genuine smoke observations. The owner-selected noncontact mount
 and manual optical/USB session separation preserve the existing optical PCB.
-The concrete electrical proposal is KA3005PE+ → supported terminal/carrier →
+The owner-selected electrical architecture is KA3005PE+ → supported terminal/carrier →
 MF-R050 → Pololu 5383 → exact XT30U pair → Teensy VIN. The barrel jack and fixed
 adapter are not fitted. The source remains the sole operating VIN supply;
 Android VBUS remains isolated sensing, with a physically verified VIN/VUSB cut.
@@ -419,16 +419,21 @@ session. Its allocation arithmetic is analysis, not measured fit. No universal
 
 ### 11.1 Decision and fault scope
 
-Owner G0 acceptance must cover the concrete assembly, supported/insulated
-connections, source envelope, narrow procedural exclusions and residual
-component-damage risks. The record does not imply that G0 has been accepted.
+The owner [accepted G0 on 2026-11-14](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712),
+selecting the direct-bench construction, supported/insulated connections,
+narrow procedural exclusions and residual component-damage risk. This includes
+Pomona 73093-2/-0 solderless push-tab plugs with the selected 18 AWG stranded
+leads, at most 1 m per lead, and separate supported WAGO potentials. The plug's
+18–22 AWG / 4–6 mm strip procedure, retention and unpowered verification are
+defined in the construction record. G0 accepts a design and risk model; it does
+not establish a qualified source envelope or authorize physical use.
 De-energized inspection and no-live-rewiring control reversed temporary leads,
 wrong/adjacent header connections and preventable cross-rail assembly faults.
 Normal-operation displaced wires, sustained shorts, unsafe local heating,
 powered-off injection and host backfeed still require a defensible control.
 If that control is missing, stop for a specific amendment, not a blanket waiver.
 
-B/C remain deferred alternatives for a bench-only release. Their old incomplete
+B/C are deferred alternatives outside this selected bench-only build. Their old incomplete
 envelopes and failed simulation probes stay recorded. The GST18U05-P1J OVP
 failure is unchanged. MF-R050 still cannot be credited with clearing every 3V3
 fault and Pololu 5383 adds no forward OVP/CC. Do not substitute another module

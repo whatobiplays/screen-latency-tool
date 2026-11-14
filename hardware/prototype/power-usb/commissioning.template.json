@@ -16,7 +16,16 @@
     "measurement_uncertainty_and_bandwidth_basis": null,
     "ambient_and_operating_conditions": null
   },
-  "authorizations": { "G0": null, "G1": null, "G2": null, "S0": null, "G3": null, "G4": null },
+  "authorizations": {
+    "G0": {
+      "status": "ARCHITECTURE_AND_BOUNDED_RISK_ACCEPTED",
+      "decision_url": "https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712",
+      "reviewed_candidate": "814d5a1311a6072cbb05333ad215dc7b17781cdd",
+      "scope": "Documented direct-bench configuration only; no physical-stage authorization",
+      "as_built_configuration_matches_approved_scope": null
+    },
+    "G1": null, "G2": null, "S0": null, "G3": null, "G4": null
+  },
   "initial_current_limit": "UNSET / PENDING REVIEW",
   "reviewed_stage_envelopes": [],
   "stage_results": [
@@ -46,6 +55,7 @@
     "browser_url_and_version": null,
     "orientation_refresh_brightness_and_filters": null,
     "mount_patch_and_ambient_conditions": null,
+    "measurement_sequence_and_nonconcurrent_limits": null,
     "raw_tia_threshold_edge_acquisitions": [],
     "constant_pattern_ambient_controls": [],
     "diagnostic_request_log": null,

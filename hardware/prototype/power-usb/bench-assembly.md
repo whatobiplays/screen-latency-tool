@@ -2,10 +2,11 @@
 
 ## 1. Configuration and release boundary
 
-This is the construction proposal for one optical board powered only from the
-selected KORAD KA3005PE+. Owner acceptance of the concrete topology and residual
-risks is required before physical adoption. Purchase, assembly, source-only
-qualification and staged energization have separate approvals in
+The owner selected this one-sensor KORAD KA3005PE+ direct-bench architecture and
+its bounded residual-risk model in the [2026-11-14 G0 decision](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712).
+That decision expressly includes the owner-terminated source leads below.
+The supply and assembled path still require qualification. Purchase, assembly,
+source-only qualification and staged energization have separate approvals in
 [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) and
 [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38).
 `INITIAL_CURRENT_LIMIT=UNSET`. No physical result is recorded here.
@@ -17,7 +18,7 @@ at common signal GND. Never parallel an adapter with the bench source.
 
 | Connection | Physical construction |
 | --- | --- |
-| Supply to carrier | The exact proposal uses Pomona 73093-2/-0 retractable-shroud plugs and 18UL1007STRRED25/18UL1007STRBLA25 wire, ≤1 m per source lead. These are owner-terminated leads, not factory-rated cables: G0 must explicitly accept this change from the factory-terminated preference and require plug/joint/retention inspection. Use suitable already-owned factory leads instead only through a recorded exact construction review. |
+| Supply to carrier | Pomona 73093-2/-0 retractable-shroud plugs and 18UL1007STRRED25/18UL1007STRBLA25 18 AWG stranded wire, ≤1 m per source lead. The owner accepted this prototype-only exception to factory-terminated leads at G0. Attach with the solderless push tab as specified in §1.1; inspect retention and qualify the actual lead's current/thermal envelope. Another lead construction requires an explicit amendment. |
 | Input protection | Solder MF-R050 in series from `5V_IN` to `5V_LIMITED`; support and insulate its leads. Solder to Pololu 5383 VIN/GND pads using the maker's pad map. |
 | Module mounting | Insulating cradle or spacer supports the module independently of its joints. Cover the underside and provide strain relief outside the pads. No exposed floating module. |
 | Protected output | Pololu VOUT is `5V_SAFE`; solder to XT30U-F.G.Y source pole 1 and GND to pole 2 after inspecting the actual molded geometry. |
@@ -30,6 +31,44 @@ the pad/termination map below is tied to Adafruit 1606. Inspect received copper 
 whose strips join isolated domains. Keep VIN, 3V3 and VUSB_RAW distinct.
 Pololu is reverse-voltage/reverse-current protection, not forward OVP or CC.
 The PTC is delayed thermal protection, not guaranteed 3V3 fault clearing.
+
+### 1.1 Pomona 73093 source-lead termination and inspection
+
+This is the procedure for later owner-authorized assembly. The [manufacturer
+drawing, revision 001](https://www.pomonaelectronics.com/sites/default/files/d73093_001.pdf)
+specifies solderless push-tab attachment for 18–22 AWG wire and a 4–6 mm strip
+length. The selected Remington conductors are 18 AWG stranded. The Pomona plug
+has no solder cup; do not solder the conductor to it or use the XT30 soldering
+instructions for this termination.
+
+1. Disconnect both ends from all equipment. Verify the source is off and the
+   relevant rails are discharged. Identify 73093-2/red and 73093-0/black from
+   the actual parts; label each end by net, not color alone.
+2. Cut each source lead to the documented length, at most 1 m. Strip 4–6 mm
+   without nicking or removing strands. Keep the strands together; do not tin
+   the end or add solder to change the attachment method.
+3. Push and hold the plug's tab. Insert the stripped conductor fully, then
+   release the tab to secure it. Inspect for stray or exposed strands and
+   confirm that the insulation and conductor seat without obstruction.
+4. Apply a gentle manual retention check with the lead still disconnected.
+   Any conductor movement, incomplete tab return, damaged insulation or loose
+   attachment is a rejection. This check does not establish a numerical pull
+   rating or current capacity. Support the leads independently of the plugs.
+5. Independently verify continuity/polarity from the positive plug to its
+   separate positive WAGO splice and F1 pin 1 (`5V_IN`), and from the negative
+   plug to its separate return splice/GND. Verify no positive-to-return short.
+   Record meter/lead identity, lead resistance, raw readings and net labels.
+   A continuity beep alone does not establish low contact resistance.
+6. Inspect seating in the actual KORAD jacks, retractable-shroud operation and
+   retention during the separately approved unpowered preflight. Do not stack
+   extra connections onto these plugs in the selected configuration. Current,
+   voltage-drop and heating qualification remain required before power use;
+   the maker's 36 A headline does not rate the completed hand-terminated lead.
+
+Retain both-end photos and the unpowered checklist with the commissioning
+record. Re-terminate and repeat the checks after any disturbance. A failed
+retention, polarity or continuity check stops release. No assembly or test is
+reported by this procedure.
 
 ## 2. Ground and signal construction
 
@@ -120,8 +159,10 @@ connector test does not rate the installed wire or hand-soldered joint.
 | Host backfeed | Physically cut and inspect VIN/VUSB; demonstrate off-state behavior before Android. A paper cut instruction is not evidence of isolation. |
 | Internal IC or catastrophic source failure | Disclosed residual component-damage risk; no universal survival claim. This does not excuse a credible serious source/wiring/host hazard. |
 
-Owner G0 acceptance covers this exact topology, the narrow procedural exclusions
-and residual component damage. It does not release a setting or physical stage.
+The recorded G0 decision accepts this exact topology, the narrow procedural
+exclusions and residual component-damage risk. It releases no numerical setting
+or physical stage. Sustained unsafe heating, unbounded source/3V3 exposure,
+open-return/injection paths and host backfeed remain excluded from that waiver.
 Preserve the historical Issue #45/PR #46 disputed findings in BENCH-005.
 
 ## 4. Limits, measurements and settings

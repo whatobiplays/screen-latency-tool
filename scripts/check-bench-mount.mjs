@@ -6,7 +6,9 @@ import { resolve } from 'node:path';
 export function clearanceBudget(design, exercised = []) {
   const a = design.allowances;
   const keys = ['height_setting', 'shroud_manufacturing', 'setup_repeatability',
-    'fixture_approach', 'cable_approach', 'gap_measurement_uncertainty'];
+    'fixture_approach', 'cable_approach', 'dut_approach', 'gap_measurement_uncertainty'];
+  // A separate device-motion allowance prevents a rigid stand from hiding
+  // upward movement of the display in its cradle. Require it even when zero.
   const geometry = design.geometry;
   for (const key of keys) {
     if (!Number.isFinite(a[key]) || a[key] < 0) throw new Error(`Invalid allowance: ${key}`);
@@ -15,7 +17,7 @@ export function clearanceBudget(design, exercised = []) {
     if (!Number.isFinite(geometry[key]) || geometry[key] <= 0) throw new Error(`Invalid geometry: ${key}`);
   }
   if (!Number.isFinite(design.positive_reserve) || design.positive_reserve <= 0) throw new Error('A positive reserve is required');
-  const movement = ['setup_repeatability', 'fixture_approach', 'cable_approach'];
+  const movement = ['setup_repeatability', 'fixture_approach', 'cable_approach', 'dut_approach'];
   if (new Set(exercised).size !== exercised.length || exercised.some(key => !movement.includes(key))) {
     throw new Error('Only documented movement allowances may be exercised');
   }

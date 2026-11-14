@@ -3,12 +3,12 @@
 **Document ID:** BENCH-002\
 **Status:** Draft\
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-13 (America/Los_Angeles)\
+**Last Updated:** 2026-11-14 (America/Los_Angeles)\
 **Depends On:** ARCH-001, ARCH-002, REF-MET-001, REF-WIRE-001, SPEC-X-001, SPEC-X-004, PHASE-001, ADR-0002, BENCH-001\
 **Supersedes:** None\
 **Superseded By:** None
 
-**Supervised one-sensor variant:** [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) now owns procurement through genuine prototype smoke evidence. Use the [direct-bench carrier and G0–G4/S0–S4 procedure](../../hardware/prototype/power-usb/bench-assembly.md) and [noncontact mount/manual display procedure](../../hardware/prototype/optical/bench-mount.md). These govern the proposed bench-only build; the fixed-adapter and contact-boot descriptions below retain their historical alternative scope. Issue #45's closed paper decision is not an unresolved ordering dependency. Issue #38 owns exact purchase/fabrication approval. `INITIAL_CURRENT_LIMIT=UNSET`; physical admission still requires actual evidence and approval.
+**Supervised one-sensor variant:** [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns procurement through genuine prototype smoke evidence. The [G0 decision](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712) selects the direct-bench architecture and bounded risk model. Use its [carrier and G0–G4/S0–S4 procedure](../../hardware/prototype/power-usb/bench-assembly.md), including the Pomona solderless push-tab instructions, and the [noncontact mount/manual display procedure](../../hardware/prototype/optical/bench-mount.md). Fixed-adapter and contact-boot descriptions below retain their historical alternative scope. Issue #45's closed paper decision is not an unresolved ordering dependency. Issue #38 owns exact purchase/fabrication approval. `INITIAL_CURRENT_LIMIT=UNSET`; physical admission still requires actual evidence and approval.
 
 Readiness note: The generated schematic and BOM implement the owner-approved Stage-A selections: Switchcraft L721A with a direct, nonlocking Mean Well GST18U05-P1J design assumption; JST B4B-PH-K-S(LF)(SN) with CABLE-PH04 at optical J1; and CAB-14575/CAB-14574 at J4/J5. This records the design choice only. Mean Well does not certify this exact mating pair. Physical fit, retention, contact resistance, support, strain relief, thermal behavior, and fault response remain unverified Stage-B checks. No purchase or physical work is authorized.
 

@@ -10,6 +10,11 @@ that variant. Owner fit evidence and exact fabrication authorization remain
 necessary. Preserve the existing optical PCB and the retained fabrication ZIP;
 current assembly instructions supplement its historical review package.
 
+The [source-bound fabrication reference](fabrication-review.md) compares the
+unchanged CAM with the proposed standard two-layer process and records the
+J1 hole-tolerance and near-edge legend risks for the owner decision. Nominal
+fit is not a guarantee of received-board fit; retain the unpowered inspection.
+
 This workflow prepares provisional files for the existing 50 × 44 mm, two-layer,
 nominal 1.6 mm optical evaluation board. It preserves the upright SFH 203,
 selected MPNs, footprints, placements, outline, routing, analog values and absence
