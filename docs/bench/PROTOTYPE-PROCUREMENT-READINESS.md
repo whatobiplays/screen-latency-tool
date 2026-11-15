@@ -16,7 +16,7 @@ Supersedes: None
 Superseded By: None
 
 
-**Current purchasing authority:** The [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558) authorize the exact one-sensor basket in §16, including 132 core purchase units, KA3005PE+, MM420, DHO804, CM20 ×2 and the specified three-board OSH Park set. Section 17 governs execution. The [later owner allocation amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6888174426) overrides the original §16 DigiKey route for roles 40 and 47: exclude heat-shrink and the meter from DigiKey, use owner stock for the tubing, and source the meter separately. Retain the selected MM420 requirement unless a separately reviewed owner amendment changes it. The $1,067.01 merchandise basis is accepted; routine shipping, taxes, duties, FX and seller fees require no forecast, ceiling or further approval. CM20 installation checks occur at G2 and do not block purchase. Exact identity/quantity/fulfillment and the actual PCB preview remain order preflights. No physical-stage authority follows.
+**Current purchasing authority:** The [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558) authorize the exact one-sensor basket in §16, including 132 core purchase units, KA3005PE+, the owner-selected MM450, DHO804, CM20 ×2 and the specified three-board OSH Park set. Section 17 governs execution. The [later owner allocation amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6888174426) overrides the original §16 DigiKey route for roles 40 and 47: exclude heat-shrink and the meter from DigiKey, use owner stock for the tubing, and source the meter separately. The [approved MM450 substitution](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6888391998) replaces MM420 with one MM450 from the specified Amazon offer; the original MM420 proposal is historical. The $1,067.01 merchandise basis is accepted; routine shipping, taxes, duties, FX and seller fees require no forecast, ceiling or further approval. CM20 installation checks occur at G2 and do not block purchase. Exact identity/quantity/fulfillment and the actual PCB preview remain order preflights. No physical-stage authority follows.
 
 **Historical status scope:** Sections 1–14 preserve earlier procurement matrices, pauses and budget comparisons. Their Issue #45 purchase pause, NOT APPROVED labels and price-ceiling conditions are superseded for the approved subset; technical ratings, excluded parts and physical-use restrictions remain applicable. Sections 15–16 retain the dated basket/source basis, with current authority and superseded conditions identified below. No completed order or receipt is inferred from approval.
 
@@ -879,8 +879,8 @@ owner approval; none of these prices is a spending authorization.
    page](https://www.kleintools.com/catalog/multimeters/digital-multimeter-auto-ranging-600v)
    now says it is no longer in production, excluding it from new procurement
    under SPEC-X-001 rule 1. Its maker-linked MM420 successor is explicitly
-   screened and proposed in §16; owner model/purchase selection is still
-   required. No silent replacement is approved.
+   screened and proposed in the original §16 packet; the later owner-selected
+   MM450 purchase is documented in §17. No silent replacement is approved.
    [Fluke's exact FLUKE-115 / 2538790 offer](https://www.fluke.com/en-us/product/electrical-testing/digital-multimeters/fluke-115)
    showed $279.99/in stock with compatible leads on 2026-11-14 UTC. Its
    [maker specification](https://media.fluke.com/ce54d963-3be9-4e70-8a3e-b1060070fdfd_original%20file.pdf)
@@ -890,7 +890,8 @@ owner approval; none of these prices is a spending authorization.
    lifecycle remains UNVERIFIED; a contradictory [distributor discontinuation
    label](https://www.onlinecomponents.com/en/productdetail/fluke/fluke115-11344217.html)
    remains unresolved, so unconditional acquisition clearance is not claimed.
-   The current low-cost proposal is MM420 with included temperature access;
+   The original low-cost proposal was MM420 with included temperature access;
+   the current MM450 selection is recorded in §17.
    FLUKE-115 remains an unselected alternative whose specific conflict would
    need resolution before purchase. No premium meter is mandated and no
    DMM fault-current measurement is assumed. Do not buy duplicate Fluke 855705
@@ -1086,13 +1087,17 @@ decision; it does not authorize a connector/kit substitution.
 
 ### 16.3 Concrete equipment proposal
 
+This is the original quoted equipment basis. The [later MM450 model/source decision](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6888391998) supersedes its MM420 meter line only; current instructions are in §17. Do not purchase both meters.
+
 | Exact equipment | Proposed quantity | Observed merchandise | Offer | Capability / inclusion |
 |---|---|---:|---|---|
 | KA3005PE+ | 1 | $134.24 | [DigiKey 2260-KA3005PE+-ND](https://www.digikey.com/en/products/detail/sra-soldering-products/KA3005PE/21293129) | F: 31; box MOQ 1; 0–30 V/0–5 A capability, not allowed settings; independent heavy-item shipping |
 | MM420 | 1 | $73.01 | [DigiKey 1742-MM420-ND](https://www.digikey.com/en/products/detail/klein-tools-inc/MM420/16649068) | F: 708; one meter; included lead pair, one thermocouple/adapter, two AAA; explicit new owner-selection proposal |
 | DHO804 | 1; purchase approved | $459.00 | [RIGOL North America](https://www.rigolna.com/products/digital-oscilloscopes/dho800/) | F: In Stock/Add to Cart, count absent; four PVP3150 passive probes included; country power adapter, ground cable; owner-approved purchase; no loan credit |
 
-Purchased equipment totals **$666.25**. G1 approves MM420 ×1 and DHO804 ×1.
+The original quoted equipment total was **$666.25**. The original G1 choice
+was MM420 ×1 and DHO804 ×1; the later owner amendment replaces the meter
+with MM450 ×1 from the specified Amazon offer.
 The earlier scope-loan option is superseded for this order; omitting the scope
 would require a new owner amendment. MM400 remains excluded; FLUKE-115 and DHO814 remain
 unselected alternatives. Do not add a TM100, duplicate thermocouple, separate
@@ -1179,7 +1184,7 @@ notice-archive audit or an Active declaration.
 
 | Exact code | Technical/source/obsolescence and replacement-risk disposition |
 | --- | --- |
-| MM420 | Current Klein page/manual and exact DigiKey offer establish identity, accessories and static DCV/temperature fit. It succeeds the excluded MM400 but needs explicit owner selection. Future replacement must preserve actual voltage/temperature uncertainty, lead/probe safety and included quantities. No source-fault current measurement through its current jack is admitted. |
+| MM420 (historical proposal, superseded by MM450 in §17) | The retained Klein page/manual and DigiKey offer established the original identity, accessories and static DCV/temperature proposal. It succeeds the excluded MM400; the later owner decision selects MM450. Future replacement must preserve actual voltage/temperature uncertainty, lead/probe safety and included quantities. No source-fault current measurement through its current jack is admitted. |
 | DHO804 | Exact RIGOL table and US maker offer establish four-channel power-characterization capability and included probes. Replacement needs actual simultaneous sample/depth, probe loading, grounding and uncertainty review; later T0/five-path capability is not inferred. Loan access must identify its actual model and condition. |
 | S1A | NKK's [CN-0431](https://www.nkkswitches.com/pdf/CN0431_S_Toggles_SW_Rockers.pdf) changes materials/plating/marking beginning November 2026 with unchanged stated dimensions/specifications. This is not discontinuation. Record actual markings/revision; preserve DC resistive ratings and supported panel/guard mounting if replacing it. Factory stock is not distributor shelf stock. |
 | PWR221T-30-R100F | The actual [N2558REV notice](https://bourns.com/docs/technical-documents/product-change-notifications/bourns_n2558_thick_film_resistors_networks_encapsulation_glaze_pcn.pdf), revised 2025-09-09, explicitly lists this code. Lead-free glaze deliveries begin 2025-10-06/date code 2540; maker reports no form/fit/function change. The EOL reference concerns the old glaze, not this resistor. Record receipt date code; preserve resistance/tolerance, free-air/pulse/inductance and force/sense limits in any replacement. No 30 W free-air or calibrated four-terminal claim. |
@@ -1294,11 +1299,13 @@ G1 selection and purchasing authority are recorded in the [G1 approval](https://
 
 ### 17.1 Authority and fixed quantities
 
-Use the exact [seller order manifests](../../hardware/prototype/procurement/README.md) derived from the approved packet. Keep 27 core identities /132 purchased core units, the selected support packages, source-only fixture components, KA3005PE+ ×1, MM420 ×1, DHO804 ×1, PETG ×2 one-kilogram spools, exact M6 packages, CM20 ×2 and one three-board OSH Park set. Adafruit 1606 totals two boards across its DUT-carrier and source-only-fixture roles. The two bare PCB spares receive no extra component population.
+Use the exact [seller order manifests](../../hardware/prototype/procurement/README.md) derived from the approved packet. Keep 27 core identities /132 purchased core units, the selected support packages, source-only fixture components, KA3005PE+ ×1, MM450 ×1, DHO804 ×1, PETG ×2 one-kilogram spools, exact M6 packages, CM20 ×2 and one three-board OSH Park set. Adafruit 1606 totals two boards across its DUT-carrier and source-only-fixture roles. The two bare PCB spares receive no extra component population.
 
-The [later owner allocation amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6888174426) removes roles 40 and 47 from the DigiKey order/import files: use owner-supplied heat-shrink and a separately owner-sourced meter. Retain the original packet quantities as the historical basis; the active DigiKey subset has 35 lines /130 seller purchase units. The 132 core components are unchanged. Owned tubing still requires G2 suitability/fit inspection; the meter must match the selected MM420 requirement or a separately reviewed owner amendment. No BOM MPN, insulation requirement or physical admission is changed.
+The [later owner allocation amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6888174426) removes roles 40 and 47 from the DigiKey order/import files. Role 40 uses owner-supplied heat-shrink; role 47 is now MM450 ×1 in the separate Amazon manifest. Retain the original packet quantities as the historical basis; the active DigiKey subset has 35 lines /130 seller purchase units. The 132 core components are unchanged. Owned tubing still requires G2 suitability/fit inspection; the meter is the subsequently approved MM450 ×1 from Amazon ASIN B0B6WW5ZX8, seller Angel Seller /A1MXFBSEZT410T, fulfilled by Amazon. The [owner substitution decision](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6888391998) supersedes only the original meter model/source. No BOM MPN, insulation requirement or physical admission is changed.
 
-The $1,067.01 merchandise subtotal is accepted purchase authority for these goods. Routine shipping, taxes, duties, FX and seller fees are not another approval or calculation gate. Record actual seller confirmations and charges after an order. Do not silently change goods, variants, quantities, seller packages or fabrication service; isolate an unavailable exact line while continuing independent orders.
+The $1,067.01 figure is the accepted original basket basis, retained with the later owner allocation and MM450 model/source amendments. Current charges are recorded from actual seller confirmations. Routine shipping, taxes, duties, FX and seller fees are not another approval or calculation gate. Record actual seller confirmations and charges after an order. Do not silently change goods, variants, quantities, seller packages or fabrication service; isolate an unavailable exact line while continuing independent orders.
+
+The [active instrument reference](../../hardware/prototype/procurement/README.md#11-owner-supplied-insulation-and-separate-meter) records the MM450 manufacturer-derived DC-voltage/temperature bounds, actual-model range differences, included accessories and incoming qualification requirements. These paper specifications support purchasing; they do not establish received accuracy, waive uncertainty margins or select any source setting.
 
 ### 17.2 Checkout and receipt record
 
