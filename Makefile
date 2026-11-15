@@ -2,9 +2,9 @@
 # KiCad's native design checks are a separate version-pinned local profile.
 NODE ?= node
 
-.PHONY: check check-generated check-structural check-erc-gate check-provenance check-bom check-markdown check-validation-tests check-kicad check-firmware check-android firmware-host-tests firmware-build descriptor-validation capture-candidate-build capture-memory-tests android-test android-build
+.PHONY: check check-generated check-structural check-erc-gate check-provenance check-bom check-markdown check-validation-tests check-manual-patterns check-kicad check-firmware check-android firmware-host-tests firmware-build descriptor-validation capture-candidate-build capture-memory-tests android-test android-build
 
-check: check-generated check-structural check-erc-gate check-provenance check-bom check-markdown check-validation-tests firmware-host-tests
+check: check-generated check-structural check-erc-gate check-provenance check-bom check-markdown check-validation-tests check-manual-patterns check-bench-mount firmware-host-tests
 
 check-generated:
 	$(NODE) hardware/prototype/generate.mjs --check
@@ -26,6 +26,13 @@ check-markdown:
 
 check-validation-tests:
 	$(NODE) --test scripts/check-markdown.test.mjs scripts/validation.test.mjs scripts/optical-cam.test.mjs
+
+check-manual-patterns:
+	$(NODE) --test scripts/manual-patterns.test.mjs
+
+check-bench-mount:
+	$(NODE) scripts/check-bench-mount.mjs
+	$(NODE) --test scripts/bench-mount.test.mjs
 
 # Requires PlatformIO Core 6.1.18; packages are pinned in firmware/platformio.ini.
 PLATFORMIO ?= pio
@@ -49,7 +56,11 @@ descriptor-validation: firmware-build
 	python3 firmware/scripts/test_compiled_descriptors.py
 	python3 firmware/scripts/check_compiled_descriptors.py firmware/.pio/build/teensy41/firmware.elf
 
-check-firmware: firmware-host-tests descriptor-validation capture-candidate-build capture-memory-tests
+bench-fixture-build:
+	PLATFORMIO_CORE_DIR="$(PLATFORMIO_CORE_DIR)" $(PLATFORMIO) run -d firmware -e teensy41-bench
+	python3 firmware/scripts/check_compiled_descriptors.py firmware/.pio/build/teensy41-bench/firmware.elf
+
+check-firmware: firmware-host-tests descriptor-validation capture-candidate-build capture-memory-tests bench-fixture-build
 
 # Uses the pinned Gradle wrapper and Android/JVM modules.
 android-test:

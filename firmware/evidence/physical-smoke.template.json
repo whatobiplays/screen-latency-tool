@@ -4,6 +4,8 @@
   "run_id": null,
   "operator": null,
   "observed_at_utc": null,
+  "supervised_commissioning_record": null,
+  "separate_manual_optical_session_record": null,
   "fixture": {
     "physical_label": null,
     "board": "Teensy 4.1",

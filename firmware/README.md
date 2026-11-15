@@ -22,6 +22,12 @@ The [Issue #5 engineering capture note](docs/engineering-capture.md) records the
 
 ## Physical verification gate
 
+The optional `teensy41-bench` environment retains the same USB protocol and
+disabled capture routing while driving pin 2 HIGH after setup as a steady
+supervised LED load. It requires the inspected 1 kΩ/WP7113ID branch and its own
+power-envelope admission; the default image does not drive that pin. Record the
+exact image hash. This load is not a timing marker or automatic optical stimulus.
+
 Use the [physical verification procedure](docs/physical-verification.md) and a copy of the [physical smoke evidence template](evidence/physical-smoke.template.json) for an owner-run bench session. Do not begin until separate owner authorization and every applicable Stage-B safety gate have been released. The template initializes the Stage-B S2 current limit as `UNSET / PENDING REVIEW` and the other gates as `UNRELEASED`; check the current safety review before a run. Use the Teensy 4.1 device Micro-B port, never its host port, and retain the protected external 5 V supply and no-backfeed constraints.
 
 The canonical wire and control contract remains in [REF-WIRE-001](../docs/reference/REF-WIRE-001-usb-and-control-contract.md#issue-4-physical-smoke-procedure-and-evidence). A successful firmware build, host test, Android unit test, or internal PFSC/PSPD status does not establish a physical pass.

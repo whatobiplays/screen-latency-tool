@@ -1,5 +1,16 @@
 # Issue #4 physical USB verification
 
+For supervised one-sensor commissioning, also complete the
+[stage record](../../hardware/prototype/power-usb/commissioning.template.json)
+under the [bench procedure](../../hardware/prototype/power-usb/bench-assembly.md).
+Keep the probe foreground for USB work. Each pulse operation closes its vendor
+session: rediscover/reconnect before the next operation, retaining request IDs
+and serial identity. A detach or enumeration is not authority to reset IDs.
+Run the manual optical page as a separate external-only session after the
+approved shutdown/disconnection sequence. No HID-caused display transition or
+bus-accurate T0 is required for that smoke result; the qualification obligations
+below retain their own scope.
+
 Use this procedure only after separate authorization and release of the safety gates below. Record each run in a dated copy of the evidence template.
 
 ## Release conditions

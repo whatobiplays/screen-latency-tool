@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Manual optical patterns</title>
+  <style>
+    body { margin: 0; background: #eeeeee; color: #111111; font: 1rem/1.5 system-ui, sans-serif; }
+    main { max-width: 44rem; margin: 2rem auto; padding: 0 1rem 2rem; }
+    button, a { font: inherit; }
+    button { margin: 0.25rem 0.5rem 0.25rem 0; padding: 0.65rem 1rem; }
+    #pattern {
+      position: fixed; inset: 0; width: 100%; height: 100%; background: #000000;
+      touch-action: none; user-select: none; -webkit-user-select: none; forced-color-adjust: none;
+      -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+    }
+    #pattern:fullscreen { background: #000000; cursor: none; outline: none; }
+    #pattern::backdrop { background: #000000; }
+    [hidden] { display: none !important; }
+  </style>
+  <script src="./manual-patterns.js" defer></script>
+</head>
+<body>
+  <main>
+    <h1>Manual optical patterns</h1>
+    <p id="identity">slt-manual-optical-patterns v1.0.0</p>
+    <ol>
+      <li>Start fullscreen to establish BLACK (#000000). Wait for browser overlays to disappear before observing the panel.</li>
+      <li>Tap the left quarter of the page for BLACK or the right quarter for WHITE (#FFFFFF). The middle half is inactive. Use a brief tap; dragging, holding longer than half a second, and multiple touches are rejected.</li>
+      <li>Hold each requested state for at least 2 seconds. Extend the dwell until you have at least 1 second of settled observation after any overlay or disturbance clears. The page never advances the pattern automatically.</li>
+      <li>Exit fullscreen with the browser or system gesture to export diagnostics. Fullscreen loss, backgrounding, loss of focus, and viewport changes invalidate the segment. Start a fresh fullscreen setup at BLACK before continuing.</li>
+    </ol>
+    <p>The export records requested colors and browser lifecycle diagnostics. It does not measure luminance or latency. Browser validation does not establish an optical pass. Keep the USB probe session independent.</p>
+    <button id="start" type="button">Start fullscreen at BLACK</button>
+    <button id="export" type="button">Export diagnostics</button>
+    <p id="status" role="status">JavaScript is required for fullscreen setup and diagnostics.</p>
+    <a id="download" hidden>Save diagnostic JSON</a>
+  </main>
+  <div id="pattern" hidden></div>
+</body>
+</html>

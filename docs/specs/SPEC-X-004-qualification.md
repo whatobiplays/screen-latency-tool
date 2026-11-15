@@ -17,6 +17,17 @@ Reference external instruments: Calibrite Display Pro HL for independent center-
 
 ## Gate 1 — Pre-fabrication feasibility
 
+The gates below govern production contract freeze and measurement qualification.
+They are not prerequisites to fabricating the provisional one-sensor evaluation
+PCB under its separately reviewed CAM/fit and owner purchase decisions. The
+supervised prototype commissioning sequence is defined in
+[BENCH-002](../bench/PROTOTYPE-BENCH-GUIDE.md) and the
+[bench assembly procedure](../../hardware/prototype/power-usb/bench-assembly.md).
+Its G0–G4/S0–S4 labels do not rename these qualification gates. Manual display
+patterns and independently observed USB smoke can establish that limited
+prototype outcome; they do not pass the HID-driven renderer, five-channel,
+bus-T0, calibrated optical or publication criteria below.
+
 Demonstrate with real hardware:
 1. Teensy 4.1 forced Full-Speed composite enumerates as HID plus independent vendor bulk interface on Android.
 2. A measured button-1 HID press causes a real Android-native-rendered display transition seen by one optical sensor and linked to the corresponding completed HID transfer; components remain reusable in production architecture.

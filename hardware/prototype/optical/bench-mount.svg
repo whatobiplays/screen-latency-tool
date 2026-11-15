@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1050" viewBox="0 0 1400 1050">
+<rect width="1400" height="1050" fill="white"/><style>text{font:17px sans-serif;fill:#17212b}.small{font-size:14px}.title{font-size:25px;font-weight:bold}</style>
+<text x="30" y="35" class="title">G1 noncontact mount proposal, dimensions in mm; no physical fit claimed</text>
+<text x="30" y="65" class="">A. Front elevation. Bench datum z=0; illustrative glass height 32 only, replace with actual height.</text>
+<rect x="213.99999999999994" y="427.6" width="189.0" height="32.400000000000006" fill="#b8c4cf" stroke="#34495e" stroke-width="2"/>
+<rect x="997.0" y="427.6" width="189.0" height="32.400000000000006" fill="#b8c4cf" stroke="#34495e" stroke-width="2"/>
+<rect x="349.0" y="190.0" width="54.0" height="237.60000000000002" fill="#b8c4cf" stroke="#34495e" stroke-width="2"/>
+<rect x="997.0" y="190.0" width="54.0" height="237.60000000000002" fill="#b8c4cf" stroke="#34495e" stroke-width="2"/>
+<rect x="349.0" y="122.5" width="702.0" height="67.5" fill="#b8c4cf" stroke="#34495e" stroke-width="2"/>
+<rect x="443.5" y="373.6" width="513.0" height="32.400000000000006" fill="#e2eff7" stroke="#34495e" stroke-width="2"/>
+<text x="416.5" y="490" class="">Independent DUT/cradle envelope: width ≤190; glass height 20 to 38</text>
+<path d="M403.0 135L997.0 135" stroke="#34495e" stroke-width="2" fill="none"/>
+<text x="600" y="128" class="">220 clear</text>
+<rect x="681.721" y="247.78" width="135.0" height="4.32" fill="#327048" stroke="#34495e" stroke-width="2"/>
+<rect x="692.035" y="252.1" width="15.930000000000001" height="25.380000000000003" fill="#7a8188" stroke="#34495e" stroke-width="2"/>
+<path d="M673.0 284.5L648.7 333.1L751.3 333.1L727.0 284.5Z" fill="#41464b" stroke="#111"/>
+<path d="M764.8 333.1L764.8 373.6" stroke="#34495e" stroke-width="2" fill="none"/>
+<text x="775.6" y="360.1" class="">15 nominal tip gap</text>
+<text x="35" y="540" class="">B. Board component view. Patches apply at the same X/Y on both faces. Local origin = KiCad (100,100).</text>
+<rect x="60" y="590" width="450" height="396" fill="#f5faf6" stroke="#34495e" stroke-width="2"/>
+<rect x="60" y="806" width="9" height="36" fill="#e49b37" stroke="#34495e" stroke-width="2"/>
+<rect x="60" y="950" width="9" height="36" fill="#e49b37" stroke="#34495e" stroke-width="2"/>
+<rect x="501" y="806" width="9" height="36" fill="#e49b37" stroke="#34495e" stroke-width="2"/>
+<rect x="501" y="950" width="9" height="36" fill="#e49b37" stroke="#34495e" stroke-width="2"/>
+<rect x="136.67999999999995" y="619.43" width="26.64000000000007" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="192.92999999999995" y="680.18" width="13.140000000000072" height="26.64000000000007" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="333.96" y="728.0600000000001" width="90.35999999999993" height="47.969999999999985" fill="none" stroke="#34495e" stroke-width="2"/>
+<text x="402.0" y="745.0" class="small">RV1</text>
+<rect x="105.17999999999996" y="619.43" width="26.64000000000007" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="390.75" y="911.75" width="22.5" height="22.5" fill="none" stroke="#34495e" stroke-width="2"/>
+<text x="402.0" y="916.0" class="small">TP5</text>
+<rect x="73.67999999999996" y="763.43" width="26.64000000000007" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="262.67999999999995" y="716.6299999999999" width="26.64000000000007" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="264.75" y="911.75" width="22.5" height="22.5" fill="none" stroke="#34495e" stroke-width="2"/>
+<text x="276.0" y="916.0" class="small">TP3</text>
+<rect x="257.55" y="646.6999999999999" width="36.89999999999995" height="30.60000000000005" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="327.75" y="911.75" width="22.5" height="22.5" fill="none" stroke="#34495e" stroke-width="2"/>
+<text x="339.0" y="916.0" class="small">TP4</text>
+<rect x="201.75" y="911.75" width="22.5" height="22.5" fill="none" stroke="#34495e" stroke-width="2"/>
+<text x="213.0" y="916.0" class="small">TP2</text>
+<rect x="73.67999999999996" y="745.43" width="26.64000000000007" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="226.67999999999995" y="727.43" width="26.64000000000007" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="138.75" y="911.75" width="22.5" height="22.5" fill="none" stroke="#34495e" stroke-width="2"/>
+<text x="150.0" y="916.0" class="small">TP1</text>
+<rect x="303.17999999999995" y="634.73" width="26.639999999999944" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="334.68000000000006" y="682.43" width="26.639999999999816" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="435.2999999999999" y="639.9499999999999" width="49.5" height="98.10000000000005" fill="none" stroke="#34495e" stroke-width="2"/>
+<text x="465.0" y="655.0" class="small">J1</text>
+<rect x="192.92999999999995" y="648.68" width="13.140000000000072" height="26.64000000000007" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="73.67999999999996" y="785.93" width="26.64000000000007" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="334.68000000000006" y="646.43" width="26.639999999999816" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="150.89999999999995" y="648.0500000000001" width="30.60000000000005" height="36.89999999999995" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="303.17999999999995" y="682.43" width="26.639999999999944" height="13.140000000000072" fill="none" stroke="#34495e" stroke-width="2"/>
+<rect x="92.12999999999994" y="655.6999999999999" width="57.60000000000005" height="57.60000000000005" fill="none" stroke="#34495e" stroke-width="2"/>
+<text x="109.5" y="677.5" class="small">D1</text>
+<text x="560" y="590" class="">C. Optical section, projection d measured from component face</text>
+<text x="560" y="620" class="small">PCB front d=0; glass d=45; shroud d=12 to 30.</text>
+<text x="560" y="647" class="small">Shroud top ID16 / OD20; tip ID34 / OD38; wall2.</text>
+<text x="560" y="674" class="small">D1 body maximum d=9.4 with base stand-off ≤0.5.</text>
+<text x="560" y="701" class="small">Keep top rim ≥2.3 from maximum body after length tolerance.</text>
+<text x="560" y="728" class="small">Axis offset ≤1; optical tilt ≤6°; carrier/glass tilt ≤3°.</text>
+<text x="560" y="755" class="small">Cone screen: r(d)=0.707+1+d tan20°+d tan6°.</text>
+<text x="560" y="782" class="small">Inner-radius tolerance -0.3 leaves positive margins:</text>
+<text x="560" y="809" class="small">d12: 0.364; d30: 0.921 (mm).</text>
+<text x="560" y="836" class="small">45° beam rotation needs 212.2 square print-bed space.</text>
+<text x="560" y="863" class="small">Printed load-bearing sections solid; E=500 assumed.</text>
+<text x="560" y="890" class="small">10N vertical / 1N lateral; computed approach 1.005.</text>
+<text x="560" y="917" class="small">Whole-fixture angle allowance 4.0; U2 lower bound 6.45; reserve 2.</text>
+<text x="560" y="944" class="small">Orange lips: x0..1 /49..50, y24..28 /40..44.</text>
+<text x="560" y="971" class="small">No PCB drilling. Backside patches include masked GND.</text>
+<text x="560" y="998" class="small">DUT active-area offsets and manufactured fit unmeasured.</text>
+<text x="560" y="1025" class="small">U2 indicated minimum: static 10.3; all movements exercised 4.0.</text>
+</svg>

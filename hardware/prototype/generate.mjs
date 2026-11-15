@@ -149,7 +149,15 @@ ${powerFlagDef.replace('(symbol "Proto:PWR_FLAG"', '(symbol "PWR_FLAG"')}
         (effects (font (size 1.016 1.016)) (justify left bottom)) (uuid ${q(uid())}))`);
     }
     const title=project==="one-sensor"?"One-sensor optical front end - unqualified prototype":"Teensy external power + VUSB sense - candidate wiring";
-    const txt=`(kicad_sch (version 20250114) (generator "screen_latency_prototype") (generator_version "0.1") (uuid ${q(root)}) (paper "A3") (title_block (title ${q(title)}) (date "2026-10-31") (rev "P0") (comment 1 "DRAFT - ERC and electrical review required; NO FABRICATION")) (lib_symbols ${defs}) ${wires.join("\n")} ${labels.join("\n")} ${nc.join("\n")} ${instances.join("\n")} (sheet_instances (path "/" (page "1"))))\n`;
+    // The bench variant changes population and the input termination, not the
+    // protected nets. Keep the adapter symbols as the historical alternative.
+    const benchNotes=project==="power-usb"?[
+      "BENCH VARIANT: KA3005PE+ via supported insulated terminal/carrier to F1 pin 1 / 5V_IN and GND.",
+      "J1 L721A and GST18U05-P1J NOT FITTED in bench variant. Never parallel source inputs.",
+      "Retain F1 MF-R050, M1 Pololu 5383 and J2/J6 exact XT30U pair. See bench-assembly.md.",
+      "PROPOSED FOR OWNER G0 ACCEPTANCE; no physical release. INITIAL_CURRENT_LIMIT=UNSET."
+    ].map((note,index)=>`(text ${q(note)} (at 25 ${220+index*5} 0) (effects (font (size 1.2 1.2)) (justify left bottom)) (uuid ${q(uid())}))`).join("\n"):"";
+    const txt=`(kicad_sch (version 20250114) (generator "screen_latency_prototype") (generator_version "0.1") (uuid ${q(root)}) (paper "A3") (title_block (title ${q(title)}) (date "2026-10-31") (rev "P0") (comment 1 "DRAFT - ERC and electrical review required; NO FABRICATION")) (lib_symbols ${defs}) ${wires.join("\n")} ${labels.join("\n")} ${nc.join("\n")} ${instances.join("\n")}${benchNotes?"\n"+benchNotes:""} (sheet_instances (path "/" (page "1"))))\n`;
     return {txt,root};
   };
   const os=schematic(parts,"one-sensor"),ps=schematic(power,"power-usb");

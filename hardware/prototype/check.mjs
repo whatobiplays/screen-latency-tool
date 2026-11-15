@@ -136,6 +136,10 @@ function verifyPrototype(files) {
     "J5:1":"LED_GPIO","J5:2":"GND",
     "R1:2":"VUSB_BUFFER_IN","R3:1":"VUSB_BUFFER_IN","R3:2":"GND"
   });
+  const benchNotes=kids(power.root,"text").map(text=>text[1]).join("\n");
+  check(benchNotes.includes("F1 pin 1 / 5V_IN")&&benchNotes.includes("NOT FITTED")&&
+    benchNotes.includes("Never parallel source inputs")&&benchNotes.includes("INITIAL_CURRENT_LIMIT=UNSET"),
+    "Power schematic records the direct bench termination, deferred adapter and physical-release boundary");
   const powerJ1=power.byRef.get("J1"),powerJ1At=xy(powerJ1,"at");
   check(one(powerJ1,"lib_id")?.[1]==="Proto:JACK3"&&
     prop(powerJ1,"MPN")==="L721A"&&prop(powerJ1,"Manufacturer")==="Switchcraft"&&

@@ -2,14 +2,26 @@
 
 ## 1. Purpose and release boundary
 
+For the supervised first prototype use the independent
+[noncontact mount and manual display session](bench-mount.md). Its numerical
+clearance limit comes from the configuration's tolerance/movement budget, not
+a universal glass gap. Contact-boot compression/force is not a requirement for
+that variant. The [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558) authorize the exact PCB fabrication basket after archive/preview checks; physical received/installed fit remains a later gate. Preserve the existing optical PCB and the retained fabrication ZIP;
+current assembly instructions supplement its historical review package.
+
+The [source-bound fabrication reference](fabrication-review.md) compares the
+unchanged CAM with the proposed standard two-layer process and records the
+J1 hole-tolerance and near-edge legend risks for the owner decision. Nominal
+fit is not a guarantee of received-board fit; retain the unpowered inspection.
+
 This workflow prepares provisional files for the existing 50 × 44 mm, two-layer,
 nominal 1.6 mm optical evaluation board. It preserves the upright SFH 203,
 selected MPNs, footprints, placements, outline, routing, analog values and absence
 of mounting holes. It does not export a power/USB carrier PCB.
 
 An export is not a fabrication release. Resolve material package-fit and
-manufacturing findings, obtain independent review, then request owner approval
-through [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38).
+manufacturing findings, obtain independent review, then apply the recorded exact G1 approval
+through [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38); request a new decision only for a material change.
 Keep `FABRICATION HOLD` whenever a defensible physical arrangement cannot be
 established. Physical optical characterization belongs to
 [Issue #7](https://github.com/whatobiplays/screen-latency-tool/issues/7).

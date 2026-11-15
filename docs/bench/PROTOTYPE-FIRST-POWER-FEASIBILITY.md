@@ -3,10 +3,12 @@
 **Document ID:** BENCH-005\
 **Status:** Draft for owner design review\
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-13 (America/Los_Angeles)\
+**Last Updated:** 2026-11-14 (America/Los_Angeles)\
 **Depends On:** ARCH-001, SPEC-X-001, BENCH-001, BENCH-002, BENCH-003, BENCH-004\
 **Supersedes:** None\
 **Superseded By:** None
+
+**Scope and decision authority:** Sections 1–8 retain Issue #45's historical S0/S1 paper decision; section 9 retains its sources and section 10 the earlier A/B/C comparison and disputes. Section 11 records the owner-selected supervised one-sensor architecture and bounded G0 risk decision. Physical releases still require their own evidence and owner authorization. Historical paper-only scope and continued B/C investigation statements do not limit section 11.
 
 ## 1. Decision and acceptance boundary
 
@@ -16,7 +18,7 @@ The acceptance standard is rated normal operation and bounded exposure to define
 
 Absent S0 measurements alone do not invalidate a conditional paper route. This paper pass rests on a documented nominal 5 V VIN supply role, a nonempty 4.4–5.5 V internal USB-supply operating window before losses/margins, a selectable source with output/CC/OCP controls, and the independently testable admission constraints in §5. No published limit establishes an impossible window for that limited arrangement. A paper pass requires acceptance limits derived independently of unknown startup demand and a practicable way to demonstrate the remaining conditions before connecting the Teensy. A source feature label or a future instruction to stop if damage appears cannot supply a missing exposure bound.
 
-[Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) owns this decision. [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38) owns subsequent purchase approval. All component, equipment and PCB orders remain paused pending the power decision and explicit owner authorization. Preserve `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and every Stage-B/C gate. This assessment authorizes no physical operation, substitute part or architecture change.
+[Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) recorded and resolved this limited paper decision. [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns the current complete-fixture protection comparison in §10. [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38) owns subsequent purchase approval. All component, equipment and PCB orders remain paused pending the power decision and explicit owner authorization. Preserve `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and every Stage-B/C gate. This assessment authorizes no physical operation, substitute part or architecture change.
 
 ## 2. Proposed topology and electrical subjects
 
@@ -241,7 +243,7 @@ For independent connectivity exports, copy `hardware/prototype` to an external d
 These output hashes identify the retained run, not a promise that fresh timestamp-bearing reports will be byte-identical. The [Issue #45 review surface](https://github.com/whatobiplays/screen-latency-tool/issues/45) and its implementation PR carry the external evidence location, complete checksum manifest, final source identity, independent reviews and actual CI results. The raw run files are intentionally outside the repository. Their absence from Git is not an unperformed-check PASS; the retained files must be available to the reviewer before accepting the evidence.
 
 
-## 8. Purchase and owner decisions
+## 8. Issue #45 purchase and owner decisions
 
 1. Decide whether to continue the unchanged bench-only S1 candidate by completing its source/temporary-connection envelope, or authorize design investigation of additional protection. Do not change the defined-fault standard into universal internal-board no-damage proof.
 2. For the fixed adapter, choose whether to pursue coordinated OV/current/branch protection or retain a bench-only prototype. Stable normal operation cannot cure the source-limit mismatch. Any narrower accepted fault claim must name the excluded fault and residual exposure explicitly.
@@ -271,3 +273,193 @@ Sources were reviewed on 2026-11-13. Page numbers below are printed datasheet pa
 | P14 | [TI TPS2660 Rev G](https://www.ti.com/lit/ds/symlink/tps2660.pdf), pp. 7–9, 19–23: limit/OV thresholds, response and configuration. |
 | P15 | [TI TPS2553 Rev G](https://www.ti.com/lit/ds/symlink/tps2553.pdf), pp. 5–7, 14–21: candidate branch-switch range, timing, latch-off and reverse behavior. |
 | P16 | [Switchcraft L721A product/rating](https://www.switchcraft.com/dc-power-jack-0-084-2-1mm-pin-solder-lugs-termination-long-bushing/l721a/) and [drawing](https://www.switchcraft.com/assets/1/24/L721A_CD.PDF), [AMASS XT30U 2023V2](https://www.china-amass.com/public/upload/20240608/810c62b3f7ace2287989748538eb2a6b.pdf), [JST PH](https://www.jst-mfg.com/product/pdf/eng/ePH.pdf), [ADI/Trinamic CABLE-PH04 manual](https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/745/TMC_Cables_Manual_V1.00.pdf), [CAB-14575](https://www.sparkfun.com/led-strip-pigtail-connector-3-pin.html), [CAB-14574](https://www.sparkfun.com/led-strip-pigtail-connector-2-pin.html): connector identity, selected assembly and rating conditions; installed qualification remains separate. |
+| P17 | [TI TPS25947 Rev C, May 2026](https://www.ti.com/lit/ds/symlink/tps25947.pdf), pp. 4–7, 25–37: adjustable OVLO, current-limit/circuit-breaker behavior, timing, retry/latch variants and thermal shutdown. |
+| P18 | [TI TPS2553 Rev G, October 2026](https://www.ti.com/lit/ds/symlink/tps2553.pdf), pp. 4–7, 14–21: DRV-package switch resistance, current-limit range, short response, reverse behavior and latch-off operation. |
+| P19 | [Vishay SiR870ADP Rev C, 2024-11-04](https://www.vishay.com/docs/63657/sir870adp.pdf), pp. 1–4: candidate PowerPAK SO-8 MOSFET voltage, resistance, gate-charge and test conditions. |
+| P20 | [Vishay WSL current-sense resistor series](https://www.vishay.com/docs/30100/wsl.pdf): WSL2512 resistance, tolerance, rating and package data. |
+| P21 | [TRACO TPP 15-J Series datasheet, 2024-11-26](https://www.tracopower.com/products/tpp15-j.pdf), pp. 1–2: TPP 15-105-J output accuracy, regulation, typical ripple, OVP/current limiting, dimensions and connection details. |
+| P22 | [TI TPS25947 product page](https://www.ti.com/product/TPS25947), Simulation Model section: TPS25947x PSpice transient model Rev A (SLVMDJ6A.ZIP). The archived model metadata identifies a February 2021 PSpice 17.2 release; its guide says temperature-dependent behavior is not modeled. |
+| P23 | [Mean Well GST18U series datasheet, 2026-04-03](https://www.meanwell.com/Upload/PDF/GST18U/GST18U-SPEC.PDF), p. 2: setup/rise/hold-up row lists a 30 ms rise time at full load for both 115 VAC and 230 VAC input. |
+
+## 10. Issue #47 coordinated-protection investigation
+
+Issue #45 remains the record for the original conditional bench-only S0/S1 paper route. [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns the subsequent complete-fixture protection comparison. [Issue #38](https://github.com/whatobiplays/screen-latency-tool/issues/38) retains procurement decisions. This section evaluates candidates for owner review; it does not select parts, set a current limit, revise CAD or release any physical stage.
+
+### 10.1 Native design boundary and fault domains
+
+The native power/USB schematic is an off-board wiring design; it has no routed power carrier PCB. The optical schematic and two-layer board are a separate assembly. KiCad 10.0.8 exported netlists from disposable copies contain 14 power/USB components on 12 nets and 23 optical components on 9 nets. These counts and connections establish source consistency only. They do not establish the received Teensy revision, assembled wiring or physical electrical behavior.
+
+The exported input path is J1 / 5V_IN → F1 MF-R050 → 5V_LIMITED → M1 Pololu 5383 → 5V_SAFE → XT30U J2/J6 → Teensy VIN. The Pololu module supplies reverse protection; it has no forward overvoltage cutoff or controlled current limit. The source-side segment between J1 and the external PTC remains exposed to source faults.
+
+The Teensy input branches through its onboard fuse, ferrite and MOSFET to U4 and the MCU USB VBUS supply inputs. U4 revisions have a 5.5 V operating input maximum and a 6.0 V absolute maximum. The MCU USB supply inputs have a 5.5 V absolute maximum. The stricter 5.5 V ceiling applies to each exposed node.
+
+The external optical board receives 3V3 directly from power/USB J4 pin 1; optical-board J1 pin 1 feeds its TIA, comparator, reference divider and trimmer. The current design has no separate 3.3 V branch switch. The input MF-R050 does not guarantee clearing every external 3V3 short. TPS2553-1 remains a branch-only candidate; it cannot protect the Teensy U4 output or internal MCU loads.
+
+USB host VBUS remains a separate source: VUSB_RAW feeds the resistor divider and buffer, with the factory VIN/VUSB link required to be physically cut and verified before any future combined-source test. A protector added to VIN does not qualify the host VBUS path, GPIO injection, USB ground return or power-off behavior. No wiring or USB routing is changed by this investigation.
+
+### 10.2 Supply envelope and static voltage screening
+
+The relevant board limits are a 4.4 V minimum at the exposed MCU USB supply node during valid operation and a strict peak below 5.5 V after measurement uncertainty and positive design margin. The source must satisfy both limits after wiring, PTC, reverse-protection module, connector, board and protector losses.
+
+The existing GST18U05-P1J specifies 5 V ±5% and 80 mV peak-to-peak ripple under its stated test setup. Its DC tolerance endpoints are 4.75–5.25 V. If the ripple is centered on the DC setting, adding half the peak-to-peak value gives 5.29 V high and 4.71 V low. Adding the full ripple as a conservative sensitivity gives 5.33 V high and 4.67 V low. These are calculation assumptions, not a guaranteed complete waveform; adapter startup, load steps, OVP latency, output capacitance and wiring transients remain unbounded here. Do not add tolerance terms twice.
+
+The adapter OVP threshold is 5.5–7.0 V. Its maximum can exceed both U4’s operating maximum and the MCU’s 5.5 V absolute maximum. The adapter remains held unless a complete source-plus-protector envelope proves every exposed node stays within limits.
+
+The GST18U datasheet lists a 30 ms output rise time at full load for both 115 VAC and 230 VAC input [P23]. That source figure does not bound startup at the protected fixture nodes or the response of an added protector.
+
+TRACO TPP 15-105-J is a costed candidate for a fixed 5 V source. It is an encapsulated 5 V, 3 A, 15 W AC/DC module and remains unselected. Its datasheet lists ±1% set accuracy, 0.2% maximum line regulation, 0.7% maximum load regulation, and 40 mV peak-to-peak ripple typical with a specified 10 µF capacitor. At nominal AC input, 25 °C and full load, adding the positive set, line and load limits gives an analytical 5.095 V high estimate. Adding half the typical ripple gives a 5.115 V sensitivity, not a guaranteed waveform. At 70 °C, the datasheet’s ±0.02%/K temperature coefficient over 45 K raises the analytical high sensitivity to 5.140 V before ripple, or 5.160 V with the same typical-ripple assumption. Its 115–140% OVP range corresponds to 5.75–7.0 V and exceeds the MCU’s 5.5 V ceiling. The high-end output fault still needs a separately coordinated protector. Its output-current limit is specified at 120–200% of 3 A, with 145% typical; that range does not coordinate the source with the 0.41 A hot PTC. The module uses mains input pins and JST output pins, so it is not a finished desktop adapter. A fixed-source build would need a designed enclosure, mains wiring, mounting, strain relief and connector design. Before any source selection or build, the owner would need to review applicable mains-safety requirements, isolation and clearances, input protection, enclosure and connections. Its listing cost and availability appear in §10.6.
+
+| Candidate | Datasheet-backed limit or timing | Static screening and disposition |
+| --- | --- | --- |
+| TPS26600PWPR, 16-pin HTSSOP PWP | Input range starts at 4.2 V; rising OVLO threshold is 1.17–1.225 V. | With a divider set so its lowest trip is above normal input, the threshold ratio is 1.225/1.17. The ideal high trip is 5.4968 V at a 5.25 V source maximum and 5.5387 V at 5.29 V. The former leaves about 3 mV before the 5.5 V ceiling; the latter exceeds it. Resistor error, leakage, transient response and layout reduce margin further. It cannot power a 3.3 V branch. It is not a drop-in fix for the existing source. |
+| TPS259474ARPWR / TPS259474LRPWR, 10-pin VQFN-HR (2 × 2 mm) | Input range is 2.7–23 V; adjustable rising OVLO threshold is 1.183–1.223 V. OVLO response is 1.2 µs typical with no maximum in the table. The family lists a 0.5 A nominal minimum current setting; at RILM = 6.65 kΩ the electrical threshold table is 0.425/0.500/0.575 A min/typ/max. The A variant auto-retries after circuit-breaker faults; the L variant latches off. | The ideal high/low threshold ratio is 1.223/1.183 = 1.033812. A 5.29 V normal-high assumption implies a 5.4689 V upper trip corner, leaving about 31 mV before the MCU ceiling before resistor tolerance, leakage, overshoot or parasitics. At 5.33 V, the result is 5.5102 V and exceeds the ceiling. The 1.2 µs response is typical, not a maximum. At the 6.65 kΩ setting, the 0.425 A minimum threshold is only 15 mA above the MF-R050’s 0.41 A hold rating at 40 °C; this does not demonstrate coordination over tolerance, temperature or time. Neither variant is selected. |
+| LTC4368IMS-2#PBF, 10-lead MSOP, with two external FETs and a shunt | OV comparator threshold is 492.5–507.5 mV. OV propagation maximum is 2 µs at 50 mV overdrive and 12 V input. Fast gate delay maximum is 6 µs with 2.2 nF gate capacitance under the datasheet test conditions. The current comparator and external MOSFETs form a circuit breaker, not a constant-current regulator. | Flexible dividers allow source-specific thresholds, but the exact 5 V divider, tolerance, MOSFET gate charge, source step, output capacitance, SOA and reverse-current case must be calculated together. Existing Issue #45 figures of 5.4729 V and 5.5143 V remain historical sensitivity results for their stated divider/ripple assumptions; they are not a validated protector waveform. The 12 V timing tests do not prove maximum cutoff at 5 V in this assembly. |
+
+For the TPS26600 ratio, the calculation is Vtrip,max = Vnormal,max × 1.225/1.17. For TPS25947 it is Vtrip,max = Vnormal,max × 1.223/1.183. These ideal ratios omit divider tolerance, leakage, hysteresis, temperature, interconnect parasitics and dynamic overshoot. They screen candidates; they do not qualify one.
+
+Normal lower headroom is also narrow. At the centered-ripple lower source estimate of 4.71 V, the prior 0.25 A example and 0.77 Ω maximum initial MF-R050 resistance consume 0.1925 V, leaving 4.5175 V before the Pololu module, added protector, connectors, wiring and the Teensy input path. That is 117.5 mV above the 4.4 V MCU-node minimum. The full-ripple sensitivity lower estimate of 4.67 V leaves 4.4775 V, or 77.5 mV above the minimum. The 0.25 A is illustrative, not a load bound. The unknown installed load and additional drops prevent a normal-operation pass.
+
+### 10.3 Current, energy, timing and thermal screens
+
+The MF-R050 is rated for 0.5 A hold at 23 °C and 0.41 A hold at 40 °C. Its 4 s maximum trip-time entry is for 2.5 A at 23 °C; it does not promise clearing at 1 A or at another temperature. The adapter can source up to 3 A under its rating, and the pre-PTC segment has no downstream fuse. Its short-circuit exposure is not bounded by the present drawings.
+
+As a shunt sensitivity only, WSL2512R1800FEA is a 0.18 Ω, ±1%, 1 W, 2512 candidate. At the LTC4368’s datasheet short-circuit test threshold range of 30–70 mV, the resistor-only current interval is about 0.165–0.393 A. At the 40–60 mV comparator range, it is about 0.220–0.337 A. Those figures use the datasheet’s 12 V and zero-output test conditions, not a 5 V circuit guarantee. The low corner could nuisance-trip an unknown startup load; the high corner, propagation, gate discharge and harness current still require a complete tolerance/SOA analysis. The resistor is not selected.
+
+TPS259474’s nominal 0.5 A minimum current setting cannot be treated as protection for the existing 0.41 A hot PTC. At the datasheet’s 6.65 kΩ setting, its current-threshold table spans 0.425–0.575 A (0.500 A typical), putting the minimum threshold only 15 mA above the PTC hold rating. The PTC trip curve, device threshold tolerances, thermal coupling and relative trip times are not coordinated by that comparison. With 45 mΩ used as a conservative on-resistance sensitivity, 0.5 A gives 22.5 mV and 11.25 mW in steady conduction. If a short collapses the output while the device limits at 0.5 A from 5.5 V, its instantaneous dissipation can approach 2.75 W before the configured timer, circuit-breaker response or thermal shutdown changes the state. That is a power estimate, not an allowed thermal operating point or a guaranteed clearing time. The PCB copper, actual junction rise, retry behavior and fault energy remain unknown.
+
+For TPS2553DRVR-1, the DRV package is a 6-pin 2 × 2 mm WSON. Its 75 mA–1.7 A adjustable current-limit range is typical, and its 2 µs short-response time is also typical; neither guarantees a branch fault limit or maximum isolation time. At 100 mA, 150 mΩ gives a 15 mV drop and 1.5 mW conduction loss under the specified resistance conditions. A 15 mV drop at the optical 3V3 rail would shift the ideal 18 kΩ/10 kΩ VREF divider by about 5.36 mV. This is a static sensitivity calculation; it does not model the TIA, comparator, decoupling, transient response or optical timing. A branch setting must be above the measured load/startup envelope and below the weakest branch conductor/contact exposure.
+
+Bound capacitor energy as Ecap = ½ C V². At 5.5 V this is 15.125 µJ per µF; 100 µF would store 1.5125 mJ and 1 mF would store 15.125 mJ. Installed capacitance and ESR are not established. Total exposure also includes source energy, Esource = integral(V × I × dt), and resistive heating, integral(I² × R × dt). Without a guaranteed maximum current and cutoff time, source-fed fault energy has no finite bound in this record. Repeated retries add repeated source and device heating; the TPS259474A 110 ms retry interval is typical, while the L variant remains latched until reset. No retry or thermal cycling has been physically tested.
+
+### 10.4 Fault coverage and weakest-element exposure
+
+| Fault | Present weakest or exposed element | Candidate protection contribution | Remaining bound |
+| --- | --- | --- | --- |
+| Short at J1 or before the input protector | Source, plug/jack contact, source lead and pre-PTC conductor | Verified source current/short behavior; an added protector must be placed at the source boundary. | No current, clearing-time, connector-temperature or I²t bound is established for the pre-PTC segment. |
+| Short on 5V_LIMITED, 5V_SAFE or VIN | PTC, protection module, XT30 contacts/wires, onboard fuse path and actual board copper | LTC4368 plus FET/shunt or a TPS25947 circuit-breaker variant could interrupt selected faults if setpoints, time and SOA close. | Current thresholds, source/output capacitance, cutoff, repeated-fault energy, path voltage drop and weakest conductor are not yet coordinated. |
+| Short on external 3V3 | U4, external 3V3 wiring/contacts, optical PCB trace and output loads | TPS2553-1 could isolate only the external branch after measured load and current-limit margins are defined. | The present input PTC need not trip. A branch switch cannot protect internal U4 or MCU loads. |
+| Source overvoltage or wrong voltage | U4 input and the MCU USB supply inputs, each with the stricter 5.5 V ceiling | Adjustable OVLO/disconnect or a source with a guaranteed tighter envelope. | OVP accuracy, resistor corners, source transient, response delay and residual output charge are open. A nominal TVS marking is not a clamp guarantee. |
+| 5 V to 3V3 cross-rail, powered-off injection or open return | MCU/logic pins, U4 body paths, buffer and alternate ground paths | Reverse blocking and branch isolation may reduce selected paths. | Pin injection, powered-off rise, GPIO/USB ground return and return interruption need separate circuit-level analysis. |
+| Host VBUS coexistence | VUSB_RAW, buffer input/output, factory VIN/VUSB link and USB ground/shield | A VIN protector does not replace the required physical VIN/VUSB separation. | Verify the physical cut and powered-off rail behavior before any future authorized USB test. |
+| Hotplug, brownout and repeated fault | Input capacitance, connectors, protection pass element and optical rail | Soft-start, UVLO, latch-off or controlled retry can address defined modes. | Actual waveform, capacitance, contact bounce, controller state and accumulated thermal exposure remain unknown. |
+| Reversed S1 leads, wrong header pin, adjacent-pin bridge or live reconnection | Temporary S1 leads and adjacent Teensy header pins | De-energized inspection, mechanical support/insulation and the no-live-reconnection rule. | These remain the narrow S1 procedural exclusions accepted in Issue #47. They are not automatically protected. Do not extend the exclusions to full-fixture wiring or use them to claim hardware protection. |
+
+### 10.5 Architecture comparison and engineering preference
+
+| Option | Architecture and candidate parts | Advantages | Weakest gaps, physical topology, USB, service and cost |
+| --- | --- | --- | --- |
+| A. Qualified bench-supply-only development | Continue with the selected KORAD KA3005PE+ for the narrowly bounded Teensy-only route. No fixed adapter is admitted. | No new protection circuit or fixed-source BOM is needed for the source investigation. Independent S0 qualification can establish the bench supply’s actual CV/CC/OVP/OCP behavior before the separately approved S1 decision. | The source, temporary conductors, returns, cutoff and stored-energy bounds are still unqualified. This does not qualify the complete optical fixture, USB coexistence or fixed adapter. Incremental hardware cost is zero only if inventory confirms the selected supply, leads, dummy load and measurement equipment are available. |
+| B. Fixed 5 V with coordinated discrete input and branch protection | A new fixed source with a documented normal/fault envelope; the cost-screened TRACO TPP 15-105-J is one unselected source candidate. Add LTC4368IMS-2#PBF; two candidate SiR870ADP-T1-GE3 PowerPAK SO-8 FETs; a candidate WSL2512R1800FEA shunt; and TPS2553DRVR-1 on the external optical branch. Each value and package remains provisional. SiR870ADP specifies 10.5 mΩ maximum at 4.5 V gate drive and 15 A test current; this is not a linear-mode SOA rating. | Adjustable OV/UV thresholds, an external bidirectional breaker and an independently controlled external 3V3 branch allow separate coordination. FETs, shunt and fault state can be instrumented on a dedicated, low-inductance PCB. | Divider, sense, gate-drive, inrush, FET SOA, sense error, temperature and source tolerances must close together. The candidate shunt can trade nuisance-trip margin against the 0.41 A PTC limit. The PTC and pre-PTC segment still need coordination. This needs a new power PCB or validated supported assembly, short input/output paths, copper and thermal review. USB remains separately isolated. A device-only retail subtotal for one controller, two FETs, one shunt and one branch switch was about $16.09 at the dated listings; adding the screened source gives $61.06 for those items, before passives, PCB, connectors, enclosure or assembly. |
+| C. Tighter fixed source with integrated input eFuse and branch switch | Replace or separately qualify the present adapter; screen the TRACO TPP 15-105-J as an unselected 5 V source candidate with TPS259474LRPWR latch-off or TPS259474ARPWR auto-retry at VIN, and TPS2553DRVR-1 only on the external 3.3 V branch. TPS26600PWPR remains a comparison candidate, not a proposed drop-in. | Fewer external power-path devices and a small input board may reduce assembly count. The L variant avoids automatic restart after a circuit-breaker fault; the A variant automatically retries. A separate branch switch keeps optical loads independently observable. | The TPP 15-105-J’s tighter normal output screen does not solve its 5.75–7.0 V OVP range or its 3.6–6 A output-current-limit range. TPS25947 static OVLO headroom fails the conservative 5.33 V sensitivity and leaves only about 31 mV under the centered-ripple case. Its 0.425–0.575 A threshold range at the nominal 0.5 A setting does not establish coordination with the 0.41 A hot PTC. TPS26600 has only about 3 mV ideal static headroom at 5.25 V and fails at 5.29 V; it also cannot operate on 3.3 V. A new source still needs exact maximum output, ripple, startup, fault energy and thermal data. WSON parts require a designed PCB and thermal land; they are not field-wired protection modules. USB and branch behavior remain separate. One eFuse plus one branch switch totaled about $2.78–$3.01 on observed single-quantity listings; adding the screened source gives $47.75–$47.98 for those items, before passives, PCB, enclosure or assembly. |
+
+**Engineering preference for the next decision:** keep Option A as the only development path to advance through source qualification while the full fixture stays held. If a fixed supply is needed for the one-sensor fixture, evaluate Option B and Option C only with a tighter, explicitly bounded source. The current GST18U05-P1J does not qualify. Option C has a smaller nominal component count, but its static OVLO ratio leaves too little margin for the conservative ripple case; current data does not establish that either fixed-source option passes. This is a proposal for owner review, not an architecture decision.
+
+The existing optical layout is a sensitive analog path. Any future branch protector adds resistance, output capacitance, switching transients and fault/restart edges to the 3V3 rail. Check optical 3V3, VREF, TIA output, comparator threshold, EDGE timing and power-up/brownout behavior against the actual analog model and layout. The existing Gate A optical simulation is historical and its model/provenance inputs are unavailable for rerun; it cannot qualify a new branch protector. No routed power PCB exists for candidate placement, copper, thermal relief or return-path analysis.
+
+### 10.6 Sourcing and cost snapshot
+
+The following DigiKey listing observations were read on 2026-11-13. Prices are USD for one unit, before shipping, tax, tariff, re-reeling, passive components, PCB and assembly. Stock and lead-time fields are supplier snapshots, not manufacturer guarantees, reservations or purchase approval.
+
+| Candidate | Observed single-unit price and availability | Procurement implication |
+| --- | --- | --- |
+| [GST18U05-P1J](https://www.digikey.com/en/products/detail/mean-well-usa-inc/GST18U05-P1J/7703631) | $14.10; 174 shown in stock; 17-week manufacturer lead-time field. | Existing design source; remain held because its OVP range reaches 7.0 V. Price does not resolve electrical suitability. |
+| [TPP 15-105-J](https://www.digikey.com/en/products/detail/traco-power/TPP-15-105-J/9565862) | $44.97; 3 shown in stock, 97 shown as factory stock; 19-week manufacturer lead-time field. | Cost-screened 5 V/3 A module candidate with better normal set accuracy. Its 115–140% OVP, mains/JST-pin integration, and applicable mains-safety requirements remain open. Review isolation, clearances, input protection, enclosure and connections before any selection or build. It is not selected or purchase-approved. |
+| [TPS259474ARPWR](https://www.digikey.com/en/products/detail/texas-instruments/TPS259474ARPWR/14124024) | $1.95; 0 shown in stock; 3,000 expected 2026-11-25; 26-week lead-time field. | Auto-retry circuit-breaker variant. Expected date can move; no approval to buy. |
+| [TPS259474LRPWR](https://www.digikey.com/en/products/detail/texas-instruments/TPS259474LRPWR/14123976) | Listings showed $1.72–$1.95 and about 39,855–41,665 units; listing lead-time fields differed. | Latch-off variant. Resolve the exact supplier SKU and current terms before any later procurement request. |
+| [TPS2553DRVR-1](https://www.digikey.com/en/products/detail/texas-instruments/TPS2553DRVR-1/2047903) | $1.06; 3,383 shown in stock; 26-week lead-time field. | Candidate external-branch switch only. The optical load and minimum safe current setting are unverified. |
+| [LTC4368IMS-2#PBF](https://www.digikey.com/en/products/detail/analog-devices-inc/LTC4368IMS-2-PBF/6820038) | $8.05; 717 shown in stock; 25-week lead-time field. | Controller only; it also needs the FET pair, shunt, divider, timer/control passives and board. |
+| [SiR870ADP-T1-GE3](https://www.digikey.com/en/products/detail/vishay-siliconix/SIR870ADP-T1-GE3/2813601) | $3.02 each; 22,757 shown in stock; 55-week lead-time field. | Candidate FET only. Two devices are included in the B subtotal; linear SOA and gate-drive behavior still need review. |
+| [WSL2512R1800FEA](https://www.digikey.com/en/products/detail/vishay-dale/WSL2512R1800FEA/9758409) | $0.94; 1,589 shown in stock; 53-week lead-time field. | Candidate shunt only. Its calculated current interval is a screening example, not an approved setpoint. |
+| [TPS26600PWPR](https://www.digikey.com/en/products/detail/texas-instruments/TPS26600PWPR/6199305) | $3.79; 0 shown in stock in the listing. | Comparison candidate with insufficient headroom on the present source. |
+
+TRACO TPP 15-105-J is the cost-screened fixed-source candidate documented above; it remains unselected, and its OVP range still exceeds the MCU ceiling. Its supplier price and availability are dated listing observations, not an order quote. Installed-system cost remains open because passives, input protection before the board, PCB, enclosure, connectors and assembly are not specified. Recheck lifecycle, seller, exact order code, packaging, lead time, price and availability after the owner selects an investigation path. No BOM MPN or purchasing state changed.
+
+### 10.7 PAC/TAC evidence matrix
+
+Issue #47 owns acceptance status and readiness. This crosswalk points to the technical evidence and unresolved engineering bounds recorded in §§10.1–10.6; it does not track issue completion.
+
+| PAC | Technical acceptance checks (TAC) | Evidence recorded in this section | Remaining engineering evidence or decision |
+| --- | --- | --- | --- |
+| PAC-1: baseline and choice space | TAC-01: compare the native KiCad source, exported nets, current BOM/generator/checker, Teensy revision-dependent VIN/U4/MCU path, optical loads and separate USB VBUS domain. | KiCad 10.0.8 disposable-copy exports show 14 power/USB components on 12 nets and 23 optical components on 9 nets. Manufacturer limits are source-backed; the received Teensy revision and assembled path are unknown. | Use the received board revision and assembled path for any future physical assessment. Whether a separate fixed adapter is needed for one-sensor feasibility remains an owner decision. |
+| PAC-2: bounded normal/fault envelopes | TAC-02: calculate tolerance and ripple corners, path drops, OVLO/circuit-breaker thresholds, current ranges, interruption times, source/capacitor energy, thermal dissipation and weakest conductors for all Issue #47 faults. | §§10.2–10.4 record source tolerance/ripple sensitivities, candidate threshold/current calculations, capacitor-energy and branch-drop estimates, and a map of the required fault groups. The existing GST18U05-P1J adapter path exceeds the 5.5 V board ceiling at its 7.0 V maximum OVP threshold. Its datasheet lists a 30 ms rise time under stated full-load conditions; this does not bound the protected fixture startup waveform. TPS26600 and TPS25947 static screens leave inadequate margin at the stated ripple sensitivities. | No B/C path has complete quantitative normal/transient/current/cutoff/source-energy/repeated-fault/thermal/SOA or weakest-device/conductor bounds. Candidate-source startup, load-step, installed capacitance and physical behavior remain unbounded for the protected path. |
+| PAC-3: compare real alternatives | TAC-03: compare A/B/C using exact candidate MPN/package, branch limits, source availability, cost, layout, service, optical noise/timing and USB coexistence. | §§10.5–10.6 compare A/B/C, exact candidate packages and sourceability. TRACO TPP 15-105-J is costed as an unselected source candidate; its OVP still exceeds the MCU ceiling and its mains/module integration is not qualified. | No architecture, part or BOM row is selected. Installed-system cost, lifecycle and availability need a fresh source check; optical noise, USB coexistence and serviceability remain unmeasured. |
+| PAC-4: decision-ready evidence | TAC-04: maintain separate guaranteed, typical, analytical, modeled, simulated and unknown-physical rows; run only supported models; show coverage and unperformed checks. | §§10.2–10.4 distinguish datasheet limits, typical values, calculations and unknown physical behavior. TI’s TPS25947x PSpice model Rev A targets PSpice 17.2 and does not model temperature dependence. The ngspice 47 compatibility probe failed before transient analysis because of unsupported directives and unresolved references; no candidate SPICE result is available. Thermal and EMC analyses have not been run because no candidate circuit or routed protection PCB exists. | A compatible simulator/model and a defined candidate circuit are needed for protector simulation. Thermal and EMC analysis needs an actual PCB and stackup. Physical claims require separately authorized measurement. |
+| PAC-5: durable record and preserved history | TAC-05: retain the limited S1 procedural-fault exclusions and rationale, the Issue #45 verdict, disputed review evidence, and prior model assumptions. | §10.8 records the exclusions, Issue #45 conditional verdict, disputed Cubic/Charizard reports and model limitations. Issue #45 and PR #46 historical pins are unchanged; no Issue #45, PR #46, SPEC-X-004, CAD, BOM or generator content was changed. | Preserve those boundaries and provenance in any later architecture decision or physical qualification record. |
+| PAC-6: owner handoff | TAC-06: present the conditional Option A preference, B/C comparison, smallest later procurement scope, physical prerequisites and owner decision points. | §10.8 records the owner decision questions, the proposed next paper work, the smallest possible later S0 equipment-only request and the conditions for any future S1 or fixed-source path. No purchase or physical release is authorized here. | Architecture, procurement, fabrication and physical admission require their separate owner decisions. |
+
+### 10.8 Owner decisions, procurement boundary and preserved evidence
+
+The owner decision package asks whether the bench-supply route remains the only development path; whether a fixed source is needed for one-sensor feasibility; which defined external faults must be contained by hardware; and whether the source envelope can be met with a discrete LTC4368 design or an integrated eFuse and separate 3V3 branch. TRACO TPP 15-105-J is costed for comparison, but its OVP range reaches 7.0 V and its mains-input module needs a separate enclosure and connector design. Applicable mains-safety requirements, isolation, clearances, input protection and connection details would need owner review before any fixed-source selection or build. The suggested next step is paper qualification of Option A and continued source screening for B/C. No circuit or MPN is approved by this recommendation.
+
+The smallest possible later procurement review is an inventory-based S0 equipment-only request for a qualified dummy load, leads and measurement access if the owner finds a real shortfall. S1 would require a separate decision for one identified DEV-20360, exact rated and supported temporary conductors/contacts, completed S0 evidence, a bounded source/exposure envelope and separate owner admission. A fixed-source route would first require an owner-selected source and closed circuit, fault, thermal and optical review. None of these lists is an order authorization. Full Basket A, the fixed-adapter chain, PCB fabrication, assembly and physical use remain held.
+
+Issue #47 retains the narrow accepted S1 procedural exclusions: reversed temporary leads, wrong header pin or adjacent-pin bridge, and live reconnection are controlled by de-energized inspection, supported insulated connections and a no-live-reconnection rule. They are not automatically protected faults. Catastrophic source failures outside the characterized envelope and internal Teensy failures remain disclosed residual risks. These exclusions do not apply to the full fixture and do not weaken the unchanged physical admission holds.
+
+The original Issue #45 conditional paper verdict and its qualifications remain intact. The missing numerical physical exposure envelope remains a real S1 blocker. The archived Cubic v4 objection to the conditional paper verdict remains disputed by the author and the non-authoring Charizard review; Issue #47 does not resolve that dispute. Preserve the reports unchanged: Cubic full v4 SHA-256 3a9a94817b55549360688f08bb25e7413c7b108b8e40bed1bdf3537d0c3d7ae3 and Charizard full review v4 SHA-256 bf018f3f9a71ea76e7b7a64ede428bb7685ab5e829846373d421f567220a3022. The [Issue #45 post-merge adjudication](https://github.com/whatobiplays/screen-latency-tool/issues/45#issuecomment-6868762284) records the owner’s S1 decision and links the [PR #46 review discussion](https://github.com/whatobiplays/screen-latency-tool/pull/46#issuecomment-6868609880). Full review files remain in the owner-held Issue #45 archive and are not stored in this repository.
+
+No candidate simulation is physical qualification. The ngspice compatibility probe stopped before transient analysis, so no active-protector simulation result is available. Any later model must identify the exact MPN/package, manufacturer model revision, circuit and testbench assumptions, source/capacitance corners and simulator version. Thermal and EMC conclusions require the actual designed PCB and applicable models. The unchanged physical state is INITIAL_CURRENT_LIMIT=UNSET; S0–S4 NOT_RUN/UNVERIFIED; FABRICATION HOLD; all procurement, fabrication, soldering, connection and energization holds remain in force.
+
+## 11. Supervised one-sensor bench release
+
+The expanded Issue #47 coordinates the selected one-sensor build through owner
+assembly and genuine smoke observations. The owner-selected noncontact mount
+and manual optical/USB session separation preserve the existing optical PCB.
+The owner-selected electrical architecture is KA3005PE+ → supported terminal/carrier →
+MF-R050 → Pololu 5383 → exact XT30U pair → Teensy VIN. The barrel jack and fixed
+adapter are not fitted. The source remains the sole operating VIN supply;
+Android VBUS remains isolated sensing, with a physically verified VIN/VUSB cut.
+
+The [construction and admission procedure](../../hardware/prototype/power-usb/bench-assembly.md)
+defines the physical carrier/harness, source-backed limits, proposed screens,
+measurement capability and G0–G4/S0–S4 dependency order. The
+[noncontact mount record](../../hardware/prototype/optical/bench-mount.md)
+defines geometry, a numerical tolerance/movement budget and the manual-pattern
+session. Its allocation arithmetic is analysis, not measured fit. No universal
+2 mm gap, scope bandwidth or thermal threshold is imposed.
+
+### 11.1 Decision and fault scope
+
+The owner [accepted G0 on 2026-11-14](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712),
+selecting the direct-bench construction, supported/insulated connections,
+narrow procedural exclusions and residual component-damage risk. This includes
+Pomona 73093-2/-0 solderless push-tab plugs with the selected 18 AWG stranded
+leads, at most 1 m per lead, and separate supported WAGO potentials. The plug's
+18–22 AWG / 4–6 mm strip procedure, retention and unpowered verification are
+defined in the construction record. G0 accepts a design and risk model; it does
+not establish a qualified source envelope or authorize physical use.
+De-energized inspection and no-live-rewiring control reversed temporary leads,
+wrong/adjacent header connections and preventable cross-rail assembly faults.
+Normal-operation displaced wires, sustained shorts, unsafe local heating,
+powered-off injection and host backfeed still require a defensible control.
+If that control is missing, stop for a specific amendment, not a blanket waiver.
+
+B/C are deferred alternatives outside this selected bench-only build. Their old incomplete
+envelopes and failed simulation probes stay recorded. The GST18U05-P1J OVP
+failure is unchanged. MF-R050 still cannot be credited with clearing every 3V3
+fault and Pololu 5383 adds no forward OVP/CC. Do not substitute another module
+without an exact owner-reviewed amendment; Pololu 5382 is only a named fallback
+candidate if sourceability of 5383 is insufficient.
+
+### 11.2 Evidence and release boundaries
+
+Use the [commissioning record template](../../hardware/prototype/power-usb/commissioning.template.json)
+for actual configurations, raw files/hashes, approvals, numerical settings and
+observations. Missing receipt, instrument identity, source response and fit
+measurements remain unknown. INITIAL_CURRENT_LIMIT remains UNSET until actual
+source qualification and independent setting review. Source-only S0 approval
+never releases a DUT by itself.
+
+Exact evaluation procurement can be considered before physical characterization;
+Issue #38 remains the exact basket/fabrication authority. The independent mount
+removes contact-force/compression as first-prototype requirements. Source-bound
+CAD/CAM plus justified design fit may support fabrication approval while
+post-assembly verified fit stays held. The earlier contact-boot hold is not a
+requirement to reopen that rejected arrangement.
+
+USB smoke uses the existing foreground probe, genuine Full-Speed/identity,
+real HID press/release and vendor exchange, with rediscovery between operations.
+The separate manual-pattern session uses actual display light and SFH 203/TIA/
+EDGE observations. HID does not have to cause the display transition. Neither
+session establishes calibrated latency, five-channel capture, bus T0 or Issue #7
+optical calibration. Actual issue/PAC progress and owner decisions belong in
+Issue #47 and PR #48; this record contains durable rationale and controls.

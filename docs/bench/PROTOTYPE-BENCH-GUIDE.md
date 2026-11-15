@@ -3,16 +3,16 @@
 **Document ID:** BENCH-002\
 **Status:** Draft\
 **Owner:** Repository maintainers\
-**Last Updated:** 2026-11-13 (America/Los_Angeles)\
+**Last Updated:** 2026-11-14 (America/Los_Angeles)\
 **Depends On:** ARCH-001, ARCH-002, REF-MET-001, REF-WIRE-001, SPEC-X-001, SPEC-X-004, PHASE-001, ADR-0002, BENCH-001\
 **Supersedes:** None\
 **Superseded By:** None
 
-**Pre-purchase power decision:** [Issue #45](https://github.com/whatobiplays/screen-latency-tool/issues/45) pauses all component, equipment and PCB procurement pending the [BENCH-005 feasibility assessment](PROTOTYPE-FIRST-POWER-FEASIBILITY.md) and explicit owner approval. Conditional paper feasibility and physical stage release are separate decisions. `INITIAL_CURRENT_LIMIT=UNSET`, FABRICATION HOLD and every Stage-B/C gate remain in force.
+**Supervised one-sensor variant:** [Issue #47](https://github.com/whatobiplays/screen-latency-tool/issues/47) owns procurement through genuine prototype smoke evidence. The [G0 decision](https://github.com/whatobiplays/screen-latency-tool/issues/47#issuecomment-6874347712) selects the direct-bench architecture and bounded risk model. Use its [carrier and G0–G4/S0–S4 procedure](../../hardware/prototype/power-usb/bench-assembly.md), including the Pomona solderless push-tab instructions, and the [noncontact mount/manual display procedure](../../hardware/prototype/optical/bench-mount.md). Fixed-adapter and contact-boot descriptions below retain their historical alternative scope. Issue #45's closed paper decision is not an unresolved ordering dependency. Issue #38 records the [G1 approval](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6877786990) and [final amendment](https://github.com/whatobiplays/screen-latency-tool/issues/38#issuecomment-6878303558) for exact purchases and PCB checkout. Earlier no-purchase statements below retain their historical scope; no physical stage is authorized. `INITIAL_CURRENT_LIMIT=UNSET`; physical admission still requires actual evidence and approval.
 
-Readiness note: The generated schematic and BOM implement the owner-approved Stage-A selections: Switchcraft L721A with a direct, nonlocking Mean Well GST18U05-P1J design assumption; JST B4B-PH-K-S(LF)(SN) with CABLE-PH04 at optical J1; and CAB-14575/CAB-14574 at J4/J5. This records the design choice only. Mean Well does not certify this exact mating pair. Physical fit, retention, contact resistance, support, strain relief, thermal behavior, and fault response remain unverified Stage-B checks. No purchase or physical work is authorized.
+Readiness note: The generated schematic and BOM implement the owner-approved Stage-A selections: Switchcraft L721A with a direct, nonlocking Mean Well GST18U05-P1J design assumption; JST B4B-PH-K-S(LF)(SN) with CABLE-PH04 at optical J1; and CAB-14575/CAB-14574 at J4/J5. This records the design choice only. Mean Well does not certify this exact mating pair. Physical fit, retention, contact resistance, support, strain relief, thermal behavior, and fault response remain unverified Stage-B checks. This historical design note granted no purchasing or physical authority; the exact G1 basket is now purchase-approved as linked above. Physical work remains unauthorized.
 
-J4/J5 pin maps and connector-half assignments remain design drafts and have not been physically verified. J4 maps 1=3V3, 2=GND, 3=VBUS_PRESENT; J5 maps 1=LED_GPIO, 2=GND. Female recessed-contact halves are assigned to the Teensy; male halves are assigned to the external circuits. Label each lead by net before separately authorized Stage-B connection; confirm continuity unpowered. The owner selected Adafruit 3878 (0.9 m USB-C-to-Micro-B) as the direct USB cable in place of Adafruit 5030/592, plus the eLabGuy inline pass-through with VCC jumper CLOSED and separate shield-to-GND jumper OPEN as *future design settings*. The cable and breakout retain factual unknown-lifecycle status; procurement eligibility is assessed under the SPEC-X-001 prototype-only risk exception rather than an automatic Active-status requirement. No purchasing, module assembly, jumper installation, USB connection or power use is authorized. Fluke TL75 remains a continuity-lead candidate subject to DMM compatibility/inventory review. J2 remains on ASSEMBLY/POWER-USE HOLD and S2 unreleased; evaluation-procurement clearance is separate under BENCH-003.
+J4/J5 pin maps and connector-half assignments remain design drafts and have not been physically verified. J4 maps 1=3V3, 2=GND, 3=VBUS_PRESENT; J5 maps 1=LED_GPIO, 2=GND. Female recessed-contact halves are assigned to the Teensy; male halves are assigned to the external circuits. Label each lead by net before separately authorized Stage-B connection; confirm continuity unpowered. The owner selected Adafruit 3878 (0.9 m USB-C-to-Micro-B) as the direct USB cable in place of Adafruit 5030/592, plus the eLabGuy inline pass-through with VCC jumper CLOSED and separate shield-to-GND jumper OPEN as *future design settings*. The cable and breakout retain factual unknown-lifecycle status; procurement eligibility is assessed under the SPEC-X-001 prototype-only risk exception rather than an automatic Active-status requirement. G1 now authorizes the exact selected purchases; module assembly, jumper installation, USB connection and power use remain unauthorized. Fluke TL75 remains a continuity-lead candidate subject to DMM compatibility/inventory review. J2 remains on ASSEMBLY/POWER-USE HOLD and S2 unreleased; evaluation-procurement clearance is separate under BENCH-003.
 
 **Inline USB VBUS-path gate (design selected; physical release unresolved):** The eLabGuy USB-uBM-uBF-V1A kit is unassembled and VCC is open between Micro-B female and male by default. The existing power/USB schematic senses `VUSB_RAW` at the isolated Teensy VUSB pad. The owner-approved Stage-A path is Android USB-C host → Adafruit 3878 → eLabGuy female → eLabGuy male → Teensy USB **device** port, with eLabGuy VCC jumper **CLOSED** and shield-to-GND jumper **OPEN**. The closed VCC jumper is intended to deliver host VBUS to `VUSB_RAW`, **not** to the Teensy external VIN rail, which must remain physically isolated. This choice supersedes the separate 5030/592 adapter/cable stack and the proposed host-side VBUS tap. Before any S4/G4 physical connection, validate the unpowered VIN/VUSB cut, VCC, GND, D+, D−, ID and shield paths, then separately release controlled VBUS, backfeed, Android host role, enumeration, speed, retention and signal integrity. Do not breadboard USB data, improvise probes, or mistake approved wiring diagrams for an energization permit.
 
@@ -231,6 +231,13 @@ This procedure applies to the existing 50 × 44 mm, two-layer optical PCB with u
 
 ### Provisional mechanical retention
 
+The contact-boot proposal in this subsection is historical and is not used by
+the owner-selected first-prototype mount. Use the independent noncontact
+[stand/shroud geometry and clearance budget](../../hardware/prototype/optical/bench-mount.md)
+instead. No glass contact, boot compression or contact-force qualification is
+required for that variant; actual stability, positive clearance and optical
+response remain required.
+
 1. The carrier has no mounting holes. An external clamp or bracket must grip reviewed board-edge areas without touching copper, parts or solder joints and without flexing the board. Inspect both faces before choosing jaw depth and width. No edge is qualified as a universal clamp zone. Support cable strain relief from the bracket so insertion, extraction and cable pull do not load J1's joints or the detector leads.
 2. The proposed boot bore is 6.0 to 6.2 mm. Against the SFH 203's 5.90 mm maximum flange, this gives **0.10 to 0.30 mm diametral clearance**, or **0.05 to 0.15 mm radial clearance**, before bore tolerance, print error, misalignment and deformation. The 6.40 mm footprint courtyard is a layout envelope; it does not define boot wall thickness, flange support or clamp clearance. Center the proposed aperture on the nominal axis `(106.77, 110.5)` and verify actual alignment.
 3. The SFH 203 drawing gives an 8.5 ± 0.4 mm axial body length from the package base. Installed lens height also depends on its stand-off above the PCB. The Bourns drawing gives a 10.03 mm housing dimension and a separate 1.52 mm screw projection along the installed height direction, with drawing tolerances. JST describes an 8 mm mated top-entry height, before wire exit and bend clearance. Check every part under the actual display footprint, including adjustment-tool access and vertical connector mating/removal. Do not assume that the lens is the highest point or that these catalogue dimensions establish installed clearance.
@@ -312,6 +319,12 @@ These are open follow-on issues, not results of Issue #3 or this documentation u
 No physical observations are recorded in this guide. Keep raw files unchanged; do not replace missing or failed measurements with a passing checkbox or simulation output.
 
 ## Explicit stop conditions
+
+Apply these within their intended qualification scope. The supervised smoke
+procedure requires safe power, actual Full-Speed/identity/HID/vendor evidence
+and a real optical response, but no synchronized USB T0 trace or five-channel
+qualification. The bus-timing conditions below remain mandatory before those
+timing claims, not as purchasing or manual optical-smoke prerequisites.
 
 Stop the bench and leave the affected connection open if any of these is true:
 
